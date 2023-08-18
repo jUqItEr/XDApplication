@@ -1,15 +1,13 @@
 package com.dita.xd.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class FeedMediaBean {
     private int mediaId;
-
     private int feedId;
+    private Timestamp uploadedAt;
 
-    private LocalDateTime uploadedAt;
-
-    public FeedMediaBean(int mediaId, int feedId, LocalDateTime uploadedAt) {
+    public FeedMediaBean(int mediaId, int feedId, Timestamp uploadedAt) {
         this.mediaId = mediaId;
         this.feedId = feedId;
         this.uploadedAt = uploadedAt;
@@ -23,7 +21,7 @@ public class FeedMediaBean {
         return feedId;
     }
 
-    public LocalDateTime getUploadedAt() {
+    public Timestamp getUploadedAt() {
         return uploadedAt;
     }
 
@@ -35,7 +33,7 @@ public class FeedMediaBean {
         this.feedId = feedId;
     }
 
-    public void setUploadedAt(LocalDateTime uploadedAt) {
+    public void setUploadedAt(Timestamp uploadedAt) {
         this.uploadedAt = uploadedAt;
     }
 }

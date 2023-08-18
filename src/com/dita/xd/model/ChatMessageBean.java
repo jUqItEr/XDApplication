@@ -5,16 +5,21 @@ import java.time.LocalDateTime;
 public class ChatMessageBean {
     private int id;
     private String content;
-    private int chatroomTblId;
-    private String userTblId;
+    private int chatroomId;
+    private String userId;
     private LocalDateTime createdAt;
     private char readState;
 
-    public ChatMessageBean(int id, String content, int chatroomTblId, String userTblId, LocalDateTime createdAt, char readState) {
+    public ChatMessageBean() {
+
+    }
+
+    public ChatMessageBean(int id, String content, int chatroomTblId,
+                           String userTblId, LocalDateTime createdAt, char readState) {
         this.id = id;
         this.content = content;
-        this.chatroomTblId = chatroomTblId;
-        this.userTblId = userTblId;
+        this.chatroomId = chatroomTblId;
+        this.userId = userTblId;
         this.createdAt = createdAt;
         this.readState = readState;
     }
@@ -35,20 +40,20 @@ public class ChatMessageBean {
         this.content = content;
     }
 
-    public int getChatroomTblId() {
-        return chatroomTblId;
+    public int getChatroomId() {
+        return chatroomId;
     }
 
-    public void setChatroomTblId(int chatroomTblId) {
-        this.chatroomTblId = chatroomTblId;
+    public void setChatroomId(int chatroomId) {
+        this.chatroomId = chatroomId;
     }
 
-    public String getUserTblId() {
-        return userTblId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserTblId(String userTblId) {
-        this.userTblId = userTblId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public LocalDateTime getCreatedAt() {

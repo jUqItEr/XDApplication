@@ -5,6 +5,10 @@ public class UserBean {
     String password;
     String email;
 
+    public UserBean() {
+
+    }
+
     public UserBean(String userId, String password, String email) {
         this.userId = userId;
         this.password = password;

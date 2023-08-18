@@ -2,8 +2,11 @@ package com.dita.xd.model;
 
 public class BlockBean {
     private String userId;
-
     private String userBlockId;
+
+    public BlockBean() {
+
+    }
 
     public BlockBean(String userId, String userBlockId) {
         this.userId = userId;

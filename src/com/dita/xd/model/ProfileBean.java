@@ -1,11 +1,10 @@
 package com.dita.xd.model;
 
-import java.time.LocalDateTime;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class ProfileBean {
-
-    private String userTblId;
+    private String userId;
     private String nickname;
     private String profileImage;
     private String headerImage;
@@ -13,11 +12,15 @@ public class ProfileBean {
     private char gender;
     private String website;
     private Date birthday;
-    private LocalDateTime joinAt;
+    private Timestamp joinAt;
+
+    public ProfileBean() {
+
+    }
 
     public ProfileBean(String userTblId, String nickname, String profileImage, String headerImage, String address,
-            char gender, String website, Date birthday, LocalDateTime joinAt) {
-        this.userTblId = userTblId;
+            char gender, String website, Date birthday, Timestamp joinAt) {
+        this.userId = userTblId;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.headerImage = headerImage;
@@ -28,12 +31,12 @@ public class ProfileBean {
         this.joinAt = joinAt;
     }
 
-    public String getUserTblId() {
-        return userTblId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserTblId(String userTblId) {
-        this.userTblId = userTblId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getNickname() {
@@ -92,11 +95,11 @@ public class ProfileBean {
         this.birthday = birthday;
     }
 
-    public LocalDateTime getJoinAt() {
+    public Timestamp getJoinAt() {
         return joinAt;
     }
 
-    public void setJoinAt(LocalDateTime joinAt) {
+    public void setJoinAt(Timestamp joinAt) {
         this.joinAt = joinAt;
     }
 }

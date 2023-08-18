@@ -4,6 +4,10 @@ public class FollowerBean {
     private String userId;
     private String userFollowerId;
 
+    public FollowerBean() {
+
+    }
+
     public FollowerBean(String userId, String userFollowerId) {
         this.userId = userId;
         this.userFollowerId = userFollowerId;
