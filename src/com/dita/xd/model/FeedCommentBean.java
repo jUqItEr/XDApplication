@@ -6,7 +6,6 @@ public class FeedCommentBean {
     private int commentId;
     private int originalFeedId;
     private int replyFeedId;
-    private Timestamp createdAt;
 
     public FeedCommentBean() {
 
@@ -16,7 +15,6 @@ public class FeedCommentBean {
         this.commentId = commentId;
         this.originalFeedId = originalFeedId;
         this.replyFeedId = replyFeedId;
-        this.createdAt = createdAt;
     }
 
     public int getCommentId() {
@@ -41,13 +39,5 @@ public class FeedCommentBean {
 
     public void setReplyFeedId(int replyFeedId) {
         this.replyFeedId = replyFeedId;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
     }
 }
