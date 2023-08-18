@@ -17,12 +17,12 @@ public class FollowerBean {
         return userId;
     }
 
-    public String getUserFollowerId() {
-        return userFollowerId;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserFollowerId() {
+        return userFollowerId;
     }
 
     public void setUserFollowerId(String userFollowerId) {

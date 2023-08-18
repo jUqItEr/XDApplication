@@ -17,12 +17,12 @@ public class BlockBean {
         return userId;
     }
 
-    public String getUserBlockId() {
-        return userBlockId;
-    }
-
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserBlockId() {
+        return userBlockId;
     }
 
     public void setUserBlockId(String userBlockId) {
