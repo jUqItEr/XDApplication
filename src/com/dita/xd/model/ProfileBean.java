@@ -12,14 +12,15 @@ public class ProfileBean {
     private char gender;
     private String website;
     private Date birthday;
-    private Timestamp joinAt;
+    private String introduce;
+    private Timestamp createdAt;
 
     public ProfileBean() {
 
     }
 
     public ProfileBean(String userTblId, String nickname, String profileImage, String headerImage, String address,
-            char gender, String website, Date birthday, Timestamp joinAt) {
+            char gender, String website, Date birthday, String introduce, Timestamp createdAt) {
         this.userId = userTblId;
         this.nickname = nickname;
         this.profileImage = profileImage;
@@ -28,7 +29,8 @@ public class ProfileBean {
         this.gender = gender;
         this.website = website;
         this.birthday = birthday;
-        this.joinAt = joinAt;
+        this.introduce = introduce;
+        this.createdAt = createdAt;
     }
 
     public String getUserId() {
@@ -95,11 +97,19 @@ public class ProfileBean {
         this.birthday = birthday;
     }
 
-    public Timestamp getJoinAt() {
-        return joinAt;
+    public String getIntroduce() {
+        return introduce;
     }
 
-    public void setJoinAt(Timestamp joinAt) {
-        this.joinAt = joinAt;
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }
