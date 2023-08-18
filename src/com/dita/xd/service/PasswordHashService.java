@@ -1,95 +1,121 @@
 package com.dita.xd.service;
 
+import com.dita.xd.service.implementation.PasswordHashServiceImpl;
+
+import java.io.ByteArrayInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
- * <p>단방향 암복호화 모듈</p>
+ * <p>
+ *     Service to generate SHA-256 hash password for storing database management systems.<br>
+ *     This class should be implement to 'PasswordHashServiceImpl'.
+ * </p>
  *
- * @author 강기석
+ * @author     jUqItEr (Ki-seok Kang)
+ * @version    1.2.1
  * */
-public class PasswordHashService {
-    private static final UUID SERVICE_UUID = UUID.randomUUID();
+public class PasswordHashService implements PasswordHashServiceImpl {
     private static final int SALT_LENGTH = 20;
     private static final int KEY_STRETCH_COUNT = 10;
 
     private final Base64.Decoder decoder;
     private final Base64.Encoder encoder;
 
-
     public PasswordHashService() {
         this.decoder = Base64.getDecoder();
         this.encoder = Base64.getEncoder();
-    }   // -- Constructor
+    }   // -- End of constructor
 
+    private boolean isValidBase64String(String text) {
+        Pattern pattern = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$");
+        Matcher matcher = pattern.matcher(text);
+        return matcher.find();
+    }   // -- End of function (isValidBase64String)
 
-    public String encryptPassword(String pwd) {
-        String salt = getSalt();
-        String newPassword = pwd + salt;
-
-        try {
-            for (int i = 0; i < KEY_STRETCH_COUNT; ++i) {
-                newPassword = getSHA256HashValue(newPassword);
-            }   // -- for
-        } catch (NoSuchAlgorithmException ex) {
-            newPassword = null;
-            ex.printStackTrace();
-        }   // -- try-catch
-        newPassword = getBase64EncodedText(salt + newPassword);
-
-        return newPassword;
-    }   // -- encryptPassword
-
-    /**
-     * <p>Base64 암호기로 암호회된 평문을 되돌려 놓는 메소드입니다.</p>
-     *
-     * @param  msg Base64로 암호화된 문자열
-     * @return     Base64 복호기로 해제된 평문
-     * */
-    public String getBase64DecodedText(String msg) {
-        byte[] decodedBytes = decoder.decode(msg);
+    private String decodeToBase64String(String text) {
+        byte[] decodedBytes = decoder.decode(text);
         return new String(decodedBytes);
-    }   // --getBase64DecodedText
+    }   // -- End of function (decodeToBase64String)
 
-    public String getBase64EncodedText(String msg) {
-        return encoder.encodeToString(msg.getBytes());
-    }   // --getBase64EncodedText
+    private String encodeToBase64String(String text) {
+        return encoder.encodeToString(text.getBytes());
+    }   // -- End of function (encodeToBase64String)
 
-    public String getHashValue(String msg, String algorithm) throws NoSuchAlgorithmException {
+    private String getHashValue(String text, String algorithm) throws NoSuchAlgorithmException {
         StringBuilder sb = new StringBuilder();
         MessageDigest md = MessageDigest.getInstance(algorithm);
 
-        md.update(msg.getBytes());
+        md.update(text.getBytes());
 
         for (byte b : md.digest()) {
             sb.append(String.format("%02x", b));
-        }   // -- for
+        }
         return sb.toString();
     }
 
-    public byte[] getSaltByteArray() {
+    private String getSha256HashValue(String text) throws NoSuchAlgorithmException {
+        return getHashValue(text, "SHA-256");
+    }
+
+    private byte[] getSaltByteArray() {
         SecureRandom sr = new SecureRandom();
         byte[] salt = new byte[SALT_LENGTH];
 
-        // Generate random bytes.
         sr.nextBytes(salt);
-
         return salt;
-    }   // -- getSaltByteArray
+    }   // -- End of function (getSaltByteArray)
+
+    private ByteArrayInputStream getSaltByteStream() {
+        return new ByteArrayInputStream(getSaltByteArray());
+    }   // -- End of function (getSaltByteStream)
+
+
+    public boolean isValidPassword(String pwd, String encodedString) {
+        boolean flag = isValidBase64String(encodedString);
+
+        if (flag) {
+            String decodedString = decodeToBase64String(encodedString);
+            String salt = decodedString.substring(0, 40);
+            flag = encodedString.equals(generatePassword(pwd, salt));
+        }   // -- End of if
+        return flag;
+    }   // -- End of function (isValidPassword)
+
+    public String generatePassword(String pwd) {
+        String salt = getSalt();
+        return generatePassword(pwd, salt);
+    }   // -- End of function (generatePassword)
+
+    public String generatePassword(String pwd, String salt) {
+        String newPassword = pwd + salt;
+
+        try {
+            /* 키 스트레칭 수행 */
+            for (int i = 0; i < KEY_STRETCH_COUNT; ++i) {
+                newPassword = getSha256HashValue(newPassword);
+            }   // -- End of for-loop
+            /* 다 끝났으면 base64로 인코딩 수행 */
+            newPassword = encodeToBase64String(salt + newPassword);
+        } catch (NoSuchAlgorithmException e) {
+            /* 오류가 나면 비밀번호를 생성하면 안 됨 */
+            newPassword = null;
+            e.printStackTrace();
+        }   // -- End of try-catch
+        return newPassword;
+    }   // -- End of function (generatePassword)
 
     public String getSalt() {
         StringBuilder sb = new StringBuilder();
-
-        for (byte b : getSaltByteArray()) {
-            sb.append(String.format("%02x", b));
-        }   // -- for
+        ByteArrayInputStream saltStream = getSaltByteStream();
+        IntStream stream = IntStream.generate(saltStream::read)
+                .limit(saltStream.available());
+        stream.forEach(value -> sb.append(String.format("%02x", value)));
         return sb.toString();
-    }   // -- getSalt
-
-    public String getSHA256HashValue(String msg) throws NoSuchAlgorithmException {
-        return this.getHashValue(msg, "SHA-256");
-    }
-}
+    }   // -- End of function (getSalt)
+}   // -- End of class
