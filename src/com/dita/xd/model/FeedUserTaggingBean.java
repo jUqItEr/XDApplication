@@ -1,7 +1,6 @@
 package com.dita.xd.model;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class FeedUserTaggingBean {
     private  int feedTblId;
