@@ -4,7 +4,6 @@ import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 
 public interface LoginServiceImpl extends ServiceImpl {
-    boolean login(String id, String pwd);
-    boolean login(UserBean bean);
+    UserBean login(String id, String pwd);
     boolean logout(UserRepository repository);
 }

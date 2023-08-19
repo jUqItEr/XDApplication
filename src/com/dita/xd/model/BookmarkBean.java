@@ -17,7 +17,6 @@ public class BookmarkBean {
     private Timestamp createdAt;
 
     public BookmarkBean() {
-
     }
 
     public BookmarkBean(int bookmarkId, int feedId, String userId, Timestamp createdAt) {

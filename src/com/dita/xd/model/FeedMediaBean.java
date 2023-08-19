@@ -8,7 +8,6 @@ public class FeedMediaBean {
     private Timestamp uploadedAt;
 
     public FeedMediaBean() {
-
     }
 
     public FeedMediaBean(int mediaId, int feedId, Timestamp uploadedAt) {

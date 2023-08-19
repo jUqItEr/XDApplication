@@ -5,7 +5,6 @@ public class BlockBean {
     private String userBlockId;
 
     public BlockBean() {
-
     }
 
     public BlockBean(String userId, String userBlockId) {

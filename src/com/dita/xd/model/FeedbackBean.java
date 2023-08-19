@@ -8,6 +8,9 @@ public class FeedbackBean {
     private String userId;
     private Timestamp createdAt;
 
+    public FeedbackBean() {
+    }
+
     public FeedbackBean(int id, int feedId, String userId, Timestamp createdAt) {
         this.id = id;
         this.feedId = feedId;

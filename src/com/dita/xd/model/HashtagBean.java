@@ -5,7 +5,6 @@ public class HashtagBean {
     private String content;
 
     public HashtagBean() {
-
     }
 
     public HashtagBean(int hashtagId, String content) {

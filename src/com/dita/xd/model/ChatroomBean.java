@@ -12,7 +12,6 @@ public class ChatroomBean {
     private Timestamp deletedAt;
 
     public ChatroomBean() {
-
     }
 
     public ChatroomBean(int id, String name, char status,

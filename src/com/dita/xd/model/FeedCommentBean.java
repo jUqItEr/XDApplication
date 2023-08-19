@@ -6,7 +6,6 @@ public class FeedCommentBean {
     private int replyFeedId;
 
     public FeedCommentBean() {
-
     }
 
     public FeedCommentBean(int commentId, int originalFeedId, int replyFeedId) {

@@ -9,7 +9,6 @@ public class LikeBean {
     private Timestamp createdAt;
 
     public LikeBean() {
-
     }
 
     public LikeBean(int likeId, int feedId, String userId, Timestamp createdAt) {

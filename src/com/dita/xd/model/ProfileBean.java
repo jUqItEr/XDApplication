@@ -16,7 +16,6 @@ public class ProfileBean {
     private Timestamp createdAt;
 
     public ProfileBean() {
-
     }
 
     public ProfileBean(String userTblId, String nickname, String profileImage, String headerImage, String address,

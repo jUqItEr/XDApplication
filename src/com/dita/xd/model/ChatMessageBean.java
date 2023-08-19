@@ -12,7 +12,6 @@ public class ChatMessageBean {
     private char readState;
 
     public ChatMessageBean() {
-
     }
 
     public ChatMessageBean(int id, String content, int chatroomTblId,

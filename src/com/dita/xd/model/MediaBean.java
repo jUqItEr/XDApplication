@@ -11,7 +11,6 @@ public class MediaBean {
     private Timestamp createdAt;
 
     public MediaBean() {
-
     }
 
     public MediaBean(int id, String userId, char contentType, String contentAddress, char contentCensoredType, Timestamp createdAt) {

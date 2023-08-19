@@ -9,7 +9,6 @@ public class FollowerBean {
     private Timestamp createdAt;
 
     public FollowerBean() {
-
     }
 
     public FollowerBean(String userId, String userFollowerId, Timestamp createdAt) {

@@ -76,6 +76,7 @@ public class PasswordHashService implements PasswordHashServiceImpl {
     }   // -- End of function (getSaltByteStream)
 
 
+    @Override
     public boolean isValidPassword(String pwd, String encodedString) {
         boolean flag = isValidBase64String(encodedString);
 
@@ -87,11 +88,13 @@ public class PasswordHashService implements PasswordHashServiceImpl {
         return flag;
     }   // -- End of function (isValidPassword)
 
+    @Override
     public String generatePassword(String pwd) {
         String salt = getSalt();
         return generatePassword(pwd, salt);
     }   // -- End of function (generatePassword)
 
+    @Override
     public String generatePassword(String pwd, String salt) {
         String newPassword = pwd + salt;
 
@@ -110,6 +113,7 @@ public class PasswordHashService implements PasswordHashServiceImpl {
         return newPassword;
     }   // -- End of function (generatePassword)
 
+    @Override
     public String getSalt() {
         StringBuilder sb = new StringBuilder();
         ByteArrayInputStream saltStream = getSaltByteStream();
