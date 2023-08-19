@@ -1,5 +1,6 @@
 package com.dita.xd.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class ChatMessageBean {
@@ -7,7 +8,7 @@ public class ChatMessageBean {
     private String content;
     private int chatroomId;
     private String userId;
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
     private char readState;
 
     public ChatMessageBean() {
@@ -15,7 +16,7 @@ public class ChatMessageBean {
     }
 
     public ChatMessageBean(int id, String content, int chatroomTblId,
-                           String userTblId, LocalDateTime createdAt, char readState) {
+                           String userTblId, Timestamp createdAt, char readState) {
         this.id = id;
         this.content = content;
         this.chatroomId = chatroomTblId;
@@ -56,11 +57,11 @@ public class ChatMessageBean {
         this.userId = userId;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 

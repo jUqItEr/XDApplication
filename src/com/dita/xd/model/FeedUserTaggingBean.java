@@ -1,14 +1,15 @@
 package com.dita.xd.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class FeedUserTaggingBean {
     private  int feedTblId;
     private String userTblId;
     private char taggingType;
-    private LocalDateTime taggedAt;
+    private Timestamp taggedAt;
 
-    public FeedUserTaggingBean(int feedTblId, String userTblId, char taggingType, LocalDateTime taggedAt) {
+    public FeedUserTaggingBean(int feedTblId, String userTblId, char taggingType, Timestamp taggedAt) {
         this.feedTblId = feedTblId;
         this.userTblId = userTblId;
         this.taggingType = taggingType;
@@ -39,11 +40,11 @@ public class FeedUserTaggingBean {
         this.taggingType = taggingType;
     }
 
-    public LocalDateTime getTaggedAt() {
+    public Timestamp getTaggedAt() {
         return taggedAt;
     }
 
-    public void setTaggedAt(LocalDateTime taggedAt) {
+    public void setTaggedAt(Timestamp taggedAt) {
         this.taggedAt = taggedAt;
     }
 }

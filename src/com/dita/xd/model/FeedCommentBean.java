@@ -1,7 +1,5 @@
 package com.dita.xd.model;
 
-import java.sql.Timestamp;
-
 public class FeedCommentBean {
     private int commentId;
     private int originalFeedId;
@@ -11,7 +9,7 @@ public class FeedCommentBean {
 
     }
 
-    public FeedCommentBean(int commentId, int originalFeedId, int replyFeedId, Timestamp createdAt) {
+    public FeedCommentBean(int commentId, int originalFeedId, int replyFeedId) {
         this.commentId = commentId;
         this.originalFeedId = originalFeedId;
         this.replyFeedId = replyFeedId;

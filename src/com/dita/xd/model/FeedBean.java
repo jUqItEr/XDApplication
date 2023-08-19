@@ -1,15 +1,16 @@
 package com.dita.xd.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class FeedBean {
     private int id;
     private String userTblId;
     private String content;
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
     private int viewer;
 
-    public FeedBean(int id, String userTblId, String content, LocalDateTime createdAt, int viewer) {
+    public FeedBean(int id, String userTblId, String content, Timestamp createdAt, int viewer) {
         this.id = id;
         this.userTblId = userTblId;
         this.content = content;
@@ -41,11 +42,11 @@ public class FeedBean {
         this.content = content;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 

@@ -1,13 +1,14 @@
 package com.dita.xd.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class FeedHashtagBean {
     private int feedTblId;
     private int hashtagTblId;
-    private LocalDateTime uploadedAt;
+    private Timestamp uploadedAt;
 
-    public FeedHashtagBean(int feedTblId, int hashtagTblId, LocalDateTime uploadedAt) {
+    public FeedHashtagBean(int feedTblId, int hashtagTblId, Timestamp uploadedAt) {
         this.feedTblId = feedTblId;
         this.hashtagTblId = hashtagTblId;
         this.uploadedAt = uploadedAt;
@@ -29,11 +30,11 @@ public class FeedHashtagBean {
         this.hashtagTblId = hashtagTblId;
     }
 
-    public LocalDateTime getUploadedAt() {
+    public Timestamp getUploadedAt() {
         return uploadedAt;
     }
 
-    public void setUploadedAt(LocalDateTime uploadedAt) {
+    public void setUploadedAt(Timestamp uploadedAt) {
         this.uploadedAt = uploadedAt;
     }
 }
