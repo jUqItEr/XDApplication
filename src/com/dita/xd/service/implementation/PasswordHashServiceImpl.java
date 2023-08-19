@@ -8,7 +8,7 @@ package com.dita.xd.service.implementation;
  * @author      jUqItEr (Ki-seok Kang)
  * @version     1.0.0
  * */
-public interface PasswordHashServiceImpl {
+public interface PasswordHashServiceImpl extends ServiceImpl {
     boolean isValidPassword(String pwd, String encodedString);
     String generatePassword(String pwd);
     String generatePassword(String pwd, String salt);
