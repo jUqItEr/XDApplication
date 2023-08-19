@@ -1,27 +1,30 @@
 package com.dita.xd.model;
 
 public class ChatUserBean {
-    private int chatroomTblId;
-    private String userTblId;
+    private int chatroomId;
+    private String userId;
 
-    public ChatUserBean(int chatroomTblId, String userTblId) {
-        this.chatroomTblId = chatroomTblId;
-        this.userTblId = userTblId;
+    public ChatUserBean() {
     }
 
-    public int getChatroomTblId() {
-        return chatroomTblId;
+    public ChatUserBean(int chatroomId, String userId) {
+        this.chatroomId = chatroomId;
+        this.userId = userId;
     }
 
-    public void setChatroomTblId(int chatroomTblId) {
-        this.chatroomTblId = chatroomTblId;
+    public int getChatroomId() {
+        return chatroomId;
     }
 
-    public String getUserTblId() {
-        return userTblId;
+    public void setChatroomId(int chatroomId) {
+        this.chatroomId = chatroomId;
     }
 
-    public void setUserTblId(String userTblId) {
-        this.userTblId = userTblId;
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

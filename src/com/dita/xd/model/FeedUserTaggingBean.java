@@ -4,32 +4,35 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class FeedUserTaggingBean {
-    private  int feedTblId;
-    private String userTblId;
+    private  int feedId;
+    private String userId;
     private char taggingType;
     private Timestamp taggedAt;
 
-    public FeedUserTaggingBean(int feedTblId, String userTblId, char taggingType, Timestamp taggedAt) {
-        this.feedTblId = feedTblId;
-        this.userTblId = userTblId;
+    public FeedUserTaggingBean() {
+    }
+
+    public FeedUserTaggingBean(int feedId, String userId, char taggingType, Timestamp taggedAt) {
+        this.feedId = feedId;
+        this.userId = userId;
         this.taggingType = taggingType;
         this.taggedAt = taggedAt;
     }
 
-    public int getFeedTblId() {
-        return feedTblId;
+    public int getFeedId() {
+        return feedId;
     }
 
-    public void setFeedTblId(int feedTblId) {
-        this.feedTblId = feedTblId;
+    public void setFeedId(int feedId) {
+        this.feedId = feedId;
     }
 
-    public String getUserTblId() {
-        return userTblId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserTblId(String userTblId) {
-        this.userTblId = userTblId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public char getTaggingType() {

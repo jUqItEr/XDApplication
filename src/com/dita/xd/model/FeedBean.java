@@ -5,14 +5,17 @@ import java.time.LocalDateTime;
 
 public class FeedBean {
     private int id;
-    private String userTblId;
+    private String userId;
     private String content;
     private Timestamp createdAt;
     private int viewer;
 
-    public FeedBean(int id, String userTblId, String content, Timestamp createdAt, int viewer) {
+    public FeedBean() {
+    }
+
+    public FeedBean(int id, String userId, String content, Timestamp createdAt, int viewer) {
         this.id = id;
-        this.userTblId = userTblId;
+        this.userId = userId;
         this.content = content;
         this.createdAt = createdAt;
         this.viewer = viewer;
@@ -26,12 +29,12 @@ public class FeedBean {
         this.id = id;
     }
 
-    public String getUserTblId() {
-        return userTblId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserTblId(String userTblId) {
-        this.userTblId = userTblId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getContent() {

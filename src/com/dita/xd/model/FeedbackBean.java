@@ -4,14 +4,14 @@ import java.sql.Timestamp;
 
 public class FeedbackBean {
     private int id;
-    private int feedTblId;
-    private String userTblId;
+    private int feedId;
+    private String userId;
     private Timestamp createdAt;
 
-    public FeedbackBean(int id, int feedTblId, String userTblId, Timestamp createdAt) {
+    public FeedbackBean(int id, int feedId, String userId, Timestamp createdAt) {
         this.id = id;
-        this.feedTblId = feedTblId;
-        this.userTblId = userTblId;
+        this.feedId = feedId;
+        this.userId = userId;
         this.createdAt = createdAt;
     }
 
@@ -23,20 +23,20 @@ public class FeedbackBean {
         this.id = id;
     }
 
-    public int getFeedTblId() {
-        return feedTblId;
+    public int getFeedId() {
+        return feedId;
     }
 
-    public void setFeedTblId(int feedTblId) {
-        this.feedTblId = feedTblId;
+    public void setFeedId(int feedId) {
+        this.feedId = feedId;
     }
 
-    public String getUserTblId() {
-        return userTblId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserTblId(String userTblId) {
-        this.userTblId = userTblId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Timestamp getCreatedAt() {

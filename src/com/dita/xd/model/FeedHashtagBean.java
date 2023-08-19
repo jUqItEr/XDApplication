@@ -4,30 +4,33 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class FeedHashtagBean {
-    private int feedTblId;
-    private int hashtagTblId;
+    private int feedId;
+    private int hashtagId;
     private Timestamp uploadedAt;
 
-    public FeedHashtagBean(int feedTblId, int hashtagTblId, Timestamp uploadedAt) {
-        this.feedTblId = feedTblId;
-        this.hashtagTblId = hashtagTblId;
+    public FeedHashtagBean() {
+    }
+
+    public FeedHashtagBean(int feedId, int hashtagId, Timestamp uploadedAt) {
+        this.feedId = feedId;
+        this.hashtagId = hashtagId;
         this.uploadedAt = uploadedAt;
     }
 
-    public int getFeedTblId() {
-        return feedTblId;
+    public int getFeedId() {
+        return feedId;
     }
 
-    public void setFeedTblId(int feedTblId) {
-        this.feedTblId = feedTblId;
+    public void setFeedId(int feedId) {
+        this.feedId = feedId;
     }
 
-    public int getHashtagTblId() {
-        return hashtagTblId;
+    public int getHashtagId() {
+        return hashtagId;
     }
 
-    public void setHashtagTblId(int hashtagTblId) {
-        this.hashtagTblId = hashtagTblId;
+    public void setHashtagId(int hashtagId) {
+        this.hashtagId = hashtagId;
     }
 
     public Timestamp getUploadedAt() {
