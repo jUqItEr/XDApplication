@@ -14,7 +14,7 @@ public class JRoundedImagePanel extends JRoundedPanel {
         super();
         setOpaque(false);
         try {
-            image = ImageIO.read(new URL("http://www.wallpaperpimper.com/wallpaper/Anime_&_Manga/Naruto/Naruto-Vs-Sasuke-1-D6UGW3NLAZ-800x600.jpg"));
+            image = ImageIO.read(new URL(""));
 
         } catch (Exception ex) {
             ex.printStackTrace();
