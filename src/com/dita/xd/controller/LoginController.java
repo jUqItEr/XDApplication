@@ -25,4 +25,8 @@ public class LoginController {
     boolean logout() {
         return svc.logout(repository);
     }
+
+    public UserRepository getRepository() {
+        return repository;
+    }
 }
