@@ -1,4 +1,4 @@
-package com.dita.xd.service.implementation;
+package com.dita.xd.service;
 
 import java.util.UUID;
 
@@ -10,6 +10,6 @@ import java.util.UUID;
  * @author  jUqItEr (Ki-seok Kang)
  * @version 1.0.0
  * */
-public interface ServiceImpl {
+public interface Service {
     static final UUID SERVICE_UUID = UUID.randomUUID();
 }

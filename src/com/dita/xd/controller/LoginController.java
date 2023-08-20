@@ -2,14 +2,14 @@ package com.dita.xd.controller;
 
 import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
-import com.dita.xd.service.LoginService;
+import com.dita.xd.service.implementation.LoginServiceImpl;
 
 public class LoginController {
-    private LoginService svc = null;
+    private LoginServiceImpl svc = null;
     private UserRepository repository = null;
 
     public LoginController() {
-        svc = new LoginService();
+        svc = new LoginServiceImpl();
         repository = UserRepository.getInstance();
     }
 

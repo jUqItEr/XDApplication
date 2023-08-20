@@ -1,6 +1,6 @@
 package com.dita.xd.driver;
 
-import com.dita.xd.service.PasswordHashService;
+import com.dita.xd.service.implementation.PasswordHashServiceImpl;
 
 import java.io.*;
 
@@ -19,7 +19,7 @@ public class PasswordHashDriver {
     }
 
     public static void driveHash() {
-        PasswordHashService svc = new PasswordHashService();
+        PasswordHashServiceImpl svc = new PasswordHashServiceImpl();
         String path = "src/db.txt";
         String desiredPwd = "1234";
 

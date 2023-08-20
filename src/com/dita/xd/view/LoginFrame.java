@@ -2,12 +2,15 @@ package com.dita.xd.view;
 
 import com.dita.xd.controller.LoginController;
 import com.dita.xd.view.base.JHintTextField;
+import com.dita.xd.view.locale.LocaleChangeable;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public class LoginFrame extends JFrame {
+public class LoginFrame extends JFrame implements LocaleChangeable {
+    private ResourceBundle configBundle;
     private LoginController controller = null;
     private String title;
 
@@ -17,6 +20,7 @@ public class LoginFrame extends JFrame {
     private JButton btnLogin;
 
     public LoginFrame() {
+        this.configBundle = ResourceBundle.getBundle("config", Locale.ROOT);
         this.controller = new LoginController();
         this.title = "XD Login";
 
@@ -47,5 +51,10 @@ public class LoginFrame extends JFrame {
 
 
         this.add(pnlTop, BorderLayout.NORTH);
+    }
+
+    @Override
+    public void localeChanged(Locale newLocale) {
+
     }
 }

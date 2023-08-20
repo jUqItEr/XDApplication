@@ -1,6 +1,6 @@
 package com.dita.xd.driver;
 
-import com.dita.xd.service.LoginService;
+import com.dita.xd.service.implementation.LoginServiceImpl;
 
 /**
  * @author     jUqItEr (Ki-seok Kang)
@@ -8,7 +8,7 @@ import com.dita.xd.service.LoginService;
  * */
 public class LoginDriver {
     public static void main(String[] args) {
-        LoginService svc = new LoginService();
+        LoginServiceImpl svc = new LoginServiceImpl();
         String id = "aaa";
         String pwd = "1234";
 
