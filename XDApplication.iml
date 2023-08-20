@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="mysql.connector.j" level="application" />
+    <orderEntry type="library" name="io.github.vincenzopalazzo.material.ui.swing" level="application" />
   </component>
 </module>
