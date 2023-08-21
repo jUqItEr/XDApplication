@@ -5,8 +5,7 @@ import com.dita.xd.service.RegisterService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.sql.ResultSet;
 
 public class RegisterServiceImpl implements RegisterService {
     DatabaseConnectionMgr pool = null;
@@ -16,7 +15,32 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public boolean register(String id, String pwd, String email, String nickname) {
+    public boolean hasId(String id) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT id FROM user_tbl WHERE id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, id);
+            rs = pstmt.executeQuery();
+            /*
+             * If the 'flag' has true, the user id that wants to register is already exists on database.
+             * */
+            flag = rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return flag;
+    }   // -- End of function (hasId)
+
+    @Override
+    public boolean register(String id, String pwd, String email) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         String sql = null;
@@ -35,22 +59,6 @@ public class RegisterServiceImpl implements RegisterService {
             e.printStackTrace();
         } finally {
             pool.freeConnection(conn, pstmt);
-        }
-        if (flag) {
-            try {
-                Timestamp stampNow = Timestamp.valueOf(LocalDateTime.now());
-                conn = pool.getConnection();
-                sql = "INSERT INTO profile_tbl VALUES (?, ?, null, null, null, null, null, null, null, ?)";
-                pstmt = conn.prepareStatement(sql);
-                pstmt.setString(1, id);
-                pstmt.setString(2, nickname);
-                pstmt.setTimestamp(3, stampNow);
-                flag = pstmt.executeUpdate() == 1;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                pool.freeConnection(conn, pstmt);
-            }
         }
         return flag;
     }

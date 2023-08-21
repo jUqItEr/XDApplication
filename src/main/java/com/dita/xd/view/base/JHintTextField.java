@@ -11,11 +11,19 @@ public class JHintTextField extends JTextField {
     final Font fontLost;
     private String hint;
 
-    public JHintTextField(String hint) {
+    public JHintTextField() {
         fontDefault = getFont();
         fontGain = new Font(fontDefault.getFontName(), Font.PLAIN, fontDefault.getSize());
         fontLost = new Font(fontDefault.getFontName(), Font.ITALIC, fontDefault.getSize());
+    }
 
+    public JHintTextField(int columns) {
+        this();
+        setColumns(columns);
+    }
+
+    public JHintTextField(final String hint) {
+        this();
         this.setHint(hint);
         this.addFocusListener(new FocusAdapter() {
             @Override
@@ -38,14 +46,19 @@ public class JHintTextField extends JTextField {
                 if (text.equals(getHint()) || text.length() == 0) {
                     setText(getHint());
                     setFont(fontLost);
-                    setForeground(Color.GRAY);
+                    // setForeground(Color.GRAY);
                 } else {
                     setText(text);
                     setFont(fontGain);
-                    setForeground(Color.WHITE);
+                    // setForeground(Color.WHITE);
                 }
             }
         });
+    }
+
+    public JHintTextField(final String hint, final int columns) {
+        this(hint);
+        setColumns(columns);
     }
 
     public String getHint() {
@@ -56,6 +69,6 @@ public class JHintTextField extends JTextField {
         this.hint = hint;
         this.setText(hint);
         this.setFont(fontLost);
-        this.setForeground(Color.GRAY);
+        // this.setForeground(Color.GRAY);
     }
 }
