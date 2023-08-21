@@ -38,6 +38,9 @@ public class JHintTextField extends JTextField {
         final int offset = 4;
 
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setFont(getFont());
+
+        System.out.println(getFont().canDisplayUpTo(hint));
         graphics.drawString(hint, getInsets().left, g.getFontMetrics().getMaxAscent() + offset);
     }
 }
