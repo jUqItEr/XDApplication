@@ -1,16 +1,14 @@
 package com.dita.xd;
 
-import com.dita.xd.view.LoginFrame;
+import com.dita.xd.view.frame.LoginFrame;
 import mdlaf.MaterialLookAndFeel;
-import mdlaf.themes.JMarsDarkTheme;
 import mdlaf.themes.MaterialLiteTheme;
-import mdlaf.themes.MaterialOceanicTheme;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
-        UIManager.setLookAndFeel(new MaterialLookAndFeel(new MaterialOceanicTheme()));
+        UIManager.setLookAndFeel(new MaterialLookAndFeel(new MaterialLiteTheme()));
 
         SwingUtilities.invokeLater(() -> {
             try {

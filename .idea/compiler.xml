@@ -9,5 +9,8 @@
         <module name="XDApplication" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="XDApplication" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
