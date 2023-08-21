@@ -34,23 +34,12 @@ public class LoginFrame extends JFrame implements LocaleChangeable {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setTitle(title);
-        this.getContentPane().setLayout(new BorderLayout());
-
-        JPanel pnlTop = new JPanel();
-        pnlTop.setBounds(0, 0, 0, 300);
-
-        JPanel pnlLogin = new JPanel(new BorderLayout());
+        this.getContentPane().setLayout(null);
 
         htfId = new JHintTextField("아이디");
-        htfPwd = new JHintTextField("비밀번호");
+        htfId.setBounds(10, 30, 300, 40);
 
-        pnlLogin.add(htfId, BorderLayout.NORTH);
-        pnlLogin.add(htfPwd, BorderLayout.SOUTH);
-
-        this.add(pnlLogin);
-
-
-        this.add(pnlTop, BorderLayout.NORTH);
+        this.add(htfId);
     }
 
     @Override

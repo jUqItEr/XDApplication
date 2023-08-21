@@ -11,7 +11,7 @@ public class JHintTextField extends JTextField {
     final Font fontLost;
     private String hint;
 
-    public JHintTextField(final String hint) {
+    public JHintTextField(String hint) {
         fontDefault = getFont();
         fontGain = new Font(fontDefault.getFontName(), Font.PLAIN, fontDefault.getSize());
         fontLost = new Font(fontDefault.getFontName(), Font.ITALIC, fontDefault.getSize());
