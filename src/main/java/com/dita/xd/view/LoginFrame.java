@@ -6,11 +6,13 @@ import com.dita.xd.view.locale.LocaleChangeable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginFrame extends JFrame implements LocaleChangeable {
     private ResourceBundle configBundle;
+    private ResourceBundle localeBundle;
     private LoginController controller = null;
     private String title;
 
@@ -21,8 +23,9 @@ public class LoginFrame extends JFrame implements LocaleChangeable {
 
     public LoginFrame() {
         this.configBundle = ResourceBundle.getBundle("config", Locale.ROOT);
+        this.localeBundle = ResourceBundle.getBundle("language", Locale.KOREAN);
         this.controller = new LoginController();
-        this.title = "XD Login";
+        this.title = localeBundle.getString("application.login.title");
 
         /* Initialize components */
         initialize();
