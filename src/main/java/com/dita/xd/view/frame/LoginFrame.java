@@ -11,13 +11,10 @@ import java.util.ResourceBundle;
 
 public class LoginFrame extends JFrame implements LocaleChangeListener {
     private ResourceBundle localeBundle;
-
-    private LoginController controller = null;
     private String title;
 
     public LoginFrame() {
-        this.localeBundle = ResourceBundle.getBundle("language", Locale.getDefault());
-        this.controller = new LoginController();
+        this.localeBundle = ResourceBundle.getBundle("language", Locale.CHINA);
         this.title = localeBundle.getString("login.title");
 
         /* Initialize components */

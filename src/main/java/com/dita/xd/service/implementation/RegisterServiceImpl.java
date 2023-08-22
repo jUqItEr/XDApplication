@@ -15,11 +15,34 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
+    public boolean hasEmail(String email) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT COUNT(email) FROM user_tbl WHERE email = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            rs = pstmt.executeQuery();
+
+            flag = rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return flag;
+    }
+
+    @Override
     public boolean hasId(String id) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT id FROM user_tbl WHERE id = ?";
+        String sql = "SELECT COUNT(id) FROM user_tbl WHERE id = ?";
         boolean flag = false;
 
         try {

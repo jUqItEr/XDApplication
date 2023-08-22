@@ -13,11 +13,8 @@ import java.util.ResourceBundle;
 public class LoginPanel extends JPanel implements LocaleChangeListener {
     private final ResourceBundle localeBundle;
 
-    private JHintTextField htfId;
-    private JHintTextField htfPassword;
-
     public LoginPanel() {
-        this.localeBundle = ResourceBundle.getBundle("language", Locale.getDefault());
+        this.localeBundle = ResourceBundle.getBundle("language", Locale.KOREAN);
 
         broadcastLocaleChange(Locale.getDefault());
 
@@ -25,34 +22,33 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
     }
 
     private void initialize() {
+        /* Use Absolute Layout (For testing) */
         setLayout(null);
-        htfId = new JHintTextField(localeBundle.getString("login.htfIdHint"));
 
-        JPasswordField pfPassword = new JHintPasswordField(localeBundle.getString("login.htfPasswordHint"));
-        htfPassword = new JHintTextField(localeBundle.getString("login.htfPasswordHint"));
-
+        JButton btnLogin =
+                new JButton(localeBundle.getString("login.button.login"));
+        JButton btnRegister =
+                new JButton(localeBundle.getString("login.button.register"));
+        JHintTextField htfId =
+                new JHintTextField(localeBundle.getString("login.field.hint.id"));
+        JHintPasswordField hpfPassword =
+                new JHintPasswordField(localeBundle.getString("login.field.hint.password"));
+        JLabel lblFindPassword =
+                new JLabel(localeBundle.getString("login.label.password"));
 
         htfId.setBounds(75, 300, 300, 40);
-        htfPassword.setBounds(75, 360, 300, 40);
-        pfPassword.setBounds(75, 360, 300, 40);
-
-
-        JLabel lblFindPassword = new JLabel(localeBundle.getString("login.lblFindPassword"));
+        hpfPassword.setBounds(75, 360, 300, 40);
         lblFindPassword.setBounds(75, 500, 300, 20);
-        Font lblFont = lblFindPassword.getFont();
-        lblFindPassword.setFont(new Font(lblFont.getFontName(), Font.BOLD, lblFont.getSize()));
-        lblFindPassword.setForeground(Color.BLUE);
+
+
         lblFindPassword.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JButton btnLogin = new JButton(localeBundle.getString("login.btnLogin"));
-        btnLogin.setBounds(75, 420, 300, 30);
 
-        JButton btnRegister = new JButton(localeBundle.getString("login.btnRegister"));
+        btnLogin.setBounds(75, 420, 300, 30);
         btnRegister.setBounds(75, 560, 300, 30);
 
         this.add(htfId);
-        //this.add(htfPassword);
-        this.add(pfPassword);
+        this.add(hpfPassword);
         this.add(lblFindPassword);
         this.add(btnLogin);
         this.add(btnRegister);
