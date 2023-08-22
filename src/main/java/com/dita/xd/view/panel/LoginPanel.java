@@ -23,7 +23,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
     private void initialize() {
         /* Use Absolute Layout (For testing) */
-        setLayout(null);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JButton btnLogin =
                 new JButton(localeBundle.getString("login.button.login"));
@@ -36,22 +36,19 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         JLabel lblFindPassword =
                 new JLabel(localeBundle.getString("login.label.password"));
 
-        htfId.setBounds(75, 300, 300, 40);
-        hpfPassword.setBounds(75, 360, 300, 40);
-        lblFindPassword.setBounds(75, 500, 300, 20);
-
-
-        lblFindPassword.setHorizontalAlignment(SwingConstants.CENTER);
-
-
-        btnLogin.setBounds(75, 420, 300, 30);
-        btnRegister.setBounds(75, 560, 300, 30);
-
         this.add(htfId);
         this.add(hpfPassword);
-        this.add(lblFindPassword);
         this.add(btnLogin);
+        this.add(lblFindPassword);
         this.add(btnRegister);
+
+        setBackground(Color.GRAY);
+
+        htfId.setMaximumSize(new Dimension(300, 40));
+        hpfPassword.setMaximumSize(new Dimension(300, 40));
+
+        htfId.setAlignmentX(Component.CENTER_ALIGNMENT);
+        hpfPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     private String title;
 
     public LoginFrame() {
-        this.localeBundle = ResourceBundle.getBundle("language", Locale.CHINA);
+        this.localeBundle = ResourceBundle.getBundle("language", Locale.getDefault());
         this.title = localeBundle.getString("login.title");
 
         /* Initialize components */

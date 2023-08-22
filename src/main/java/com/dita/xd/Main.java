@@ -3,7 +3,6 @@ package com.dita.xd;
 import com.dita.xd.view.frame.LoginFrame;
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.themes.MaterialLiteTheme;
-import mdlaf.themes.MaterialOceanicTheme;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -14,7 +13,7 @@ public class Main {
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(new MaterialLookAndFeel(new MaterialLiteTheme()));
 
-        setUIFont(new FontUIResource("Gulim", Font.PLAIN, 16));
+        setUIFont(new FontUIResource("Nixgon.ttf", Font.PLAIN, 14));
 
         SwingUtilities.invokeLater(() -> {
             try {
