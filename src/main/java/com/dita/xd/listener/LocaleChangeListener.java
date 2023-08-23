@@ -1,7 +1,5 @@
 package com.dita.xd.listener;
 
-import com.dita.xd.view.panel.LoginPanel;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

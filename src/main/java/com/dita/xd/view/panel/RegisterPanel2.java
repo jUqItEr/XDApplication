@@ -7,10 +7,10 @@ import com.dita.xd.view.base.JHintTextField;
 import javax.swing.*;
 import java.awt.*;
 
-public class RegisterPanel extends JPanel {
+public class RegisterPanel2 extends JPanel {
 
     private final RegisterController controller;
-    public RegisterPanel() {
+    public RegisterPanel2() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         controller = new RegisterController();
@@ -26,7 +26,7 @@ public class RegisterPanel extends JPanel {
         /* Variables declaration */
 
         JButton btnRegister = new JButton("회원가입");
-        JButton btnCancle = new JButton("취소");
+        JButton btnCancel = new JButton("취소");
 
         JHintTextField htfId = new JHintTextField("아이디");
         JHintPasswordField hpfPassword = new JHintPasswordField("비밀번호");
@@ -59,7 +59,7 @@ public class RegisterPanel extends JPanel {
 
         pnlButton.add(btnRegister);
         pnlButton.add(Box.createHorizontalStrut(50));
-        pnlButton.add(btnCancle);
+        pnlButton.add(btnCancel);
 
         pnlMain.add(Box.createVerticalStrut(60));
 
@@ -77,8 +77,8 @@ public class RegisterPanel extends JPanel {
 
         btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnRegister.setMaximumSize(new Dimension(100, 35));
-        btnCancle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnCancle.setMaximumSize(new Dimension(100, 35));
+        btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCancel.setMaximumSize(new Dimension(100, 35));
 
         setBackground(Color.GRAY);
 

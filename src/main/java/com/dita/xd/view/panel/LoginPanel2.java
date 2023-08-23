@@ -5,20 +5,18 @@ import com.dita.xd.util.filter.IDFilter;
 import com.dita.xd.view.base.JHintPasswordField;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.listener.LocaleChangeListener;
-import com.dita.xd.view.frame.LoginFrame;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class LoginPanel extends JPanel implements LocaleChangeListener {
+public class LoginPanel2 extends JPanel implements LocaleChangeListener {
     private final LoginController controller;
     private ResourceBundle localeBundle;
 
-    public LoginPanel() {
+    public LoginPanel2() {
         /* Change the current locale. */
         Locale currentLocale = Locale.CHINA;
         getLocaleString(currentLocale);
@@ -147,6 +145,6 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
     @Override
     public void onLocaleChanged(Locale newLocale) {
-        LocaleChangeListener.broadcastLocaleChanged(newLocale, LoginPanel.this);
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, LoginPanel2.this);
     }
 }
