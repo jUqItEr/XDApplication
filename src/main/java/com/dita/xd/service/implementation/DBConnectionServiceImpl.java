@@ -1,7 +1,7 @@
 package com.dita.xd.service.implementation;
 
-import com.dita.xd.service.ConnectionObject;
 import com.dita.xd.service.Service;
+import com.dita.xd.util.ConnectionObject;
 
 import java.sql.*;
 import java.util.Properties;

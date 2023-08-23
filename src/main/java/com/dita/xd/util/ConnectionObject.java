@@ -1,9 +1,8 @@
-package com.dita.xd.service;
+package com.dita.xd.util;
 
-import java.sql.*;
+import java.sql.Connection;
 
-
-class ConnectionObject {
+public class ConnectionObject {
     public Connection connection = null;
     public boolean inUse = false;
 
