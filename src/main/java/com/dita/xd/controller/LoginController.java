@@ -5,13 +5,14 @@ import com.dita.xd.repository.UserRepository;
 import com.dita.xd.service.implementation.LoginServiceImpl;
 
 public class LoginController {
+    /* Fields declaration */
     private LoginServiceImpl svc = null;
     private UserRepository repository = null;
 
     public LoginController() {
         svc = new LoginServiceImpl();
         repository = UserRepository.getInstance();
-    }
+    }   // -- End of constructor
 
     boolean login(String id, String pwd) {
         UserBean bean = svc.login(id, pwd);
@@ -20,13 +21,13 @@ public class LoginController {
             repository.setLogin(bean);
         }
         return bean != null;
-    }
+    }   // -- End of function (login)
 
     boolean logout() {
         return svc.logout(repository);
-    }
+    }   // -- End of function (logout)
 
     public UserRepository getRepository() {
         return repository;
     }
-}
+}   // -- End of class

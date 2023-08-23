@@ -1,6 +1,5 @@
 package com.dita.xd.repository;
 
-import com.dita.xd.model.ProfileBean;
 import com.dita.xd.model.UserBean;
 
 public class UserRepository {
@@ -8,7 +7,6 @@ public class UserRepository {
     private static volatile UserRepository instance = null;
 
     private UserBean userAccount;
-    private ProfileBean userProfile;
 
     public UserRepository() {
 
@@ -29,20 +27,12 @@ public class UserRepository {
         return userAccount;
     }
 
-    public ProfileBean getUserProfile() {
-        return userProfile;
-    }
-
     public void setLogin(UserBean bean) {
         this.userAccount = bean;
     }
 
     public void setLogout() {
         this.userAccount = null;
-    }
-
-    public void setUserProfile(ProfileBean bean) {
-        this.userProfile = bean;
     }
 
     public boolean hasLogin() {
