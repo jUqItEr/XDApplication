@@ -9,14 +9,14 @@ public class RegisterController {
         svc = new RegisterServiceImpl();
     }
 
-    boolean register(String id, String pwd, String email){
+    public boolean register(String id, String pwd, String email){
         return svc.register(id, pwd, email);
     }
-    boolean hasId(String id){
+    public boolean hasId(String id){
         return svc.hasId(id);
     }
 
-    boolean hasEmail(String email){
+    public boolean hasEmail(String email){
         return svc.hasEmail(email);
     }
 }

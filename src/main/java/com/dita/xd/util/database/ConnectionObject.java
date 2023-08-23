@@ -1,4 +1,4 @@
-package com.dita.xd.util;
+package com.dita.xd.util.database;
 
 import java.sql.Connection;
 

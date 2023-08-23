@@ -27,7 +27,7 @@ public class LoginServiceImpl implements LoginService {
 
         try {
             conn = pool.getConnection();
-            sql = "SELECT * FROM user_tbl WHERE id = ?";
+            sql = "SELECT id, password, email FROM user_tbl WHERE id = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
             rs = pstmt.executeQuery();

@@ -12,6 +12,6 @@ public class LoginDriver {
         String id = "aaa";
         String pwd = "1234";
 
-        System.out.println(svc.login(id, pwd).getEmail());
+        System.out.println(svc.login(id, pwd));
     }
 }

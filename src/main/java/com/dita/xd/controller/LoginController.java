@@ -14,7 +14,7 @@ public class LoginController {
         repository = UserRepository.getInstance();
     }   // -- End of constructor
 
-    boolean login(String id, String pwd) {
+    public boolean login(String id, String pwd) {
         UserBean bean = svc.login(id, pwd);
 
         if (bean != null) {
@@ -23,7 +23,7 @@ public class LoginController {
         return bean != null;
     }   // -- End of function (login)
 
-    boolean logout() {
+    public boolean logout() {
         return svc.logout(repository);
     }   // -- End of function (logout)
 
