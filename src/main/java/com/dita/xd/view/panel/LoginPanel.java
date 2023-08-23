@@ -4,15 +4,11 @@ import com.dita.xd.controller.LoginController;
 import com.dita.xd.util.filter.IDFilter;
 import com.dita.xd.view.base.JHintPasswordField;
 import com.dita.xd.view.base.JHintTextField;
-import com.dita.xd.view.locale.LocaleChangeListener;
+import com.dita.xd.listener.LocaleChangeListener;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -23,7 +19,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
     public LoginPanel() {
         /* Change the current locale. */
-        Locale currentLocale = Locale.KOREAN;
+        Locale currentLocale = Locale.CHINA;
         getLocaleString(currentLocale);
 
         controller = new LoginController();
@@ -139,13 +135,6 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
     @Override
     public void onLocaleChanged(Locale newLocale) {
-        broadcastLocaleChange(newLocale);
-    }
-
-    private void broadcastLocaleChange(Locale locale) {
-        List<Component> components = LocaleChangeListener.getChildren(Component.class, LoginPanel.this);
-        components.stream().filter(LocaleChangeListener.class::isInstance)
-                .map(LocaleChangeListener.class::cast)
-                .forEach(lc -> lc.onLocaleChanged(locale));
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, LoginPanel.this);
     }
 }

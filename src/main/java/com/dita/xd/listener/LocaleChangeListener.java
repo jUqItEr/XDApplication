@@ -1,4 +1,6 @@
-package com.dita.xd.view.locale;
+package com.dita.xd.listener;
+
+import com.dita.xd.view.panel.LoginPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,13 @@ public interface LocaleChangeListener {
     void getLocaleString(Locale locale);
 
     void onLocaleChanged(Locale newLocale);
+
+    static void broadcastLocaleChanged(final Locale locale, final Container container) {
+        List<Component> components = getChildren(Component.class, container);
+        components.stream().filter(LocaleChangeListener.class::isInstance)
+                .map(LocaleChangeListener.class::cast)
+                .forEach(lc -> lc.onLocaleChanged(locale));
+    }
 
     static <T extends Component> java.util.List<T> getChildren(Class<T> classes, final Container container) {
         Component[] components;

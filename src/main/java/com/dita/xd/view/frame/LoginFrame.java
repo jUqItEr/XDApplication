@@ -1,7 +1,6 @@
 package com.dita.xd.view.frame;
 
-import com.dita.xd.controller.LoginController;
-import com.dita.xd.view.locale.LocaleChangeListener;
+import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.panel.LoginPanel;
 
 import javax.swing.*;
