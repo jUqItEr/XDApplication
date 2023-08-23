@@ -5,6 +5,7 @@ import com.dita.xd.util.filter.IDFilter;
 import com.dita.xd.view.base.JHintPasswordField;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.view.frame.LoginFrame;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -97,6 +98,17 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         });
 
         btnRegister.addActionListener(e -> {
+            Container container = getParent();
+            Container prev = container;
+
+            System.out.println(prev);
+
+            while (container != null) {
+                prev = container;
+                container = container.getParent();
+                System.out.println(prev);
+            }
+            prev.removeAll();
 
         });
 

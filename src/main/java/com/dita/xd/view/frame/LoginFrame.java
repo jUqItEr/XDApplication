@@ -26,7 +26,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setTitle(title);
-        this.getContentPane().setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
 
         this.add(new LoginPanel());
     }
