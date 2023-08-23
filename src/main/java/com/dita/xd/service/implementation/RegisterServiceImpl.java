@@ -1,5 +1,6 @@
 package com.dita.xd.service.implementation;
 
+import com.dita.xd.service.PasswordHashService;
 import com.dita.xd.service.RegisterService;
 
 import java.sql.Connection;
@@ -7,10 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class RegisterServiceImpl implements RegisterService {
-    DBConnectionServiceImpl pool = null;
+    private DBConnectionServiceImpl pool = null;
+    private PasswordHashService svc = null;
 
     public RegisterServiceImpl() {
         pool = DBConnectionServiceImpl.getInstance();
+        svc = new PasswordHashServiceImpl();
     }
 
     @Override
@@ -67,13 +70,14 @@ public class RegisterServiceImpl implements RegisterService {
         PreparedStatement pstmt = null;
         String sql = null;
         boolean flag = false;
+        String securedPwd = svc.generatePassword(pwd);
 
         try {
             conn = pool.getConnection();
             sql = "INSERT INTO user_tbl (id, password, email, created_at) VALUES (?, ?, ?, NOW())";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            pstmt.setString(2, pwd);
+            pstmt.setString(2, securedPwd);
             pstmt.setString(3, email);
 
             flag = pstmt.executeUpdate() == 1;
