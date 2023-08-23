@@ -5,55 +5,106 @@ import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.view.locale.LocaleChangeListener;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginPanel extends JPanel implements LocaleChangeListener {
-    private final ResourceBundle localeBundle;
+    private ResourceBundle localeBundle;
 
     public LoginPanel() {
-        this.localeBundle = ResourceBundle.getBundle("language", Locale.KOREAN);
-
-        broadcastLocaleChange(Locale.getDefault());
-
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        /* Change the current locale. */
+        Locale currentLocale = Locale.US;
+        getLocaleString(currentLocale);
 
         initialize();
     }
 
     private void initialize() {
-        /* Use Absolute Layout (For testing) */
+        /* Set the default properties to parent panel. */
+        setLayout(new BorderLayout());
 
-        JButton btnLogin =
-                new JButton(localeBundle.getString("login.button.login"));
-        JButton btnRegister =
-                new JButton(localeBundle.getString("login.button.register"));
-        JHintTextField htfId =
-                new JHintTextField(localeBundle.getString("login.field.hint.id"));
-        JHintPasswordField hpfPassword =
-                new JHintPasswordField(localeBundle.getString("login.field.hint.password"));
-        JLabel lblFindPassword =
-                new JLabel(localeBundle.getString("login.label.password"));
+        /* Variables declaration */
+        JButton btnLogin = new JButton();
+        JButton btnRegister = new JButton();
 
-        this.add(htfId);
-        this.add(hpfPassword);
-        this.add(btnLogin);
-        this.add(lblFindPassword);
-        this.add(btnRegister);
+        JHintPasswordField hpfPassword = new JHintPasswordField();
+        JHintTextField htfId = new JHintTextField();
 
-        setBackground(Color.GRAY);
+        JLabel lblFindPassword = new JLabel();
+
+        JPanel pnlHeader = new JPanel();
+        JPanel pnlLocale = new JPanel();
+        JPanel pnlMain = new JPanel();
+
+        /* Set the localized texts. */
+        btnLogin.setText(localeBundle.getString("login.button.login"));
+        btnRegister.setText(localeBundle.getString("login.button.register"));
+
+
+        hpfPassword.setHint(localeBundle.getString("login.field.hint.password"));
+        htfId.setHint(localeBundle.getString("login.field.hint.id"));
+
+        lblFindPassword.setText(localeBundle.getString("login.label.password"));
+
+        /* Set the properties of sub panels */
+        pnlHeader.setLayout(new BorderLayout());
+        pnlLocale.setLayout(new BorderLayout());
+        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+
+        // For Testing!!
+        pnlLocale.setBackground(Color.PINK);
+
+
+        /* Add components to sub panels */
+        pnlHeader.add(pnlLocale, BorderLayout.NORTH);
+
+        pnlLocale.add(new JButton("Test"), BorderLayout.EAST);
+
+        pnlMain.add(Box.createVerticalGlue());
+        pnlMain.add(htfId);
+        pnlMain.add(Box.createVerticalStrut(10));
+        pnlMain.add(hpfPassword);
+        pnlMain.add(Box.createVerticalStrut(30));
+        pnlMain.add(btnLogin);
+        pnlMain.add(Box.createVerticalStrut(20));
+        pnlMain.add(lblFindPassword);
+        pnlMain.add(Box.createVerticalStrut(100));
+        pnlMain.add(btnRegister);
+        pnlMain.add(Box.createVerticalStrut(50));
+
+
+
+        /* Add components to panel */
+        this.add(pnlHeader, BorderLayout.NORTH);
+        this.add(pnlMain);
+
+        /* Set the properties of components */
+        btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnLogin.setMaximumSize(new Dimension(300, 35));
+        btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnRegister.setMaximumSize(new Dimension(300, 35));
+
+        lblFindPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblFindPassword.setMaximumSize(new Dimension(300, 24));
+        lblFindPassword.setHorizontalAlignment(JLabel.CENTER);
 
         htfId.setMaximumSize(new Dimension(300, 40));
+        htfId.setPreferredSize(new Dimension(300, 40));
         hpfPassword.setMaximumSize(new Dimension(300, 40));
-
-        htfId.setAlignmentX(Component.CENTER_ALIGNMENT);
-        hpfPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
+        hpfPassword.setPreferredSize(new Dimension(300, 40));
     }
 
     @Override
-    public void onLocaleChange(Locale newLocale) {
+    public void getLocaleString(Locale locale) {
+        localeBundle = ResourceBundle.getBundle("language", locale);
+        onLocaleChanged(locale);
+    }
+
+    @Override
+    public void onLocaleChanged(Locale newLocale) {
         broadcastLocaleChange(newLocale);
     }
 
@@ -61,6 +112,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         List<Component> components = LocaleChangeListener.getChildren(Component.class, LoginPanel.this);
         components.stream().filter(LocaleChangeListener.class::isInstance)
                 .map(LocaleChangeListener.class::cast)
-                .forEach(lc -> lc.onLocaleChange(locale));
+                .forEach(lc -> lc.onLocaleChanged(locale));
     }
+
 }

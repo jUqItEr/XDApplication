@@ -2,7 +2,9 @@ package com.dita.xd;
 
 import com.dita.xd.view.frame.LoginFrame;
 import mdlaf.MaterialLookAndFeel;
+import mdlaf.themes.JMarsDarkTheme;
 import mdlaf.themes.MaterialLiteTheme;
+import mdlaf.themes.MaterialOceanicTheme;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;

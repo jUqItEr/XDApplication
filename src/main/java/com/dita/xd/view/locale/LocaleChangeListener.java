@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Locale;
 
 public interface LocaleChangeListener {
-    void onLocaleChange(Locale newLocale);
+    void getLocaleString(Locale locale);
+
+    void onLocaleChanged(Locale newLocale);
 
     static <T extends Component> java.util.List<T> getChildren(Class<T> classes, final Container container) {
         Component[] components;

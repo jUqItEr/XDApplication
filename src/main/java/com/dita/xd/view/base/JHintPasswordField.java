@@ -6,7 +6,18 @@ import java.awt.*;
 public class JHintPasswordField extends JPasswordField {
     private String hint;
 
+    public JHintPasswordField() {
+        this.hint = "";
+    }
     public JHintPasswordField(String hint) {
+        this.hint = hint;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
         this.hint = hint;
     }
 

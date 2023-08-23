@@ -33,7 +33,12 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     }
 
     @Override
-    public void onLocaleChange(Locale newLocale) {
+    public void getLocaleString(Locale locale) {
+
+    }
+
+    @Override
+    public void onLocaleChanged(Locale newLocale) {
         this.localeBundle = ResourceBundle.getBundle("language", newLocale);
         this.title = localeBundle.getString("login.title");
     }

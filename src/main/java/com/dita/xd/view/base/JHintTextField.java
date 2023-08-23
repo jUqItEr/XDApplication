@@ -26,6 +26,13 @@ public class JHintTextField extends JTextField {
         setColumns(columns);
     }
 
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
