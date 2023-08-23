@@ -18,12 +18,13 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
         broadcastLocaleChange(Locale.getDefault());
 
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
         initialize();
     }
 
     private void initialize() {
         /* Use Absolute Layout (For testing) */
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JButton btnLogin =
                 new JButton(localeBundle.getString("login.button.login"));

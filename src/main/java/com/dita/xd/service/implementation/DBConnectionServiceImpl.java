@@ -1,10 +1,13 @@
-package com.dita.xd.manager;
+package com.dita.xd.service.implementation;
+
+import com.dita.xd.service.ConnectionObject;
+import com.dita.xd.service.Service;
 
 import java.sql.*;
 import java.util.Properties;
 import java.util.Vector;
 
-public class DatabaseConnectionMgr {
+public class DBConnectionServiceImpl implements Service {
     private Vector connections = new Vector(10);
     private String _driver = "com.mysql.cj.jdbc.Driver",
             _url = "jdbc:mysql://hxlab.co.kr:13307/xd_chat?characterEncoding=UTF-8&serverTimezone=UTC",
@@ -14,20 +17,21 @@ public class DatabaseConnectionMgr {
     private boolean _traceOn = false;
     private boolean initialized = false;
     private int _openConnections = 50;
-    private static DatabaseConnectionMgr instance = null;
+    private static DBConnectionServiceImpl instance = null;
 
-    private DatabaseConnectionMgr() {
+    private DBConnectionServiceImpl() {
     }
 
-    /** Use this method to set the maximum number of open connections before
-     unused connections are closed.
+    /**
+     * Use this method to set the maximum number of open connections before
+     * unused connections are closed.
      */
 
-    public static DatabaseConnectionMgr getInstance() {
+    public static DBConnectionServiceImpl getInstance() {
         if (instance == null) {
-            synchronized (DatabaseConnectionMgr.class) {
+            synchronized (DBConnectionServiceImpl.class) {
                 if (instance == null) {
-                    instance = new DatabaseConnectionMgr();
+                    instance = new DBConnectionServiceImpl();
                 }
             }
         }
@@ -45,13 +49,17 @@ public class DatabaseConnectionMgr {
     }
 
 
-    /** Returns a Vector of java.sql.Connection objects */
+    /**
+     * Returns a Vector of java.sql.Connection objects
+     */
     public Vector getConnectionList() {
         return connections;
     }
 
 
-    /** Opens specified "count" of connections and adds them to the existing pool */
+    /**
+     * Opens specified "count" of connections and adds them to the existing pool
+     */
     public synchronized void setInitOpenConnections(int count)
             throws SQLException {
         Connection c = null;
@@ -67,13 +75,17 @@ public class DatabaseConnectionMgr {
     }
 
 
-    /** Returns a count of open connections */
+    /**
+     * Returns a count of open connections
+     */
     public int getConnectionCount() {
         return connections.size();
     }
 
 
-    /** Returns an unused existing or new connection.  */
+    /**
+     * Returns an unused existing or new connection.
+     */
     public synchronized Connection getConnection()
             throws Exception {
         if (!initialized) {
@@ -130,7 +142,9 @@ public class DatabaseConnectionMgr {
     }
 
 
-    /** Marks a flag in the ConnectionObject to indicate this connection is no longer in use */
+    /**
+     * Marks a flag in the ConnectionObject to indicate this connection is no longer in use
+     */
     public synchronized void freeConnection(Connection c) {
         if (c == null)
             return;
@@ -191,7 +205,9 @@ public class DatabaseConnectionMgr {
     }
 
 
-    /** Marks a flag in the ConnectionObject to indicate this connection is no longer in use */
+    /**
+     * Marks a flag in the ConnectionObject to indicate this connection is no longer in use
+     */
     public synchronized void removeConnection(Connection c) {
         if (c == null)
             return;
@@ -237,7 +253,9 @@ public class DatabaseConnectionMgr {
     }
 
 
-    /** Closes all connections and clears out the connection pool */
+    /**
+     * Closes all connections and clears out the connection pool
+     */
     public void releaseFreeConnections() {
         trace("ConnectionPoolManager.releaseFreeConnections()");
 
@@ -252,7 +270,9 @@ public class DatabaseConnectionMgr {
     }
 
 
-    /** Closes all connections and clears out the connection pool */
+    /**
+     * Closes all connections and clears out the connection pool
+     */
     public void finalize() {
         trace("ConnectionPoolManager.finalize()");
 
@@ -279,15 +299,4 @@ public class DatabaseConnectionMgr {
             System.err.println(s);
     }
 
-}
-
-
-class ConnectionObject {
-    public Connection connection = null;
-    public boolean inUse = false;
-
-    public ConnectionObject(Connection c, boolean useFlag) {
-        connection = c;
-        inUse = useFlag;
-    }
 }

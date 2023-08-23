@@ -1,6 +1,5 @@
 package com.dita.xd.service.implementation;
 
-import com.dita.xd.manager.DatabaseConnectionMgr;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.service.LoginService;
@@ -10,11 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class LoginServiceImpl implements LoginService {
-    DatabaseConnectionMgr pool = null;
+    DBConnectionServiceImpl pool = null;
     PasswordHashServiceImpl hashSvc = null;
 
     public LoginServiceImpl() {
-        pool = DatabaseConnectionMgr.getInstance();
+        pool = DBConnectionServiceImpl.getInstance();
         hashSvc = new PasswordHashServiceImpl();
     }
 

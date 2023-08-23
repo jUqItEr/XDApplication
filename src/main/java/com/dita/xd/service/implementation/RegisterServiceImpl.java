@@ -1,6 +1,5 @@
 package com.dita.xd.service.implementation;
 
-import com.dita.xd.manager.DatabaseConnectionMgr;
 import com.dita.xd.service.RegisterService;
 
 import java.sql.Connection;
@@ -8,10 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class RegisterServiceImpl implements RegisterService {
-    DatabaseConnectionMgr pool = null;
+    DBConnectionServiceImpl pool = null;
 
     public RegisterServiceImpl() {
-        pool = DatabaseConnectionMgr.getInstance();
+        pool = DBConnectionServiceImpl.getInstance();
     }
 
     @Override
