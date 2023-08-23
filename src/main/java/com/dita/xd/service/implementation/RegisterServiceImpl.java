@@ -70,7 +70,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         try {
             conn = pool.getConnection();
-            sql = "INSERT INTO user_tbl VALUES (?, ?, ?)";
+            sql = "INSERT INTO user_tbl (id, password, email, created_at) VALUES (?, ?, ?, NOW())";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
             pstmt.setString(2, pwd);
