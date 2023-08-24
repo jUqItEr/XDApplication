@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 public interface LocaleChangeListener {
-    void getLocaleString(Locale locale);
+    void changeLocale(Locale locale);
 
     void onLocaleChanged(Locale newLocale);
 

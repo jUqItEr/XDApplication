@@ -16,13 +16,13 @@ public class IDFilter extends DocumentFilter {
         for (int n = text.length(); n > 0; --n) {
             char c = text.charAt(n - 1);
 
-            if (isAlphabetic(c) || Character.isDigit(c)) {
+            if (isLowerAlphabetic(c) || Character.isDigit(c)) {
                 super.replace(fb, offset, length, String.valueOf(c), attrs);
             }
         }
     }
 
-    private boolean isAlphabetic(char c) {
-        return (0x41 <= c && c <= 0x5A) || (0x61 <= c && c <= 0x7A);
+    private boolean isLowerAlphabetic(char c) {
+        return 0x61 <= c && c <= 0x7A;
     }
 }
