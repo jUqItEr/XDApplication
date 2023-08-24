@@ -22,11 +22,16 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
     private Locale currentLocale;
 
     private JButton btnCancel;
+
+    private JLabel lblError;
     private JLabel lblHeader;
     private JLabel lblSeperator;
 
+
     private JPanel pnlCode;
     private JPanel pnlMain;
+
+    private boolean result;
 
 
     private JTextField[] textFields = new JTextField[6];
@@ -36,17 +41,20 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
         this.controller = new MailController();
         this.email = email;
 
+        this.result = false;
+        this.setModalityType(DEFAULT_MODALITY_TYPE);
+
         initialize();
+        changeLocale(locale);
     }
 
     private void initialize() {
-        int index = 0;
-
         setLayout(new BorderLayout());
-        setSize(new Dimension(500, 350));
+        setSize(new Dimension(600, 250));
 
         btnCancel = new JButton();
 
+        lblError = new JLabel();
         lblHeader = new JLabel();
         lblSeperator = new JLabel("-");
 
@@ -55,20 +63,32 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
 
         pnlCode.setLayout(new BoxLayout(pnlCode, BoxLayout.X_AXIS));
         pnlCode.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pnlCode.setMaximumSize(new Dimension(400, 50));
 
         pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+
+        btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        lblError.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblError.setForeground(Color.RED);
+        lblError.setFont(lblError.getFont().deriveFont(18f));
+
+        lblHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         lblSeperator.setMaximumSize(new Dimension(50, 50));
         lblSeperator.setPreferredSize(new Dimension(50, 50));
         lblSeperator.setHorizontalAlignment(JLabel.CENTER);
         lblSeperator.setVerticalAlignment(JLabel.CENTER);
+        lblSeperator.setFont(lblSeperator.getFont().deriveFont(24f));
 
-        pnlCode.add(Box.createVerticalGlue());
+        pnlCode.add(Box.createHorizontalGlue());
 
         for (int i = 0; i < textFields.length; ++i) {
             textFields[i] = new JTextField();
             textFields[i].setMaximumSize(new Dimension(50, 50));
             textFields[i].setPreferredSize(new Dimension(50, 50));
+            textFields[i].setHorizontalAlignment(JTextField.CENTER);
+            textFields[i].setFont(textFields[i].getFont().deriveFont(32f));
             textFields[i].addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {
@@ -91,10 +111,11 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
                             String resultCode = getCode() + ch;
 
                             if (controller.checkRequestCode(email, resultCode)) {
-                                System.out.println("dispose");
+                                result = true;
+                                setVisible(false);
                                 dispose();
                             } else {
-                                System.out.println("will not dispose");
+                                lblError.setText(localeBundle.getString("dialog.mail.error"));
                             }
                         }
                     } else if (code == 8) {
@@ -127,21 +148,39 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
 
             pnlCode.add(textFields[i]);
 
-            if (++index == (textFields.length >> 1)) {
+            if ((i + 1) == (textFields.length >> 1)) {
                 pnlCode.add(lblSeperator);
+            } else {
+                pnlCode.add(Box.createHorizontalGlue());
             }
-            pnlCode.add(Box.createVerticalGlue());
         }
 
-        pnlMain.add(pnlCode);
+        btnCancel.addActionListener(e -> {
+            setVisible(false);
+            dispose();
+        });
 
+        pnlMain.add(Box.createVerticalGlue());
+        pnlMain.add(lblHeader);
+        pnlMain.add(Box.createVerticalStrut(15));
+        pnlMain.add(pnlCode);
+        pnlMain.add(Box.createVerticalStrut(10));
+        pnlMain.add(lblError);
+        pnlMain.add(Box.createVerticalStrut(10));
+        pnlMain.add(btnCancel);
+        pnlMain.add(Box.createVerticalGlue());
 
         this.add(pnlMain);
     }
 
     private void loadText() {
+        setTitle(localeBundle.getString("dialog.mail.title"));
 
+        btnCancel.setText(localeBundle.getString("dialog.mail.cancel"));
+        lblError.setText(" ");
+        lblHeader.setText(String.format(localeBundle.getString("dialog.mail.header"), email));
     }
+
 
     private String getCode() {
         StringBuilder sb = new StringBuilder();
@@ -150,6 +189,11 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
             sb.append(textField.getText());
         }
         return sb.toString();
+    }
+
+    public boolean showDialog() {
+        setVisible(true);
+        return result;
     }
 
     @Override
