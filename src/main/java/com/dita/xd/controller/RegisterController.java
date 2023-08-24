@@ -9,6 +9,10 @@ public class RegisterController {
         svc = new RegisterServiceImpl();
     }
 
+    public boolean changePassword(String id, String pwd) {
+        return svc.changePassword(id, pwd);
+    }
+
     public boolean register(String id, String pwd, String email){
         return svc.register(id, pwd, email);
     }

@@ -65,6 +65,29 @@ public class RegisterServiceImpl implements RegisterService {
     }   // -- End of function (hasId)
 
     @Override
+    public boolean changePassword(String id, String pwd) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "UPDATE user_tbl SET password = ? WHERE id = ?";
+        String securedPwd = svc.generatePassword(pwd);
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, securedPwd);
+            pstmt.setString(2, id);
+
+            flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
+    }
+
+    @Override
     public boolean register(String id, String pwd, String email) {
         Connection conn = null;
         PreparedStatement pstmt = null;
