@@ -94,10 +94,6 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
                                 System.out.println("dispose");
                                 dispose();
                             } else {
-                                System.out.println(textFields[index].getText());
-                                if (textFields[index].getText().length() > 0) {
-                                    e.consume();
-                                }
                                 System.out.println("will not dispose");
                             }
                         }
@@ -114,6 +110,16 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
                             textFields[index - 1].requestFocus();
                         }
                     } else {
+                        e.consume();
+                    }
+                }
+
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    JTextField textField = (JTextField) e.getSource();
+
+                    if (textField.getText().length() > 0) {
+                        textField.setText(String.valueOf(e.getKeyChar()));
                         e.consume();
                     }
                 }
