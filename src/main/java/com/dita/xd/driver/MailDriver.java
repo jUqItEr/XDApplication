@@ -1,8 +1,6 @@
 package com.dita.xd.driver;
 
-import com.dita.xd.util.mail.MailSender;
-
-import java.util.Random;
+import com.dita.xd.controller.MailController;
 
 /**
  *
@@ -12,15 +10,10 @@ import java.util.Random;
  */
 public class MailDriver {
     public static void main(String[] args) {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        MailSender sender = new MailSender("xdditaa@gmail.com", "ssmskghgvfvuufjc", "kayato8703@gmail.com");
+        MailController controller = new MailController();
 
-        for (int i = 0; i < 6; ++i) {
-            int x = random.nextInt(10);
-            sb.append(x);
-        }
+        // controller.sendRequestCode("dnjs1174@gmail.com");
 
-        sender.sendMail(sb.toString());
+        System.out.println(controller.checkRequestCode("dnjs1174@gmail.com", "332726"));
     }
 }

@@ -37,7 +37,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     private String title;
 
     public LoginFrame() {
-        currentLocale = new Locale("es_ES");
+        currentLocale = Locale.CHINA;
         changeLocale(currentLocale);
 
         /* Initialize components */

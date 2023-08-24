@@ -1,7 +1,6 @@
 package com.dita.xd.util.mail;
 
 import javax.mail.*;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
@@ -13,7 +12,7 @@ public class MailSender {
     private String user;
     private String password;
 
-    public MailSender(String user, String password, String recipient) {
+    public MailSender() {
         props = new Properties();
 
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -21,19 +20,23 @@ public class MailSender {
         props.put("mail.smtp.auth", true);
         props.put("mail.smtp.ssl.enable", true);
         props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    }
 
+    public MailSender(String user, String password, String recipient) {
+        this();
         this.user = user;
         this.password = password;
         this.recipient = recipient;
     }
 
-    public void sendMail(String code) {
+    public boolean sendMail(String code) {
         Session session = Session.getDefaultInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(user, password);
             }
         });
+        boolean result = true;
 
         MimeMessage message = new MimeMessage(session);
 
@@ -44,8 +47,9 @@ public class MailSender {
             message.setText("The verification code is " + code);
             Transport.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            result = false;
         }
+        return result;
     }
 
     public String getRecipient() {
