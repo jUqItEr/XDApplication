@@ -7,10 +7,7 @@ import com.dita.xd.view.frame.LoginFrame;
 import javax.mail.Quota;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -157,8 +154,14 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
             }
         }
 
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                controller.revokeCode(email);
+            }
+        });
+
         btnCancel.addActionListener(e -> {
-            controller.revokeCode(email);
             setVisible(false);
             dispose();
         });
