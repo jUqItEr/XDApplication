@@ -1,15 +1,17 @@
 package com.dita.xd.view.frame;
 
 import com.dita.xd.controller.LoginController;
+import com.dita.xd.controller.MailController;
 import com.dita.xd.controller.RegisterController;
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.UserBean;
 import com.dita.xd.util.filter.IDFilter;
 import com.dita.xd.view.base.JHintPasswordField;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.view.base.JImageView;
-import com.dita.xd.view.dialog.EmptyDialog;
+import com.dita.xd.view.dialog.MailCodeDialog;
+import com.dita.xd.view.dialog.PlainDialog;
 
-import javax.imageio.ImageIO;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.swing.*;
@@ -17,8 +19,6 @@ import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -32,13 +32,15 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     LoginPanel loginPane;
     RegisterPanel registerPane;
 
+    ChangePasswordPanel changePwdPane;
+
     Locale currentLocale;
 
     private ResourceBundle localeBundle;
     private String title;
 
     public LoginFrame() {
-        currentLocale = Locale.CHINA;
+        currentLocale = Locale.JAPAN;
         changeLocale(currentLocale);
 
         /* Initialize components */
@@ -53,6 +55,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         findPane = new FindPasswordPanel(currentLocale);
         loginPane = new LoginPanel(currentLocale);
         registerPane = new RegisterPanel(currentLocale);
+        changePwdPane = new ChangePasswordPanel(currentLocale);
 
         /* Set the properties of initialize */
         this.setBounds(100, 100, 450, 700);
@@ -78,6 +81,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         mainPane.add(loginPane, "login");
         mainPane.add(registerPane, "register");
         mainPane.add(findPane, "find");
+        mainPane.add(changePwdPane, "changePwd");
 
         this.add(headerPane, BorderLayout.NORTH);
         this.add(mainPane);
@@ -104,18 +108,15 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
      */
     class LoginPanel extends JPanel implements LocaleChangeListener {
         private final LoginController controller;
-        private ResourceBundle localeBundle;
-        private Locale currentLocale;
-
         /* Variables declaration */
         JButton btnLogin;
         JButton btnRegister;
-
         JHintPasswordField hpfPassword;
         JHintTextField htfId;
-
         JLabel lblFindPassword;
         JPanel pnlMain;
+        private ResourceBundle localeBundle;
+        private Locale currentLocale;
 
         public LoginPanel(Locale locale) {
             controller = new LoginController();
@@ -170,12 +171,20 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                 String pwd = new String(hpfPassword.getPassword());
 
                 if (id.isEmpty()) {
-                    EmptyDialog idDialog = new EmptyDialog(localeBundle.getString("login.field.hint.id"));
+                    PlainDialog idDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("login.field.hint.id"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     idDialog.setVisible(true);
                     return;
                 }
                 if (pwd.isEmpty()) {
-                    EmptyDialog pwdDialog = new EmptyDialog(localeBundle.getString("login.field.hint.password"));
+                    PlainDialog pwdDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("login.field.hint.password"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     pwdDialog.setVisible(true);
                     return;
                 }
@@ -249,22 +258,19 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
      * @author DelynMk2 (Hyeong-won Park)
      * @version 1.0.2
      * @see CardLayout
-     * */
+     */
     class RegisterPanel extends JPanel implements LocaleChangeListener {
         private final RegisterController controller;
-        private ResourceBundle localeBundle;
-        private Locale currentLocale;
-
         /* Variables declaration */
         JButton btnCancel;
         JButton btnRegister;
-
         JHintPasswordField hpfPassword;
         JHintTextField htfEmail;
         JHintTextField htfId;
-
         JPanel pnlButton;
         JPanel pnlMain;
+        private ResourceBundle localeBundle;
+        private Locale currentLocale;
 
         public RegisterPanel(Locale locale) {
             controller = new RegisterController();
@@ -340,17 +346,29 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                 String email = htfEmail.getText().trim();
 
                 if (id.isEmpty()) {
-                    EmptyDialog idDialog = new EmptyDialog(localeBundle.getString("register.field.hint.id"));
+                    PlainDialog idDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.id"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     idDialog.setVisible(true);
                     return;
                 }
                 if (pwd.isEmpty()) {
-                    EmptyDialog pwdDialog = new EmptyDialog(localeBundle.getString("register.field.hint.password"));
+                    PlainDialog pwdDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.password"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     pwdDialog.setVisible(true);
                     return;
                 }
                 if (email.isEmpty()) {
-                    EmptyDialog emailDialog = new EmptyDialog(localeBundle.getString("register.field.hint.email"));
+                    PlainDialog emailDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.email"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     emailDialog.setVisible(true);
                     return;
                 }
@@ -408,23 +426,21 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     }   // -- End of class
 
     class FindPasswordPanel extends JPanel implements LocaleChangeListener {
-
-        //private final FindPasswordController;
-        private Locale currentLocale;
-        private ResourceBundle localeBundle;
-
+        private final LoginController loginController;
+        private final MailController mailController;
         /* Variables declaration */
         JButton btnCancel;
         JButton btnEmailAuth;
-
         JHintTextField htfEmail;
         JHintTextField htfId;
-
         JPanel pnlButton;
         JPanel pnlMain;
+        private Locale currentLocale;
+        private ResourceBundle localeBundle;
 
         public FindPasswordPanel(Locale locale) {
-            //controller = new FindPasswordController;
+            loginController = new LoginController();
+            mailController = new MailController();
             localeBundle = ResourceBundle.getBundle("language", locale);
 
             initialize();
@@ -491,26 +507,41 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                 String email = htfEmail.getText().trim();
 
                 if (id.isEmpty()) {
-                    EmptyDialog idDialog = new EmptyDialog(localeBundle.getString("register.field.hint.id"));
+                    PlainDialog idDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.id"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     idDialog.setVisible(true);
                     return;
                 }
                 if (email.isEmpty()) {
-                    EmptyDialog emailDialog = new EmptyDialog(localeBundle.getString("register.field.hint.email"));
+                    PlainDialog emailDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.email"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
                     emailDialog.setVisible(true);
                     return;
                 }
+                UserBean bean = loginController.getUser(id);
 
-//                if (controller.register(id, pwd, email)) {
-                if (true) {
-
-                } else {
-
+                if (loginController.checkEmail(bean, email)) {
+                    if (mailController.sendRequestCode(email)) {
+                        MailCodeDialog mailCodeDialog = new MailCodeDialog(
+                                currentLocale, email);
+                        if (mailCodeDialog.showDialog()) {
+                            changePwdPane.setId(id);
+                            clMain.show(mainPane, "changePwd");
+                        }
+                    }
                 }
 
             });
 
         }
+
+
 
         private void loadText() {
             btnCancel.setText(localeBundle.getString("register.button.cancel"));
@@ -535,12 +566,163 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         }
     }
 
-    class ChangePasswordPanel extends JPanel implements LocaleChangeListener{
+    class ChangePasswordPanel extends JPanel implements LocaleChangeListener {
+
+        private final RegisterController controller;
+        private final LoginController loginController;
+        JButton btnCancel;
+        JButton btnPasswordChange;
+        JHintPasswordField hpfPassword;
+        JHintPasswordField hpfConfirmedPassword;
+        JPanel pnlButton;
+        JPanel pnlMain;
+        JLabel lblTitle;
         private Locale currentLocale;
         private ResourceBundle localeBundle;
 
-        public ChangePasswordPanel(Locale locale){
+        private String id;
 
+        public ChangePasswordPanel(Locale locale) {
+            localeBundle = ResourceBundle.getBundle("language", locale);
+
+            controller = new RegisterController();
+            loginController = new LoginController();
+
+            initialize();
+
+            changeLocale(locale);
+        }
+
+        private void initialize() {
+            setLayout(new BorderLayout());
+
+            /* Load to memory */
+            btnCancel = new JButton();
+            btnPasswordChange = new JButton();
+
+            hpfPassword = new JHintPasswordField();
+            hpfConfirmedPassword = new JHintPasswordField();
+
+            pnlButton = new JPanel();
+            pnlMain = new JPanel();
+
+            lblTitle = new JLabel();
+            /* Set the localized texts. */
+            loadText();
+
+            /* Set the properties of sub panels */
+            pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+            pnlButton.setLayout(new BoxLayout(pnlButton, BoxLayout.X_AXIS));
+
+            /* Add components to sub panel */
+
+            pnlMain.add(Box.createVerticalGlue());
+            pnlMain.add(lblTitle);
+            pnlMain.add(Box.createVerticalStrut(30));
+            pnlMain.add(hpfPassword);
+            pnlMain.add(Box.createVerticalStrut(30));
+            pnlMain.add(hpfConfirmedPassword);
+            pnlMain.add(Box.createVerticalStrut(10));
+            pnlMain.add(pnlButton);
+
+            pnlButton.add(btnPasswordChange);
+            pnlButton.add(Box.createHorizontalStrut(20));
+            pnlButton.add(btnCancel);
+
+            pnlMain.add(Box.createVerticalStrut(60));
+
+            /* Add components to panel */
+            this.add(pnlMain);
+
+            /* Set the properties of components */
+            hpfPassword.setMaximumSize(new Dimension(300, 40));
+            hpfPassword.setPreferredSize(new Dimension(300, 40));
+            hpfConfirmedPassword.setMaximumSize(new Dimension(300, 40));
+            hpfConfirmedPassword.setPreferredSize(new Dimension(300, 40));
+
+            btnPasswordChange.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btnPasswordChange.setMaximumSize(new Dimension(120, 35));
+            btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btnCancel.setMaximumSize(new Dimension(120, 35));
+
+            lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+            lblTitle.setMaximumSize(new Dimension(300, 24));
+            lblTitle.setHorizontalAlignment(JLabel.CENTER);
+
+            setBackground(Color.GRAY);
+
+            btnCancel.addActionListener(e -> {
+                clMain.show(mainPane, "login");
+            });
+            btnPasswordChange.addActionListener(e -> {
+                String pwd = new String(hpfPassword.getPassword());
+                String confirmedPwd = new String(hpfConfirmedPassword.getPassword());
+
+                if (pwd.isEmpty()) {
+                    PlainDialog pwdDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.password"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    pwdDialog.setVisible(true);
+                    return;
+                }
+                if (confirmedPwd.isEmpty()) {
+                    PlainDialog confirmedPwdDialog = new PlainDialog(
+                            currentLocale,
+                            localeBundle.getString("register.field.hint.password"),
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    confirmedPwdDialog.setVisible(true);
+                    return;
+                }
+                if (!pwd.equals(confirmedPwd)) {
+                    PlainDialog notEqualsPwd = new PlainDialog(
+                            currentLocale,
+                            "비밀번호가 같지 않습니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    return;
+                }
+                if (controller.changePassword(id, pwd)) {
+                    System.out.println("Password changed");
+                    clMain.show(mainPane, "login");
+                } else {
+                    System.out.println("Password change err");
+                }
+
+            });
+        }
+
+
+
+        private void loadText() {
+            btnCancel.setText(localeBundle.getString("register.button.cancel"));
+//            btnEmailAuth.setText(localeBundle.getString("register.button.register"));
+            btnPasswordChange.setText("비밀번호 변경"); /* 임시 데이터 */
+
+            hpfPassword.setHint(localeBundle.getString("register.field.hint.password"));
+//            htfConfirmedPassword.setHint(localeBundle.getString(" ??? "));
+            hpfConfirmedPassword.setHint(" 비밀번호 확인 ");
+
+            lblTitle.setText("비밀번호 변경");
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public void changeLocale(Locale locale) {
+            currentLocale = locale;
+            localeBundle = ResourceBundle.getBundle("language", locale);
+            onLocaleChanged(locale);
+            loadText();
+        }
+
+        @Override
+        public void onLocaleChanged(Locale newLocale) {
+            LocaleChangeListener.broadcastLocaleChanged(newLocale, ChangePasswordPanel.this);
         }
     }
 }
