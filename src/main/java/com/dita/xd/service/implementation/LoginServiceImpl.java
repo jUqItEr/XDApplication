@@ -47,6 +47,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
+    public boolean checkEmail(UserBean bean, String email) {
+        return bean != null && bean.getEmail().equals(email);
+    }
+
+    @Override
     public UserBean login(String id, String pwd) {
         UserBean bean = getUser(id);
 
