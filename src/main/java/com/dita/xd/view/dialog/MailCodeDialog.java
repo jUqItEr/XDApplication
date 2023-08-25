@@ -51,6 +51,8 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
     private void initialize() {
         setLayout(new BorderLayout());
         setSize(new Dimension(600, 250));
+        setLocationRelativeTo(null);
+        setResizable(false);
 
         btnCancel = new JButton();
 
