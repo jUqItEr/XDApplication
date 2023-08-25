@@ -42,7 +42,7 @@ public class PlainDialog extends JDialog implements LocaleChangeListener {
         setLocationRelativeTo(null);
         setResizable(false);
         setModalityType(DEFAULT_MODALITY_TYPE);
-        setSize(250, 150);
+        setSize(350, 180);
 
         switch (type) {
             case ERROR -> setTitle(localeBundle.getString("dialog.plain.title.error"));
