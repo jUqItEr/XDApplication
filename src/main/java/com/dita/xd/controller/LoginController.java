@@ -27,7 +27,15 @@ public class LoginController {
         return svc.logout(repository);
     }   // -- End of function (logout)
 
+    public UserBean getUser(String id) {
+        return svc.getUser(id);
+    }
+
     public UserRepository getRepository() {
         return repository;
+    }
+
+    public boolean checkEmail(UserBean bean, String email) {
+        return svc.checkEmail(bean, email);
     }
 }   // -- End of class

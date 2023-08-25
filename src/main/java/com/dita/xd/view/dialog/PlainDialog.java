@@ -85,7 +85,7 @@ public class PlainDialog extends JDialog implements LocaleChangeListener {
 
     void loadText() {
         btnOK.setText(localeBundle.getString("dialog.plain.ok"));
-        lblMain.setText(String.format(localeBundle.getString("dialog.plain.message"), msg));
+        lblMain.setText(msg);
     }
 
     @Override
