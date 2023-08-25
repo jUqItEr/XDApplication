@@ -30,10 +30,12 @@ public class JImageView extends JLabel {
     private Image loadImage(String path) {
         Image result = null;
 
-        try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(path))) {
-            result = ImageIO.read(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (new File(path).exists()) {
+            try (BufferedInputStream stream = new BufferedInputStream(new FileInputStream(path))) {
+                result = ImageIO.read(stream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }

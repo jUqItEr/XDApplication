@@ -16,4 +16,8 @@ public class MailController {
     public boolean sendRequestCode(String email) {
         return svc.sendRequestCode(email);
     }   // End of function (sendRequestCode)
+
+    public boolean revokeCode(String email) {
+        return svc.revokeCode(email);
+    }
 }

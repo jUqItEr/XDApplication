@@ -1,6 +1,7 @@
 package com.dita.xd;
 
 import com.dita.xd.view.frame.LoginFrame;
+import com.dita.xd.view.frame.ProfileFrame;
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.themes.JMarsDarkTheme;
 import mdlaf.themes.MaterialLiteTheme;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.util.Enumeration;
+import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
@@ -19,7 +21,8 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                LoginFrame frame = new LoginFrame();
+                // LoginFrame frame = new LoginFrame();
+                ProfileFrame frame = new ProfileFrame(Locale.KOREA);
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
