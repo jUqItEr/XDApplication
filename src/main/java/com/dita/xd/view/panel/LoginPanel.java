@@ -171,7 +171,9 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         btnRegister.setText(localeBundle.getString("login.button.register"));
 
         hpfPassword.setHint(localeBundle.getString("login.field.hint.password"));
+        hpfPassword.repaint();
         htfId.setHint(localeBundle.getString("login.field.hint.id"));
+        htfId.repaint();
 
         lblFindPassword.setText(localeBundle.getString("login.label.password"));
     }

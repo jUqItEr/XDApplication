@@ -207,8 +207,11 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
         btnRegister.setText(localeBundle.getString("register.button.register"));
 
         hpfPassword.setHint(localeBundle.getString("register.field.hint.password"));
+        hpfPassword.repaint();
         htfEmail.setHint(localeBundle.getString("register.field.hint.email"));
+        htfEmail.repaint();
         htfId.setHint(localeBundle.getString("register.field.hint.id"));
+        htfId.repaint();
     }
 
     private boolean isValidEmail(String email) {

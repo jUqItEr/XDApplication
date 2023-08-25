@@ -167,7 +167,9 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
         btnEmailAuth.setText("이메일 인증"); /* 임시 데이터 */
 
         htfEmail.setHint(localeBundle.getString("register.field.hint.email"));
+        htfEmail.repaint();
         htfId.setHint(localeBundle.getString("register.field.hint.id"));
+        htfId.repaint();
     }
 
     @Override

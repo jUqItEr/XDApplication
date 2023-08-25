@@ -23,8 +23,8 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
 
     private JButton btnCancel;
     private JButton btnPasswordChange;
-    private JHintPasswordField hpfPassword;
-    private JHintPasswordField hpfConfirmedPassword;
+    private JHintPasswordField hpfPwd;
+    private JHintPasswordField hpfPwdConfirmed;
 
     private JLabel lblTitle;
 
@@ -46,8 +46,8 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
         btnCancel = new JButton();
         btnPasswordChange = new JButton();
 
-        hpfPassword = new JHintPasswordField();
-        hpfConfirmedPassword = new JHintPasswordField();
+        hpfPwd = new JHintPasswordField();
+        hpfPwdConfirmed = new JHintPasswordField();
 
         JPanel pnlButton = new JPanel();
         JPanel pnlMain = new JPanel();
@@ -65,9 +65,9 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
         pnlMain.add(Box.createVerticalGlue());
         pnlMain.add(lblTitle);
         pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(hpfPassword);
+        pnlMain.add(hpfPwd);
         pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(hpfConfirmedPassword);
+        pnlMain.add(hpfPwdConfirmed);
         pnlMain.add(Box.createVerticalStrut(10));
         pnlMain.add(pnlButton);
 
@@ -81,10 +81,10 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
         this.add(pnlMain);
 
         /* Set the properties of components */
-        hpfPassword.setMaximumSize(new Dimension(300, 40));
-        hpfPassword.setPreferredSize(new Dimension(300, 40));
-        hpfConfirmedPassword.setMaximumSize(new Dimension(300, 40));
-        hpfConfirmedPassword.setPreferredSize(new Dimension(300, 40));
+        hpfPwd.setMaximumSize(new Dimension(300, 40));
+        hpfPwd.setPreferredSize(new Dimension(300, 40));
+        hpfPwdConfirmed.setMaximumSize(new Dimension(300, 40));
+        hpfPwdConfirmed.setPreferredSize(new Dimension(300, 40));
 
         btnPasswordChange.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnPasswordChange.setMaximumSize(new Dimension(120, 35));
@@ -102,8 +102,8 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
             mgr.show("login");
         });
         btnPasswordChange.addActionListener(e -> {
-            String pwd = new String(hpfPassword.getPassword());
-            String confirmedPwd = new String(hpfConfirmedPassword.getPassword());
+            String pwd = new String(hpfPwd.getPassword());
+            String confirmedPwd = new String(hpfPwdConfirmed.getPassword());
 
             if (pwd.isEmpty()) {
                 PlainDialog pwdDialog = new PlainDialog(
@@ -149,18 +149,18 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
     }
 
     private void clear() {
-        hpfPassword.setText("");
-        hpfConfirmedPassword.setText("");
+        hpfPwd.setText("");
+        hpfPwdConfirmed.setText("");
     }
 
     private void loadText() {
         btnCancel.setText(localeBundle.getString("register.button.cancel"));
-//            btnEmailAuth.setText(localeBundle.getString("register.button.register"));
         btnPasswordChange.setText("비밀번호 변경"); /* 임시 데이터 */
 
-        hpfPassword.setHint(localeBundle.getString("register.field.hint.password"));
-//            htfConfirmedPassword.setHint(localeBundle.getString(" ??? "));
-        hpfConfirmedPassword.setHint(" 비밀번호 확인 ");
+        hpfPwd.setHint(localeBundle.getString("register.field.hint.password"));
+        hpfPwd.repaint();
+        hpfPwdConfirmed.setHint(" 비밀번호 확인 ");
+        hpfPwdConfirmed.repaint();
 
         lblTitle.setText("비밀번호 변경");
     }
