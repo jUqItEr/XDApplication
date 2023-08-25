@@ -158,6 +158,7 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
         }
 
         btnCancel.addActionListener(e -> {
+            controller.revokeCode(email);
             setVisible(false);
             dispose();
         });
