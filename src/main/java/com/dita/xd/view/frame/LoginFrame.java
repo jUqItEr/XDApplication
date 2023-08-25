@@ -189,20 +189,30 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                     return;
                 }
                 if (controller.login(id, pwd)) {
+                    MainFrame frame = new MainFrame(currentLocale);
+                    frame.setVisible(true);
+                    dispose();
                     System.out.println("Login complete");
 
                 } else {
-                    System.out.println("Login failed");
+                    PlainDialog loginDialog = new PlainDialog(
+                            currentLocale,
+                            "아이디 혹은 비밀번호가 올바르지 않습니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    loginDialog.setVisible(true);
                 }
             });
 
             btnRegister.addActionListener(e -> {
+                clear();
                 clMain.show(mainPane, "register");
             });
 
             lblFindPassword.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    clear();
                     clMain.show(mainPane, "find");
                 }
             });
@@ -226,6 +236,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
 
             /* Add components to panel */
             this.add(pnlMain);
+        }
+
+        private void clear() {
+            htfId.setText("");
+            hpfPassword.setText("");
         }
 
         private void loadText() {
@@ -260,7 +275,9 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
      * @see CardLayout
      */
     class RegisterPanel extends JPanel implements LocaleChangeListener {
-        private final RegisterController controller;
+        private final RegisterController registerController;
+        private final LoginController loginController;
+        private final MailController mailController;
         /* Variables declaration */
         JButton btnCancel;
         JButton btnRegister;
@@ -273,8 +290,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         private Locale currentLocale;
 
         public RegisterPanel(Locale locale) {
-            controller = new RegisterController();
             localeBundle = ResourceBundle.getBundle("language", locale);
+
+            registerController = new RegisterController();
+            loginController = new LoginController();
+            mailController = new MailController();
 
             initialize();
 
@@ -338,6 +358,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             setBackground(Color.GRAY);
 
             btnCancel.addActionListener(e -> {
+                clear();
                 clMain.show(mainPane, "login");
             });
             btnRegister.addActionListener(e -> {
@@ -372,23 +393,66 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                     emailDialog.setVisible(true);
                     return;
                 }
-
-                if (isValidEmail(email)) {
-                    System.out.println("Oh");
-                } else {
-                    System.out.println("My god");
+                if (registerController.hasId(id)) {
+                    PlainDialog idDialog = new PlainDialog(
+                            currentLocale,
+                            "이미 사용중인 아이디 입니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    idDialog.setVisible(true);
+                    return;
                 }
-//                if (controller.register(id, pwd, email)) {
-                if (true) {
-                    System.out.println("Register complete");
-                    clMain.show(mainPane, "login");
-                } else {
+                if (registerController.hasEmail(email)) {
+                    PlainDialog emailDialog = new PlainDialog(
+                            currentLocale,
+                            "이미 사용중인 이메일 입니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    emailDialog.setVisible(true);
+                    return;
+                }
+                if (!isValidEmail(email)) {
+                    PlainDialog emailDialog = new PlainDialog(
+                            currentLocale,
+                            //localeBundle.getString("register.field.hint.password"),
+                            "이메일 형식이 올바르지 않습니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    emailDialog.setVisible(true);
+                    return;
+                }
+                UserBean bean = loginController.getUser(id);
+
+                if (mailController.sendRequestCode(email)) {
+                    MailCodeDialog mailCodeDialog = new MailCodeDialog(
+                            currentLocale, email);
+                    if (mailCodeDialog.showDialog()) {
+                        if (registerController.register(id, pwd, email)) {
+                            PlainDialog registerDialog = new PlainDialog(
+                                    currentLocale,
+                                    "회원가입 완료",
+                                    PlainDialog.MessageType.INFORMATION
+                            );
+                            registerDialog.setVisible(true);
+                            clear();
+                            System.out.println("Register complete");
+                            clMain.show(mainPane, "login");
+                        }// -- End of registerController.register
+                    }// -- End of mailCodeDialog.showDialog
+                }// -- End of mailController.sendRequestCode
+                else {
                     System.out.println("Register failed");
                 }
 
             });
 
         }   // -- End of function (initialize)
+
+        private void clear() {
+            htfId.setText("");
+            htfEmail.setText("");
+            hpfPassword.setText("");
+        }
 
         private void loadText() {
             btnCancel.setText(localeBundle.getString("register.button.cancel"));
@@ -428,6 +492,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     class FindPasswordPanel extends JPanel implements LocaleChangeListener {
         private final LoginController loginController;
         private final MailController mailController;
+        private final RegisterController registerController;
         /* Variables declaration */
         JButton btnCancel;
         JButton btnEmailAuth;
@@ -439,9 +504,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         private ResourceBundle localeBundle;
 
         public FindPasswordPanel(Locale locale) {
+            localeBundle = ResourceBundle.getBundle("language", locale);
+
             loginController = new LoginController();
             mailController = new MailController();
-            localeBundle = ResourceBundle.getBundle("language", locale);
+            registerController = new RegisterController();
 
             initialize();
 
@@ -500,6 +567,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             setBackground(Color.GRAY);
 
             btnCancel.addActionListener(e -> {
+                clear();
                 clMain.show(mainPane, "login");
             });
             btnEmailAuth.addActionListener(e -> {
@@ -524,6 +592,24 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                     emailDialog.setVisible(true);
                     return;
                 }
+                if (!registerController.hasId(id)) {
+                    PlainDialog emailDialog = new PlainDialog(
+                            currentLocale,
+                            "가입되지 않은 아이디 입니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    emailDialog.setVisible(true);
+                    return;
+                }
+                if (!registerController.hasEmail(email)) {
+                    PlainDialog emailDialog = new PlainDialog(
+                            currentLocale,
+                            "가입되지 않은 이메일 입니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    emailDialog.setVisible(true);
+                    return;
+                }
                 UserBean bean = loginController.getUser(id);
 
                 if (loginController.checkEmail(bean, email)) {
@@ -532,6 +618,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                                 currentLocale, email);
                         if (mailCodeDialog.showDialog()) {
                             changePwdPane.setId(id);
+                            clear();
                             clMain.show(mainPane, "changePwd");
                         }
                     }
@@ -541,7 +628,10 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
 
         }
 
-
+        private void clear() {
+            htfId.setText("");
+            htfEmail.setText("");
+        }
 
         private void loadText() {
             btnCancel.setText(localeBundle.getString("register.button.cancel"));
@@ -569,7 +659,6 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
     class ChangePasswordPanel extends JPanel implements LocaleChangeListener {
 
         private final RegisterController controller;
-        private final LoginController loginController;
         JButton btnCancel;
         JButton btnPasswordChange;
         JHintPasswordField hpfPassword;
@@ -586,7 +675,6 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             localeBundle = ResourceBundle.getBundle("language", locale);
 
             controller = new RegisterController();
-            loginController = new LoginController();
 
             initialize();
 
@@ -652,6 +740,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             setBackground(Color.GRAY);
 
             btnCancel.addActionListener(e -> {
+                clear();
                 clMain.show(mainPane, "login");
             });
             btnPasswordChange.addActionListener(e -> {
@@ -682,10 +771,17 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                             "비밀번호가 같지 않습니다.",
                             PlainDialog.MessageType.INFORMATION
                     );
+                    notEqualsPwd.setVisible(true);
                     return;
                 }
                 if (controller.changePassword(id, pwd)) {
-                    System.out.println("Password changed");
+                    PlainDialog changedDialog = new PlainDialog(
+                            currentLocale,
+                            "비밀번호가 변경되었습니다.",
+                            PlainDialog.MessageType.INFORMATION
+                    );
+                    changedDialog.setVisible(true);
+                    clear();
                     clMain.show(mainPane, "login");
                 } else {
                     System.out.println("Password change err");
@@ -694,7 +790,10 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             });
         }
 
-
+        private void clear() {
+            hpfPassword.setText("");
+            hpfConfirmedPassword.setText("");
+        }
 
         private void loadText() {
             btnCancel.setText(localeBundle.getString("register.button.cancel"));

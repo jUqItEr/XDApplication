@@ -30,7 +30,7 @@ public class RegisterServiceImpl implements RegisterService {
             pstmt.setString(1, email);
             rs = pstmt.executeQuery();
 
-            flag = rs.next();
+            flag = rs.next() && rs.getInt(1) == 1;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -55,7 +55,7 @@ public class RegisterServiceImpl implements RegisterService {
             /*
              * If the 'flag' has true, the user id that wants to register is already exists on database.
              * */
-            flag = rs.next();
+            flag = rs.next() && rs.getInt(1) == 1;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

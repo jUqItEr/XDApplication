@@ -10,6 +10,10 @@ public class IDFilter extends DocumentFilter {
             throws BadLocationException {
         int docLength = fb.getDocument().getLength();
 
+        if (text.isEmpty()) {
+            super.replace(fb, offset, length, text, attrs);
+            return;
+        }
         if (docLength > 14) {
             return;
         }
