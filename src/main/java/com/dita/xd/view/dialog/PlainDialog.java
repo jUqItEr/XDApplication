@@ -28,6 +28,7 @@ public class PlainDialog extends JDialog implements LocaleChangeListener {
     private String msg;
 
     public PlainDialog(Locale locale, String msg, MessageType type) {
+        localeBundle = ResourceBundle.getBundle("language", locale);
         this.msg = msg;
         this.type = type;
 

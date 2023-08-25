@@ -16,7 +16,7 @@ public class UserRepository {
         if (instance == null) {
             synchronized (UserRepository.class) {
                 if (instance == null) {
-                    return new UserRepository();
+                    instance = new UserRepository();
                 }
             }
         }

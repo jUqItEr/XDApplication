@@ -16,7 +16,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
         localeBundle = ResourceBundle.getBundle("language", locale);
 
         initialize();
-        changeLocale(locale);
+        onLocaleChanged(locale);
     }
 
     private void initialize() {
@@ -27,14 +27,6 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
     private void loadText() {
 
-    }
-
-    @Override
-    public void changeLocale(Locale locale) {
-        currentLocale = locale;
-        localeBundle = ResourceBundle.getBundle("language", locale);
-        onLocaleChanged(locale);
-        loadText();
     }
 
     @Override

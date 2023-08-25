@@ -16,7 +16,7 @@ public class HashtagRepository {
         if (instance == null) {
             synchronized (HashtagRepository.class) {
                 if (instance == null) {
-                    return new HashtagRepository();
+                    instance = new HashtagRepository();
                 }
             }
         }
