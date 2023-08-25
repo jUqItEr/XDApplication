@@ -17,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
@@ -34,39 +35,33 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
 
     ChangePasswordPanel changePwdPane;
 
-    Locale currentLocale;
-
     private ResourceBundle localeBundle;
-    private String title;
 
-    public LoginFrame() {
-        currentLocale = Locale.JAPAN;
-        changeLocale(currentLocale);
+    public LoginFrame(Locale locale) {
+        this.localeBundle = ResourceBundle.getBundle("language", locale);
+
+        findPane = new FindPasswordPanel(locale);
+        loginPane = new LoginPanel(locale);
+        registerPane = new RegisterPanel(locale);
+        changePwdPane = new ChangePasswordPanel(locale);
+
+        onLocaleChanged(locale);
 
         /* Initialize components */
         initialize();
-    }
+    }   // -- End of constructor
 
     private void initialize() {
         headerPane = new JPanel();
         localePane = new JPanel();
         mainPane = new JPanel();
 
-        findPane = new FindPasswordPanel(currentLocale);
-        loginPane = new LoginPanel(currentLocale);
-        registerPane = new RegisterPanel(currentLocale);
-        changePwdPane = new ChangePasswordPanel(currentLocale);
-
         /* Set the properties of initialize */
         this.setBounds(100, 100, 450, 700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        this.setTitle(title);
         this.setLayout(new BorderLayout());
-
-        // DEPRECATED
-        localePane.setBackground(Color.PINK);
 
         /* Set the properties of sub panels */
         headerPane.setLayout(new BorderLayout());
@@ -76,7 +71,36 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         headerPane.add(localePane, BorderLayout.NORTH);
         headerPane.add(new JImageView("resources/images/logo.png"));
 
-        localePane.add(new JButton(localeBundle.getString("login.header.language")), BorderLayout.EAST);
+        JPanel pnlLocaleSub = new JPanel();
+        pnlLocaleSub.setLayout(new BorderLayout());
+
+        JComboBox<String> cmbLocale = new JComboBox<>();
+        cmbLocale.addItem("한국어");
+        cmbLocale.addItem("日本語");
+        cmbLocale.addItem("中文");
+        cmbLocale.addItem("English");
+        cmbLocale.addItem("Español");
+
+        cmbLocale.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String item = (String) e.getItem();
+
+                switch (item) {
+                    case "한국어" -> onLocaleChanged(Locale.KOREA);
+                    case "日本語" -> onLocaleChanged(Locale.JAPAN);
+                    case "中文" -> onLocaleChanged(Locale.CHINA);
+                    case "English" -> onLocaleChanged(Locale.US);
+                    case "Español" -> onLocaleChanged(new Locale("es_ES"));
+                }
+            }
+        });
+
+        pnlLocaleSub.add(new JLabel("언어 선택: "), BorderLayout.WEST);
+        pnlLocaleSub.add(cmbLocale);
+
+        loadText();
+
+        localePane.add(pnlLocaleSub, BorderLayout.EAST);
 
         mainPane.add(loginPane, "login");
         mainPane.add(registerPane, "register");
@@ -87,16 +111,18 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         this.add(mainPane);
     }
 
-    @Override
-    public void changeLocale(Locale locale) {
-        localeBundle = ResourceBundle.getBundle("language", locale);
-        onLocaleChanged(locale);
+    private void loadText() {
+        setTitle(localeBundle.getString("login.title"));
     }
 
     @Override
     public void onLocaleChanged(Locale newLocale) {
         this.localeBundle = ResourceBundle.getBundle("language", newLocale);
-        this.title = localeBundle.getString("login.title");
+        loadText();
+        loginPane.onLocaleChanged(newLocale);
+        registerPane.onLocaleChanged(newLocale);
+        findPane.onLocaleChanged(newLocale);
+        changePwdPane.onLocaleChanged(newLocale);
     }
 
     /**
@@ -119,13 +145,12 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         private Locale currentLocale;
 
         public LoginPanel(Locale locale) {
-            controller = new LoginController();
             localeBundle = ResourceBundle.getBundle("language", locale);
-
+            controller = new LoginController();
             initialize();
 
             /* Change the current locale. */
-            changeLocale(locale);
+            onLocaleChanged(locale);
 
         }
 
@@ -254,16 +279,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         }
 
         @Override
-        public void changeLocale(Locale locale) {
-            currentLocale = locale;
-            localeBundle = ResourceBundle.getBundle("language", locale);
-            onLocaleChanged(locale);
-            loadText();
-        }
-
-        @Override
         public void onLocaleChanged(Locale newLocale) {
+            currentLocale = newLocale;
+            localeBundle = ResourceBundle.getBundle("language", newLocale);
             LocaleChangeListener.broadcastLocaleChanged(newLocale, LoginPanel.this);
+            loadText();
         }
     }
 
@@ -276,7 +296,6 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
      */
     class RegisterPanel extends JPanel implements LocaleChangeListener {
         private final RegisterController registerController;
-        private final LoginController loginController;
         private final MailController mailController;
         /* Variables declaration */
         JButton btnCancel;
@@ -293,12 +312,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             localeBundle = ResourceBundle.getBundle("language", locale);
 
             registerController = new RegisterController();
-            loginController = new LoginController();
             mailController = new MailController();
 
             initialize();
 
-            changeLocale(locale);
+            onLocaleChanged(locale);
         }   // -- End of constructor
 
         private void initialize() {
@@ -421,8 +439,6 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                     emailDialog.setVisible(true);
                     return;
                 }
-                UserBean bean = loginController.getUser(id);
-
                 if (mailController.sendRequestCode(email)) {
                     MailCodeDialog mailCodeDialog = new MailCodeDialog(
                             currentLocale, email);
@@ -476,16 +492,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         }
 
         @Override
-        public void changeLocale(Locale locale) {
-            currentLocale = locale;
-            localeBundle = ResourceBundle.getBundle("language", locale);
-            onLocaleChanged(locale);
-            loadText();
-        }
-
-        @Override
         public void onLocaleChanged(Locale newLocale) {
+            currentLocale = newLocale;
+            localeBundle = ResourceBundle.getBundle("language", newLocale);
             LocaleChangeListener.broadcastLocaleChanged(newLocale, RegisterPanel.this);
+            loadText();
         }
     }   // -- End of class
 
@@ -512,7 +523,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
 
             initialize();
 
-            changeLocale(locale);
+            onLocaleChanged(locale);
         }
 
         private void initialize() {
@@ -643,16 +654,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         }
 
         @Override
-        public void changeLocale(Locale locale) {
-            currentLocale = locale;
-            localeBundle = ResourceBundle.getBundle("language", locale);
-            onLocaleChanged(locale);
-            loadText();
-        }
-
-        @Override
         public void onLocaleChanged(Locale newLocale) {
+            currentLocale = newLocale;
+            localeBundle = ResourceBundle.getBundle("language", newLocale);
             LocaleChangeListener.broadcastLocaleChanged(newLocale, FindPasswordPanel.this);
+            loadText();
         }
     }
 
@@ -672,13 +678,12 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         private String id;
 
         public ChangePasswordPanel(Locale locale) {
-            localeBundle = ResourceBundle.getBundle("language", locale);
+            this.localeBundle = ResourceBundle.getBundle("language", locale);
 
             controller = new RegisterController();
 
             initialize();
-
-            changeLocale(locale);
+            onLocaleChanged(locale);
         }
 
         private void initialize() {
@@ -812,16 +817,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         }
 
         @Override
-        public void changeLocale(Locale locale) {
-            currentLocale = locale;
-            localeBundle = ResourceBundle.getBundle("language", locale);
-            onLocaleChanged(locale);
-            loadText();
-        }
-
-        @Override
         public void onLocaleChanged(Locale newLocale) {
+            currentLocale = newLocale;
+            localeBundle = ResourceBundle.getBundle("language", newLocale);
             LocaleChangeListener.broadcastLocaleChanged(newLocale, ChangePasswordPanel.this);
+            loadText();
         }
     }
 }

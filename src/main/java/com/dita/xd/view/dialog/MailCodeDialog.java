@@ -2,9 +2,7 @@ package com.dita.xd.view.dialog;
 
 import com.dita.xd.controller.MailController;
 import com.dita.xd.listener.LocaleChangeListener;
-import com.dita.xd.view.frame.LoginFrame;
 
-import javax.mail.Quota;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,7 +14,6 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
     private final String email;
 
     private ResourceBundle localeBundle;
-    private Locale currentLocale;
 
     private JButton btnCancel;
 
@@ -31,7 +28,7 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
     private boolean result;
 
 
-    private JTextField[] textFields = new JTextField[6];
+    private final JTextField[] textFields = new JTextField[6];
 
     public MailCodeDialog(Locale locale, String email) {
         this.localeBundle = ResourceBundle.getBundle("language", locale);
@@ -42,7 +39,7 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
         this.setModalityType(DEFAULT_MODALITY_TYPE);
 
         initialize();
-        changeLocale(locale);
+        onLocaleChanged(locale);
     }
 
     private void initialize() {
@@ -204,15 +201,9 @@ public class MailCodeDialog extends JDialog implements LocaleChangeListener {
     }
 
     @Override
-    public void changeLocale(Locale locale) {
-        currentLocale = locale;
-        localeBundle = ResourceBundle.getBundle("language", locale);
-        onLocaleChanged(locale);
-        loadText();
-    }
-
-    @Override
     public void onLocaleChanged(Locale newLocale) {
-        LocaleChangeListener.broadcastLocaleChanged(newLocale, MailCodeDialog.this);
+        localeBundle = ResourceBundle.getBundle("language", newLocale);
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
+        loadText();
     }
 }

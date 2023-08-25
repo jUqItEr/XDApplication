@@ -15,7 +15,6 @@ import java.util.ResourceBundle;
  */
 public class PlainDialog extends JDialog implements LocaleChangeListener {
     private ResourceBundle localeBundle;
-    private Locale currentLocale;
 
     private JButton btnOK;
 
@@ -29,12 +28,11 @@ public class PlainDialog extends JDialog implements LocaleChangeListener {
     private String msg;
 
     public PlainDialog(Locale locale, String msg, MessageType type) {
-        localeBundle = ResourceBundle.getBundle("language", locale);
         this.msg = msg;
         this.type = type;
 
         initialize();
-        changeLocale(locale);
+        onLocaleChanged(locale);
     }
 
     private void initialize() {
@@ -89,16 +87,10 @@ public class PlainDialog extends JDialog implements LocaleChangeListener {
     }
 
     @Override
-    public void changeLocale(Locale locale) {
-        currentLocale = locale;
-        localeBundle = ResourceBundle.getBundle("language", locale);
-        onLocaleChanged(locale);
-        loadText();
-    }
-
-    @Override
     public void onLocaleChanged(Locale newLocale) {
-        LocaleChangeListener.broadcastLocaleChanged(newLocale, PlainDialog.this);
+        localeBundle = ResourceBundle.getBundle("language", newLocale);
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
+        loadText();
     }
 
     public enum MessageType {

@@ -21,7 +21,7 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                LoginFrame frame = new LoginFrame();
+                LoginFrame frame = new LoginFrame(Locale.getDefault());
                 // ProfileFrame frame = new ProfileFrame(Locale.KOREA);
                 frame.setVisible(true);
             } catch (Exception e) {

@@ -17,11 +17,8 @@ public class ProfileFrame extends JFrame implements LocaleChangeListener {
     JPanel mainPane;
 
     public ProfileFrame(Locale locale) {
-        currentLocale = locale;
-        localeBundle = ResourceBundle.getBundle("language", locale);
-
         initialize();
-        changeLocale(locale);
+        onLocaleChanged(locale);
     }
 
     private void initialize() {
@@ -50,30 +47,19 @@ public class ProfileFrame extends JFrame implements LocaleChangeListener {
     }
 
     @Override
-    public void changeLocale(Locale locale) {
-        currentLocale = locale;
-        localeBundle = ResourceBundle.getBundle("language", locale);
-        onLocaleChanged(locale);
-        loadText();
-    }
-
-    @Override
     public void onLocaleChanged(Locale newLocale) {
+        localeBundle = ResourceBundle.getBundle("language", newLocale);
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
+        loadText();
     }
 
     // Inner Class
     class NicknamePanel extends JPanel implements LocaleChangeListener {
-
-        private Locale currentLocale;
         private ResourceBundle localeBundle;
 
         public NicknamePanel(Locale locale) {
-            currentLocale = locale;
-            localeBundle = ResourceBundle.getBundle("language", locale);
-
             initialize();
-            changeLocale(locale);
+            onLocaleChanged(locale);
         }
 
         private void initialize() {
@@ -90,16 +76,10 @@ public class ProfileFrame extends JFrame implements LocaleChangeListener {
         }
 
         @Override
-        public void changeLocale(Locale locale) {
-            currentLocale = locale;
-            localeBundle = ResourceBundle.getBundle("language", locale);
-            onLocaleChanged(locale);
-            loadText();
-        }
-
-        @Override
         public void onLocaleChanged(Locale newLocale) {
+            localeBundle = ResourceBundle.getBundle("language", newLocale);
             LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
+            loadText();
         }
     }
 
