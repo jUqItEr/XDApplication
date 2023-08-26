@@ -26,7 +26,7 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
 
     /* Variables declaration */
     private JButton btnCancel;
-    private JButton btnEmailAuth;
+    private JButton btnAuth;
 
     private JHintTextField htfEmail;
     private JHintTextField htfId;
@@ -49,7 +49,7 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
 
         /* Load to memory */
         btnCancel = new JButton();
-        btnEmailAuth = new JButton();
+        btnAuth = new JButton();
 
         htfEmail = new JHintTextField();
         htfId = new JHintTextField();
@@ -65,7 +65,6 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
         pnlButton.setLayout(new BoxLayout(pnlButton, BoxLayout.X_AXIS));
 
         /* Add components to sub panel */
-
         pnlMain.add(Box.createVerticalGlue());
         pnlMain.add(htfId);
         pnlMain.add(Box.createVerticalStrut(10));
@@ -73,7 +72,7 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
         pnlMain.add(Box.createVerticalStrut(10));
         pnlMain.add(pnlButton);
 
-        pnlButton.add(btnEmailAuth);
+        pnlButton.add(btnAuth);
         pnlButton.add(Box.createHorizontalStrut(20));
         pnlButton.add(btnCancel);
 
@@ -88,63 +87,66 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
         htfEmail.setMaximumSize(new Dimension(300, 40));
         htfEmail.setPreferredSize(new Dimension(300, 40));
 
-        btnEmailAuth.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnEmailAuth.setMaximumSize(new Dimension(120, 35));
+        btnAuth.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnAuth.setMaximumSize(new Dimension(120, 35));
         btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnCancel.setMaximumSize(new Dimension(120, 35));
 
         setBackground(Color.GRAY);
 
-        btnCancel.addActionListener(e -> {
-            clear();
-            mgr.show("login");
-        });
-        btnEmailAuth.addActionListener(e -> {
+        btnAuth.addActionListener(e -> {
+            PlainDialog dialog = null;
+            UserBean bean;
+            boolean isError = false;
             String id = htfId.getText().trim();
             String email = htfEmail.getText().trim();
 
             if (id.isEmpty()) {
-                PlainDialog idDialog = new PlainDialog(
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("register.field.hint.id"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("register.field.hint.id")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                idDialog.setVisible(true);
-                return;
-            }
-            if (email.isEmpty()) {
-                PlainDialog emailDialog = new PlainDialog(
+                isError = true;
+            } else if (email.isEmpty()) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("register.field.hint.email"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("register.field.hint.email")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                emailDialog.setVisible(true);
-                return;
-            }
-            if (!registerController.hasId(id)) {
-                PlainDialog emailDialog = new PlainDialog(
+                isError = true;
+            } else if (!mailController.isValidEmail(email)) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        "가입되지 않은 아이디 입니다.",
-                        PlainDialog.MessageType.INFORMATION
+                        localeBundle.getString("dialog.plain.message.error.email_format"),
+                        PlainDialog.MessageType.ERROR
                 );
-                emailDialog.setVisible(true);
-                return;
-            }
-            if (!registerController.hasEmail(email)) {
-                PlainDialog emailDialog = new PlainDialog(
+                isError = true;
+            } else if (!registerController.hasId(id)) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        "가입되지 않은 이메일 입니다.",
-                        PlainDialog.MessageType.INFORMATION
+                        localeBundle.getString("dialog.plain.message.error.id"),
+                        PlainDialog.MessageType.ERROR
                 );
-                emailDialog.setVisible(true);
-                return;
+                isError = true;
+            } else if (!registerController.hasEmail(email)) {
+                dialog = new PlainDialog(
+                        currentLocale,
+                        localeBundle.getString("dialog.plain.message.error.email"),
+                        PlainDialog.MessageType.ERROR
+                );
+                isError = true;
             }
-            UserBean bean = loginController.getUser(id);
+            bean = loginController.getUser(id);
 
-            if (loginController.checkEmail(bean, email)) {
+            if (isError) {
+                dialog.setVisible(true);
+            } else if (loginController.checkEmail(bean, email)) {
                 if (mailController.sendRequestCode(email)) {
-                    MailCodeDialog mailCodeDialog = new MailCodeDialog(
-                            currentLocale, email);
+                    MailCodeDialog mailCodeDialog = new MailCodeDialog(currentLocale, email);
+
                     if (mailCodeDialog.showDialog()) {
                         mgr.setId(id);
                         clear();
@@ -152,9 +154,11 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
                     }
                 }
             }
-
         });
-
+        btnCancel.addActionListener(e -> {
+            clear();
+            mgr.show("login");
+        });
     }
 
     private void clear() {
@@ -163,8 +167,8 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
     }
 
     private void loadText() {
+        btnAuth.setText(localeBundle.getString("find.button.auth"));
         btnCancel.setText(localeBundle.getString("register.button.cancel"));
-        btnEmailAuth.setText("이메일 인증"); /* 임시 데이터 */
 
         htfEmail.setHint(localeBundle.getString("register.field.hint.email"));
         htfEmail.repaint();

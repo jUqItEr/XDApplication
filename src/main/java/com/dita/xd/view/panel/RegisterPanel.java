@@ -9,8 +9,6 @@ import com.dita.xd.view.dialog.MailCodeDialog;
 import com.dita.xd.view.dialog.PlainDialog;
 import com.dita.xd.view.manager.LoginTransitionMgr;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Locale;
@@ -112,68 +110,64 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
             mgr.show("login");
         });
         btnRegister.addActionListener(e -> {
+            PlainDialog dialog = null;
+            boolean isError = false;
             String id = htfId.getText().trim();
             String pwd = new String(hpfPassword.getPassword());
             String email = htfEmail.getText().trim();
 
             if (id.isEmpty()) {
-                PlainDialog idDialog = new PlainDialog(
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("register.field.hint.id"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("register.field.hint.id")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                idDialog.setVisible(true);
-                return;
-            }
-            if (pwd.isEmpty()) {
-                PlainDialog pwdDialog = new PlainDialog(
+                isError = true;
+            } else if (pwd.isEmpty()) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("register.field.hint.password"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("register.field.hint.password")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                pwdDialog.setVisible(true);
-                return;
-            }
-            if (email.isEmpty()) {
-                PlainDialog emailDialog = new PlainDialog(
+                isError = true;
+            } else if (email.isEmpty()) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("register.field.hint.email"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("register.field.hint.email")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                emailDialog.setVisible(true);
-                return;
-            }
-            if (registerController.hasId(id)) {
-                PlainDialog idDialog = new PlainDialog(
+                isError = true;
+            } else if (!mailController.isValidEmail(email)) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        "이미 사용중인 아이디 입니다.",
-                        PlainDialog.MessageType.INFORMATION
+                        localeBundle.getString("dialog.plain.message.error.email_format"),
+                        PlainDialog.MessageType.ERROR
                 );
-                idDialog.setVisible(true);
-                return;
-            }
-            if (registerController.hasEmail(email)) {
-                PlainDialog emailDialog = new PlainDialog(
+                isError = true;
+            } else if (registerController.hasId(id)) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        "이미 사용중인 이메일 입니다.",
-                        PlainDialog.MessageType.INFORMATION
+                        localeBundle.getString("dialog.plain.message.error.id_exists"),
+                        PlainDialog.MessageType.ERROR
                 );
-                emailDialog.setVisible(true);
-                return;
-            }
-            if (!isValidEmail(email)) {
-                PlainDialog emailDialog = new PlainDialog(
+                isError = true;
+            } else if (registerController.hasEmail(email)) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        //localeBundle.getString("register.field.hint.password"),
-                        "이메일 형식이 올바르지 않습니다.",
-                        PlainDialog.MessageType.INFORMATION
+                        localeBundle.getString("dialog.plain.message.error.email_exists"),
+                        PlainDialog.MessageType.ERROR
                 );
-                emailDialog.setVisible(true);
-                return;
-            }
-            if (mailController.sendRequestCode(email)) {
-                MailCodeDialog mailCodeDialog = new MailCodeDialog(
-                        currentLocale, email);
+                isError = true;
+            }   // End of if-else if (Validation)
+
+            if (isError) {
+                dialog.setVisible(true);
+            } else if (mailController.sendRequestCode(email)) {
+                MailCodeDialog mailCodeDialog = new MailCodeDialog(currentLocale, email);
+
                 if (mailCodeDialog.showDialog()) {
                     if (registerController.register(id, pwd, email)) {
                         PlainDialog registerDialog = new PlainDialog(
@@ -185,12 +179,11 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
                         clear();
                         System.out.println("Register complete");
                         mgr.show("login");
-                    }// -- End of registerController.register
-                }// -- End of mailCodeDialog.showDialog
-            }// -- End of mailController.sendRequestCode
-            else {
-                System.out.println("Register failed");
-            }
+                    }   // -- End of if (registerController.register)
+                } else {
+                    System.err.println("Register failed");
+                }   // -- End of if (mailCodeDialog.showDialog)
+            }   // -- End of if (mailController.sendRequestCode)
 
         });
 
@@ -214,23 +207,11 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
         htfId.repaint();
     }
 
-    private boolean isValidEmail(String email) {
-        boolean result = true;
-
-        try {
-            InternetAddress emailAddr = new InternetAddress(email);
-            emailAddr.validate();
-        } catch (AddressException e) {
-            result = false;
-        }
-        return result;
-    }
-
     @Override
     public void onLocaleChanged(Locale newLocale) {
         currentLocale = newLocale;
         localeBundle = ResourceBundle.getBundle("language", newLocale);
-        LocaleChangeListener.broadcastLocaleChanged(newLocale, RegisterPanel.this);
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();
     }
 }   // -- End of class

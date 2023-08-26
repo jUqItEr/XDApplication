@@ -15,14 +15,16 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginFrame extends JFrame implements LocaleChangeListener {
+    private final LoginTransitionMgr mgr;
+
+    private ResourceBundle localeBundle;
+
     private final ChangePasswordPanel changePwdPane;
     private final FindPasswordPanel findPane;
     private final LoginPanel loginPane;
     private final RegisterPanel registerPane;
 
-    private final LoginTransitionMgr mgr;
-
-    private ResourceBundle localeBundle;
+    private JLabel lblSelection;
 
     public LoginFrame(Locale locale) {
         this.localeBundle = ResourceBundle.getBundle("language", locale);
@@ -34,16 +36,24 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
 
         mgr = LoginTransitionMgr.getInstance();
 
-        onLocaleChanged(locale);
-
         /* Initialize components */
         initialize();
+
+        onLocaleChanged(locale);
     }   // -- End of constructor
 
     private void initialize() {
+        /* Variable declaration */
+        CardLayout clMain = new CardLayout();
+
+        JComboBox<String> cmbLocale = new JComboBox<>();
+
         JPanel headerPane = new JPanel();
         JPanel localePane = new JPanel();
+        JPanel localeSubPane = new JPanel();
         JPanel mainPane = new JPanel();
+
+        lblSelection = new JLabel();
 
         /* Set the properties of initialize */
         this.setBounds(100, 100, 450, 700);
@@ -53,10 +63,11 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         this.setLayout(new BorderLayout());
 
         /* Set the properties of sub panels */
+
         headerPane.setLayout(new BorderLayout());
         localePane.setLayout(new BorderLayout());
-        CardLayout clMain;
-        mainPane.setLayout(clMain = new CardLayout());
+        localeSubPane.setLayout(new BorderLayout());
+        mainPane.setLayout(clMain);
 
         headerPane.add(localePane, BorderLayout.NORTH);
         headerPane.add(new JImageView("resources/images/logo.png"));
@@ -67,10 +78,6 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         mgr.setMainLayout(clMain);
         mgr.setMainPane(mainPane);
 
-        JPanel pnlLocaleSub = new JPanel();
-        pnlLocaleSub.setLayout(new BorderLayout());
-
-        JComboBox<String> cmbLocale = new JComboBox<>();
         cmbLocale.addItem("한국어");
         cmbLocale.addItem("日本語");
         cmbLocale.addItem("中文");
@@ -91,12 +98,14 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
             }
         });
 
-        pnlLocaleSub.add(new JLabel("언어 선택: "), BorderLayout.WEST);
-        pnlLocaleSub.add(cmbLocale);
+        lblSelection.setFont(lblSelection.getFont().deriveFont(Font.BOLD));
 
         loadText();
 
-        localePane.add(pnlLocaleSub, BorderLayout.EAST);
+        localePane.add(localeSubPane, BorderLayout.EAST);
+
+        localeSubPane.add(lblSelection, BorderLayout.WEST);
+        localeSubPane.add(cmbLocale);
 
         mainPane.add(loginPane, "login");
         mainPane.add(registerPane, "register");
@@ -109,15 +118,18 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
 
     private void loadText() {
         setTitle(localeBundle.getString("login.title"));
+        lblSelection.setText(localeBundle.getString("login.label.selection"));
     }
 
     @Override
     public void onLocaleChanged(Locale newLocale) {
-        this.localeBundle = ResourceBundle.getBundle("language", newLocale);
-        loadText();
+        localeBundle = ResourceBundle.getBundle("language", newLocale);
+
         loginPane.onLocaleChanged(newLocale);
         registerPane.onLocaleChanged(newLocale);
         findPane.onLocaleChanged(newLocale);
         changePwdPane.onLocaleChanged(newLocale);
+
+        loadText();
     }
 }

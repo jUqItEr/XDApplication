@@ -11,11 +11,15 @@ public class MailController {
 
     public boolean checkRequestCode(String email, String code) {
         return svc.checkValidation(email, code);
-    }   // End of function (checkRequestCode)
+    }   // -- End of function (checkRequestCode)
 
     public boolean sendRequestCode(String email) {
         return svc.sendRequestCode(email);
-    }   // End of function (sendRequestCode)
+    }   // -- End of function (sendRequestCode)
+
+    public boolean isValidEmail(String email) {
+        return svc.isValidEmail(email);
+    }
 
     public boolean revokeCode(String email) {
         return svc.revokeCode(email);

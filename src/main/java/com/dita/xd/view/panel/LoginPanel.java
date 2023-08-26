@@ -82,6 +82,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         lblFindPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblFindPassword.setMaximumSize(new Dimension(300, 24));
         lblFindPassword.setHorizontalAlignment(JLabel.CENTER);
+        lblFindPassword.setFont(lblFindPassword.getFont().deriveFont(16f));
 
         htfId.setMaximumSize(new Dimension(300, 40));
         htfId.setPreferredSize(new Dimension(300, 40));
@@ -90,40 +91,42 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
         /* Add listeners on components */
         btnLogin.addActionListener(e -> {
+            PlainDialog dialog = null;
+            boolean isError = false;
             String id = htfId.getText().trim();
             String pwd = new String(hpfPassword.getPassword());
 
             if (id.isEmpty()) {
-                PlainDialog idDialog = new PlainDialog(
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("login.field.hint.id"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("login.field.hint.id")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                idDialog.setVisible(true);
-                return;
-            }
-            if (pwd.isEmpty()) {
-                PlainDialog pwdDialog = new PlainDialog(
+                isError = true;
+            } else if (pwd.isEmpty()) {
+                dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("login.field.hint.password"),
+                        String.format(localeBundle.getString("dialog.plain.message"),
+                                localeBundle.getString("login.field.hint.password")),
                         PlainDialog.MessageType.INFORMATION
                 );
-                pwdDialog.setVisible(true);
-                return;
+                isError = true;
+            } else if (!controller.login(id, pwd)) {
+                dialog = new PlainDialog(
+                        currentLocale,
+                        localeBundle.getString("dialog.plain.message.error.no_exists"),
+                        PlainDialog.MessageType.INFORMATION
+                );
+                isError = true;
             }
-            if (controller.login(id, pwd)) {
+            if (isError) {
+                dialog.setVisible(true);
+            } else {
                 MainFrame frame = new MainFrame(currentLocale);
                 frame.setVisible(true);
                 mgr.dispose();
                 System.out.println("Login complete");
-
-            } else {
-                PlainDialog loginDialog = new PlainDialog(
-                        currentLocale,
-                        "아이디 혹은 비밀번호가 올바르지 않습니다.",
-                        PlainDialog.MessageType.INFORMATION
-                );
-                loginDialog.setVisible(true);
             }
         });
 
@@ -135,8 +138,8 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         lblFindPassword.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                clear();
-                mgr.show("find");
+            clear();
+            mgr.show("find");
             }
         });
 
@@ -182,7 +185,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
     public void onLocaleChanged(Locale newLocale) {
         currentLocale = newLocale;
         localeBundle = ResourceBundle.getBundle("language", newLocale);
-        LocaleChangeListener.broadcastLocaleChanged(newLocale, LoginPanel.this);
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();
     }
 }
