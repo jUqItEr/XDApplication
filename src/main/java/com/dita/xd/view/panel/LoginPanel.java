@@ -57,7 +57,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         setLayout(new BorderLayout());
 
         /* Variables declaration */
-        JPanel pnlMain = new JPanel();
+        JPanel mainPane = new JPanel();
 
         btnLogin = new JButton();
         btnRegister = new JButton();
@@ -71,7 +71,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         loadText();
 
         /* Set the properties of sub panels */
-        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
 
         /* Set the properties of components */
         btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -148,20 +148,20 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
         // Box Vertical Glue
         // Do not touch on these settings!
-        pnlMain.add(Box.createVerticalGlue());
-        pnlMain.add(htfId);
-        pnlMain.add(Box.createVerticalStrut(10));
-        pnlMain.add(hpfPassword);
-        pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(btnLogin);
-        pnlMain.add(Box.createVerticalStrut(20));
-        pnlMain.add(lblFindPassword);
-        pnlMain.add(Box.createVerticalStrut(100));
-        pnlMain.add(btnRegister);
-        pnlMain.add(Box.createVerticalStrut(50));
+        mainPane.add(Box.createVerticalGlue());
+        mainPane.add(htfId);
+        mainPane.add(Box.createVerticalStrut(10));
+        mainPane.add(hpfPassword);
+        mainPane.add(Box.createVerticalStrut(30));
+        mainPane.add(btnLogin);
+        mainPane.add(Box.createVerticalStrut(20));
+        mainPane.add(lblFindPassword);
+        mainPane.add(Box.createVerticalStrut(100));
+        mainPane.add(btnRegister);
+        mainPane.add(Box.createVerticalStrut(50));
 
         /* Add components to panel */
-        this.add(pnlMain);
+        this.add(mainPane);
     }
 
     private void clear() {

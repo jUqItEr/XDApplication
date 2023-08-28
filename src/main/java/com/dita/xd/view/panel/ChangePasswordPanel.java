@@ -49,36 +49,36 @@ public class ChangePasswordPanel extends JPanel implements LocaleChangeListener 
         hpfPwd = new JHintPasswordField();
         hpfPwdConfirmed = new JHintPasswordField();
 
-        JPanel pnlButton = new JPanel();
-        JPanel pnlMain = new JPanel();
+        JPanel buttonPane = new JPanel();
+        JPanel mainPane = new JPanel();
 
         lblTitle = new JLabel();
         /* Set the localized texts. */
         loadText();
 
         /* Set the properties of sub panels */
-        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
-        pnlButton.setLayout(new BoxLayout(pnlButton, BoxLayout.X_AXIS));
+        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
 
         /* Add components to sub panel */
 
-        pnlMain.add(Box.createVerticalGlue());
-        pnlMain.add(lblTitle);
-        pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(hpfPwd);
-        pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(hpfPwdConfirmed);
-        pnlMain.add(Box.createVerticalStrut(10));
-        pnlMain.add(pnlButton);
+        mainPane.add(Box.createVerticalGlue());
+        mainPane.add(lblTitle);
+        mainPane.add(Box.createVerticalStrut(30));
+        mainPane.add(hpfPwd);
+        mainPane.add(Box.createVerticalStrut(30));
+        mainPane.add(hpfPwdConfirmed);
+        mainPane.add(Box.createVerticalStrut(10));
+        mainPane.add(buttonPane);
 
-        pnlButton.add(btnChange);
-        pnlButton.add(Box.createHorizontalStrut(20));
-        pnlButton.add(btnCancel);
+        buttonPane.add(btnChange);
+        buttonPane.add(Box.createHorizontalStrut(20));
+        buttonPane.add(btnCancel);
 
-        pnlMain.add(Box.createVerticalStrut(60));
+        mainPane.add(Box.createVerticalStrut(60));
 
         /* Add components to panel */
-        this.add(pnlMain);
+        this.add(mainPane);
 
         /* Set the properties of components */
         hpfPwd.setMaximumSize(new Dimension(300, 40));

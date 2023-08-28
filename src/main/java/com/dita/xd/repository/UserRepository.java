@@ -56,4 +56,13 @@ public class UserRepository {
         }
         return email;
     }
+
+    public String getUserNickname() {
+        String nickname = null;
+
+        if (hasLogin()) {
+            nickname = userAccount.getNickname();
+        }
+        return nickname;
+    }
 }

@@ -7,7 +7,7 @@ public class ProfileLayoutMgr {
     private static volatile ProfileLayoutMgr instance = null;
 
     private CardLayout mainLayout;
-    private JFrame mainFrame;
+    private JDialog mainDialog;
     private JPanel mainPane;
 
     private ProfileLayoutMgr(){
@@ -28,8 +28,8 @@ public class ProfileLayoutMgr {
         this.mainLayout = mainLayout;
     }
 
-    public void setMainFrame(JFrame mainFrame) {
-        this.mainFrame = mainFrame;
+    public void setMainDialog(JDialog mainDialog) {
+        this.mainDialog = mainDialog;
     }
 
     public void setMainPane(JPanel mainPane) {
@@ -37,7 +37,7 @@ public class ProfileLayoutMgr {
     }
 
     public void dispose() {
-        mainFrame.dispose();
+        mainDialog.dispose();
     }
 
     public void show(String name) {

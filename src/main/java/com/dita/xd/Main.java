@@ -1,11 +1,9 @@
 package com.dita.xd;
 
 import com.dita.xd.view.frame.LoginFrame;
-import com.dita.xd.view.frame.ProfileFrame;
+import com.dita.xd.view.frame.MainFrame;
 import mdlaf.MaterialLookAndFeel;
-import mdlaf.themes.JMarsDarkTheme;
 import mdlaf.themes.MaterialLiteTheme;
-import mdlaf.themes.MaterialOceanicTheme;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -21,8 +19,8 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                LoginFrame frame = new LoginFrame(Locale.getDefault());
-                // ProfileFrame frame = new ProfileFrame(Locale.KOREA);
+                // LoginFrame frame = new LoginFrame(Locale.getDefault());
+                MainFrame frame = new MainFrame(Locale.KOREA);
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();

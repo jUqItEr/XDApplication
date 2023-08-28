@@ -60,35 +60,35 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
         htfEmail = new JHintTextField();
         htfId = new JHintTextField();
 
-        JPanel pnlButton = new JPanel();
-        JPanel pnlMain = new JPanel();
+        JPanel buttonPane = new JPanel();
+        JPanel mainPane = new JPanel();
 
         /* Set the localized texts. */
         loadText();
 
         /* Set the properties of sub panels */
-        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
-        pnlButton.setLayout(new BoxLayout(pnlButton, BoxLayout.X_AXIS));
+        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
 
         /* Add components to sub panel */
 
-        pnlMain.add(Box.createVerticalGlue());
-        pnlMain.add(htfId);
-        pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(hpfPassword);
-        pnlMain.add(Box.createVerticalStrut(30));
-        pnlMain.add(htfEmail);
-        pnlMain.add(Box.createVerticalStrut(10));
-        pnlMain.add(pnlButton);
+        mainPane.add(Box.createVerticalGlue());
+        mainPane.add(htfId);
+        mainPane.add(Box.createVerticalStrut(30));
+        mainPane.add(hpfPassword);
+        mainPane.add(Box.createVerticalStrut(30));
+        mainPane.add(htfEmail);
+        mainPane.add(Box.createVerticalStrut(10));
+        mainPane.add(buttonPane);
 
-        pnlButton.add(btnRegister);
-        pnlButton.add(Box.createHorizontalStrut(20));
-        pnlButton.add(btnCancel);
+        buttonPane.add(btnRegister);
+        buttonPane.add(Box.createHorizontalStrut(20));
+        buttonPane.add(btnCancel);
 
-        pnlMain.add(Box.createVerticalStrut(60));
+        mainPane.add(Box.createVerticalStrut(60));
 
         /* Add components to panel */
-        this.add(pnlMain);
+        this.add(mainPane);
 
         /* Set the properties of components */
         htfId.setMaximumSize(new Dimension(300, 40));
