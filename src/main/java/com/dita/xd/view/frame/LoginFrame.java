@@ -2,7 +2,7 @@ package com.dita.xd.view.frame;
 
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.base.JImageView;
-import com.dita.xd.view.manager.LoginTransitionMgr;
+import com.dita.xd.view.manager.LoginLayoutMgr;
 import com.dita.xd.view.panel.ChangePasswordPanel;
 import com.dita.xd.view.panel.FindPasswordPanel;
 import com.dita.xd.view.panel.LoginPanel;
@@ -15,7 +15,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginFrame extends JFrame implements LocaleChangeListener {
-    private final LoginTransitionMgr mgr;
+    private final LoginLayoutMgr mgr;
 
     private ResourceBundle localeBundle;
 
@@ -34,7 +34,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
         registerPane = new RegisterPanel(locale);
         changePwdPane = new ChangePasswordPanel(locale);
 
-        mgr = LoginTransitionMgr.getInstance();
+        mgr = LoginLayoutMgr.getInstance();
 
         /* Initialize components */
         initialize();

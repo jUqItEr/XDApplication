@@ -5,22 +5,22 @@ import com.dita.xd.view.panel.ChangePasswordPanel;
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginTransitionMgr {
-    private static volatile LoginTransitionMgr instance = null;
+public class LoginLayoutMgr {
+    private static volatile LoginLayoutMgr instance = null;
 
     private JFrame mainFrame;
     private CardLayout mainLayout;
     private JPanel mainPane;
     private ChangePasswordPanel chgPane;
 
-    private LoginTransitionMgr() {
+    private LoginLayoutMgr() {
     }
 
-    public static LoginTransitionMgr getInstance() {
+    public static LoginLayoutMgr getInstance() {
         if (instance == null) {
-            synchronized (LoginTransitionMgr.class) {
+            synchronized (LoginLayoutMgr.class) {
                 if (instance == null) {
-                    instance = new LoginTransitionMgr();
+                    instance = new LoginLayoutMgr();
                 }
             }
         }

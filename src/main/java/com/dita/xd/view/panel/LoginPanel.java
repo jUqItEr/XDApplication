@@ -7,7 +7,7 @@ import com.dita.xd.view.base.JHintPasswordField;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.view.dialog.PlainDialog;
 import com.dita.xd.view.frame.MainFrame;
-import com.dita.xd.view.manager.LoginTransitionMgr;
+import com.dita.xd.view.manager.LoginLayoutMgr;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
  */
 public class LoginPanel extends JPanel implements LocaleChangeListener {
     private final LoginController controller;
-    private final LoginTransitionMgr mgr;
+    private final LoginLayoutMgr mgr;
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
@@ -44,7 +44,7 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         localeBundle = ResourceBundle.getBundle("language", locale);
 
         controller = new LoginController();
-        mgr = LoginTransitionMgr.getInstance();
+        mgr = LoginLayoutMgr.getInstance();
 
         initialize();
 

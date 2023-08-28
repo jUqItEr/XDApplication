@@ -8,7 +8,7 @@ import com.dita.xd.model.UserBean;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.view.dialog.MailCodeDialog;
 import com.dita.xd.view.dialog.PlainDialog;
-import com.dita.xd.view.manager.LoginTransitionMgr;
+import com.dita.xd.view.manager.LoginLayoutMgr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
     private final LoginController loginController;
     private final MailController mailController;
     private final RegisterController registerController;
-    private final LoginTransitionMgr mgr;
+    private final LoginLayoutMgr mgr;
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
@@ -37,7 +37,7 @@ public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
         loginController = new LoginController();
         mailController = new MailController();
         registerController = new RegisterController();
-        mgr = LoginTransitionMgr.getInstance();
+        mgr = LoginLayoutMgr.getInstance();
 
         initialize();
 
