@@ -24,7 +24,6 @@ public class ProfileFrame extends JFrame implements LocaleChangeListener {
     private void initialize() {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
-        setResizable(false);
         setSize(new Dimension(750, 600));
 
         /* Variables declaration */
@@ -77,6 +76,7 @@ public class ProfileFrame extends JFrame implements LocaleChangeListener {
 
         @Override
         public void onLocaleChanged(Locale newLocale) {
+            currentLocale = newLocale;
             localeBundle = ResourceBundle.getBundle("language", newLocale);
             LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
             loadText();
