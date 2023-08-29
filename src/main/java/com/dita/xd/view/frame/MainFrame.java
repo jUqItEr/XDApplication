@@ -31,10 +31,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
         if (repository.getUserNickname() == null) {
             ProfileDialog dialog = new ProfileDialog(currentLocale);
-
-            if (!dialog.showDialog()) {
-                dispose();
-            }
+            System.out.println(dialog.showDialog());
         }
     }
 

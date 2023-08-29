@@ -31,7 +31,7 @@ public class NicknamePanel extends JPanel implements LocaleChangeListener {
 
         /* Variables declaration */
         JPanel mainPane = new JPanel();
-        JRoundedImageView rivProfile = new JRoundedImageView("");
+        JRoundedImageView rivProfile = new JRoundedImageView("resources/images/profile.png");
 
         htfNickname = new JHintTextField();
         lblTitle = new JLabel();
@@ -41,8 +41,6 @@ public class NicknamePanel extends JPanel implements LocaleChangeListener {
 
         /* Set the properties of sub panels */
         mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
-
-        mainPane.setBackground(Color.green);
 
         /* Set the properties of components */
         htfNickname.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -58,7 +56,7 @@ public class NicknamePanel extends JPanel implements LocaleChangeListener {
 
         rivProfile.setBackground(Color.BLUE);
 
-        mainPane.add(Box.createVerticalGlue());
+        mainPane.add(Box.createVerticalStrut(40));
         mainPane.add(lblTitle);
         mainPane.add(Box.createVerticalStrut(20));
         mainPane.add(rivProfile);

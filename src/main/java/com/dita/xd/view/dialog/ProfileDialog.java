@@ -2,7 +2,7 @@ package com.dita.xd.view.dialog;
 
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.manager.ProfileLayoutMgr;
-import com.dita.xd.view.panel.NicknamePanel;
+import com.dita.xd.view.panel.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,25 +11,36 @@ import java.util.ResourceBundle;
 
 public class ProfileDialog extends JDialog implements LocaleChangeListener {
     private final String[] pages = new String[] {
-            "nickname",
+            "nickname", "header", "birthday", "introduce", "other"
     };
     private final ProfileLayoutMgr mgr;
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
 
+    private final JPanel[] panes;
+    private final BirthdayPanel birthdayPane;
+    private final HeaderPanel headerPane;
+    private final IntroducePanel introducePane;
     private final NicknamePanel nickNamePane;
+    private final OtherInfoPanel otherInfoPane;
 
+    private JButton btnNext;
     private JButton btnPrev;
-    private JButton btnRight;
 
     private boolean result;
+    private int currentIndex;
 
     public ProfileDialog(Locale locale) {
         localeBundle = ResourceBundle.getBundle("language", locale);
 
-        nickNamePane = new NicknamePanel(locale);
-
+        panes = new JPanel[] {
+                nickNamePane = new NicknamePanel(locale),
+                headerPane = new HeaderPanel(locale),
+                birthdayPane = new BirthdayPanel(locale),
+                introducePane = new IntroducePanel(locale),
+                otherInfoPane = new OtherInfoPanel(locale)
+        };
         mgr = ProfileLayoutMgr.getInstance();
 
         this.result = false;
@@ -43,37 +54,86 @@ public class ProfileDialog extends JDialog implements LocaleChangeListener {
         CardLayout clMain = new CardLayout();
 
         JPanel buttonPane = new JPanel();
-        JPanel buttonLeftPane = new JPanel();
-        JPanel buttonRightPane = new JPanel();
+        JPanel buttonPaddingPane = new JPanel();
         JPanel mainPane = new JPanel();
+
+        btnPrev = new JButton();
+        btnNext = new JButton();
 
         /* Set the properties of initialize */
         this.setLayout(new BorderLayout());
         this.setLocationRelativeTo(null);
         this.setModalityType(DEFAULT_MODALITY_TYPE);
         this.setResizable(false);
-        this.setSize(new Dimension(550, 350));
+        this.setSize(new Dimension(600, 400));
 
         /* Set the layout of sub-panels */
-        buttonPane.setLayout(new BorderLayout());
-        buttonLeftPane.setLayout(new BoxLayout(buttonLeftPane, BoxLayout.PAGE_AXIS));
-        buttonRightPane.setLayout(new BoxLayout(buttonRightPane, BoxLayout.PAGE_AXIS));
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
+        buttonPaddingPane.setLayout(new BoxLayout(buttonPaddingPane, BoxLayout.Y_AXIS));
         mainPane.setLayout(clMain);
 
-        buttonPane.setBackground(Color.PINK);
+        btnPrev.setEnabled(false);
+        btnPrev.setPreferredSize(new Dimension(120, 40));
+        btnPrev.setMaximumSize(new Dimension(120, 40));
+        btnNext.setPreferredSize(new Dimension(120, 40));
+        btnNext.setMaximumSize(new Dimension(120, 40));
 
         mgr.setMainDialog(this);
         mgr.setMainLayout(clMain);
         mgr.setMainPane(mainPane);
 
-        mainPane.add(nickNamePane, pages[0]);
+        for (int i = 0; i < panes.length; ++i) {
+            mainPane.add(panes[i], pages[i]);
+        }
+        currentIndex = 0;
+
+        buttonPane.add(Box.createHorizontalGlue());
+        buttonPane.add(btnPrev);
+        buttonPane.add(Box.createHorizontalStrut(20));
+        buttonPane.add(btnNext);
+        buttonPane.add(Box.createHorizontalGlue());
+
+        buttonPaddingPane.add(buttonPane);
+        buttonPaddingPane.add(Box.createVerticalStrut(30));
+
+        btnNext.addActionListener(e -> {
+            switch (currentIndex) {
+                case 0, 1, 2 -> {
+                    btnPrev.setEnabled(true);
+                    mgr.show(pages[++currentIndex]);
+                }
+                case 3 -> {
+                    btnNext.setText(localeBundle.getString("profile.button.finish"));
+                    mgr.show(pages[++currentIndex]);
+                }
+                case 4 -> {
+                    dispose();
+                    result = true;
+                }
+            }
+        });
+        btnPrev.addActionListener(e -> {
+            switch (currentIndex) {
+                case 1 ->  {
+                    btnPrev.setEnabled(false);
+                    mgr.show(pages[--currentIndex]);
+                }
+                case 2, 3, 4 -> {
+                    btnNext.setText(localeBundle.getString("profile.button.next"));
+                    mgr.show(pages[--currentIndex]);
+                }
+            }
+        });
 
         this.add(mainPane);
-        this.add(buttonPane, BorderLayout.SOUTH);
+        this.add(buttonPaddingPane, BorderLayout.SOUTH);
     }
 
     private void loadText() {
         this.setTitle(localeBundle.getString("profile.title"));
+
+        btnNext.setText(localeBundle.getString("profile.button.next"));
+        btnPrev.setText(localeBundle.getString("profile.button.prev"));
     }
 
     public boolean showDialog() {
@@ -86,7 +146,11 @@ public class ProfileDialog extends JDialog implements LocaleChangeListener {
         currentLocale = newLocale;
         localeBundle = ResourceBundle.getBundle("language", newLocale);
 
+        birthdayPane.onLocaleChanged(newLocale);
+        headerPane.onLocaleChanged(newLocale);
+        introducePane.onLocaleChanged(newLocale);
         nickNamePane.onLocaleChanged(newLocale);
+        otherInfoPane.onLocaleChanged(newLocale);
 
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();
