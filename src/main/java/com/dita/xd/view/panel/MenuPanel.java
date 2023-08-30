@@ -1,6 +1,5 @@
 package com.dita.xd.view.panel;
 
-import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.manager.MainLayoutMgr;
 
 import javax.swing.*;
