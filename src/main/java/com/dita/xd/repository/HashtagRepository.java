@@ -8,7 +8,7 @@ public class HashtagRepository {
     private static volatile HashtagRepository instance = null;
     private final Vector<HashtagBean> hashtags;
 
-    public HashtagRepository(){
+    private HashtagRepository(){
         hashtags = new Vector<>();
     }
 

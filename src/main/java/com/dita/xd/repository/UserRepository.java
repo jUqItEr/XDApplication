@@ -8,7 +8,7 @@ public class UserRepository {
 
     private UserBean userAccount;
 
-    public UserRepository() {
+    private UserRepository() {
 
     }
 
