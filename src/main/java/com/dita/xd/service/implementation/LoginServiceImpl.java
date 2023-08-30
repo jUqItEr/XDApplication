@@ -4,9 +4,7 @@ import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.service.LoginService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class LoginServiceImpl implements LoginService {
     DBConnectionServiceImpl pool = null;
@@ -22,7 +20,7 @@ public class LoginServiceImpl implements LoginService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT id, password, email FROM user_tbl WHERE id = ?";
+        String sql = "SELECT * FROM user_tbl WHERE id = ?";
         UserBean bean = null;
 
         try {
@@ -35,8 +33,18 @@ public class LoginServiceImpl implements LoginService {
                 String beanId = rs.getString("id");
                 String beanPwd = rs.getString("password");
                 String beanEmail = rs.getString("email");
+                String beanNickname = rs.getString("nickname");
+                String beanProfileImage = rs.getString("profile_image");
+                String beanHeaderImage = rs.getString("header_image");
+                String beanAddress = rs.getString("address");
+                String beanGender = rs.getString("gender");
+                String beanWebsite = rs.getString("website");
+                Date beanBirthday = rs.getDate("birthday");
+                String beanIntroduce = rs.getString("introduce");
+                Timestamp beanCreatedAt = rs.getTimestamp("created_at");
 
-                bean = new UserBean(beanId, beanPwd, beanEmail);
+                bean = new UserBean(beanId, beanPwd, beanEmail, beanNickname, beanProfileImage, beanHeaderImage,
+                        beanAddress, beanGender, beanWebsite, beanBirthday, beanIntroduce, beanCreatedAt);
             }
         } catch (Exception e) {
             e.printStackTrace();

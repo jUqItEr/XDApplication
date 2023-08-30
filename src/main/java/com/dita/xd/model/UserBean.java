@@ -11,7 +11,7 @@ public class UserBean {
     private String profileImage;
     private String headerImage;
     private String address;
-    private char gender;
+    private String gender;
     private String website;
     private Date birthday;
     private String introduce;
@@ -42,7 +42,7 @@ public class UserBean {
     }
 
     public UserBean(String userId, String password, String email, String nickname, String profileImage,
-                    String headerImage, String address, char gender, String website, Date birthday,
+                    String headerImage, String address, String gender, String website, Date birthday,
                     String introduce, Timestamp createdAt) {
         this.userId = userId;
         this.password = password;
@@ -114,11 +114,11 @@ public class UserBean {
         this.address = address;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
