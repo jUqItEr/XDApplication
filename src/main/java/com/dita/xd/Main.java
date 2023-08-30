@@ -19,8 +19,8 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                // LoginFrame frame = new LoginFrame(Locale.getDefault());
-                MainFrame frame = new MainFrame(Locale.KOREA);
+                LoginFrame frame = new LoginFrame(Locale.getDefault());
+                // MainFrame frame = new MainFrame(Locale.KOREA);
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
