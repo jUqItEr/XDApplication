@@ -2,6 +2,8 @@ package com.dita.xd.repository;
 
 import com.dita.xd.model.UserBean;
 
+import java.text.SimpleDateFormat;
+
 public class UserRepository {
     /* Singleton Class */
     private static volatile UserRepository instance = null;
@@ -64,5 +66,15 @@ public class UserRepository {
             nickname = userAccount.getNickname();
         }
         return nickname;
+    }
+
+    public String getCreatedAt() {
+        String createdAt = null;
+
+        if (hasLogin()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy. MM");
+            createdAt = sdf.format(userAccount.getCreatedAt());
+        }
+        return createdAt;
     }
 }
