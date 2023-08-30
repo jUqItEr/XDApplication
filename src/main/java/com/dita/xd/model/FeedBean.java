@@ -1,7 +1,10 @@
 package com.dita.xd.model;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class FeedBean {
     private int id;
@@ -59,5 +62,13 @@ public class FeedBean {
 
     public void setViewer(int viewer) {
         this.viewer = viewer;
+    }
+
+    @Override
+    public String toString() {
+        String fmt = "%5d  %-15s  %-30s  %30s  %d";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return String.format(fmt, id, userId, content, sdf.format(createdAt), viewer);
     }
 }

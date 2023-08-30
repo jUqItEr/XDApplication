@@ -9,49 +9,12 @@ import java.sql.*;
 public class LoginServiceImpl implements LoginService {
     DBConnectionServiceImpl pool = null;
     PasswordHashServiceImpl hashSvc = null;
+    UserServiceImpl userSvc = null;
 
     public LoginServiceImpl() {
         pool = DBConnectionServiceImpl.getInstance();
         hashSvc = new PasswordHashServiceImpl();
-    }
-
-    @Override
-    public UserBean getUser(String id) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String sql = "SELECT * FROM user_tbl WHERE id = ?";
-        UserBean bean = null;
-
-        try {
-            conn = pool.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, id);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                String beanId = rs.getString("id");
-                String beanPwd = rs.getString("password");
-                String beanEmail = rs.getString("email");
-                String beanNickname = rs.getString("nickname");
-                String beanProfileImage = rs.getString("profile_image");
-                String beanHeaderImage = rs.getString("header_image");
-                String beanAddress = rs.getString("address");
-                String beanGender = rs.getString("gender");
-                String beanWebsite = rs.getString("website");
-                Date beanBirthday = rs.getDate("birthday");
-                String beanIntroduce = rs.getString("introduce");
-                Timestamp beanCreatedAt = rs.getTimestamp("created_at");
-
-                bean = new UserBean(beanId, beanPwd, beanEmail, beanNickname, beanProfileImage, beanHeaderImage,
-                        beanAddress, beanGender, beanWebsite, beanBirthday, beanIntroduce, beanCreatedAt);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            pool.freeConnection(conn, pstmt, rs);
-        }
-        return bean;
+        userSvc = new UserServiceImpl();
     }
 
     @Override
@@ -61,7 +24,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public UserBean login(String id, String pwd) {
-        UserBean bean = getUser(id);
+        UserBean bean = userSvc.getUser(id);
 
         if (bean != null) {
             String beanPwd = bean.getPassword();
