@@ -2,7 +2,7 @@ package com.dita.xd.service.implementation;
 
 import com.dita.xd.model.UserBean;
 import com.dita.xd.service.UserService;
-import com.dita.xd.util.helper.ResultSetBeanHelper;
+import com.dita.xd.util.helper.ResultSetExtractHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                bean = ResultSetBeanHelper.extractUserBean(rs);
+                bean = ResultSetExtractHelper.extractUserBean(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();

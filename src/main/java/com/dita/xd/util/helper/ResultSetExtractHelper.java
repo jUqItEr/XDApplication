@@ -8,15 +8,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-public class ResultSetBeanHelper {
+public class ResultSetExtractHelper {
     public static FeedBean extractFeedBean(ResultSet rs) throws SQLException {
+        FeedBean bean = new FeedBean();
         Timestamp beanCreatedAt = rs.getTimestamp("created_at");
-        String beanUserId = rs.getString("user_tbl_id");
+        String beanUserId = rs.getString("user_id");
         String beanContent = rs.getString("content");
+        String beanProfileImage = rs.getString("profile_image");
+        String beanUserNickname = rs.getString("nickname");
         int beanId = rs.getInt("id");
         int beanViewer = rs.getInt("viewer");
 
-        return new FeedBean(beanId, beanUserId, beanContent, beanCreatedAt, beanViewer);
+        bean.setId(beanId);
+        bean.setContent(beanContent);
+        bean.setUserId(beanUserId);
+        bean.setCreatedAt(beanCreatedAt);
+        bean.setViewer(beanViewer);
+        bean.setUserNickname(beanUserNickname);
+        bean.setUserProfileImage(beanProfileImage);
+
+        return bean;
     }
 
     public static UserBean extractUserBean(ResultSet rs) throws SQLException {

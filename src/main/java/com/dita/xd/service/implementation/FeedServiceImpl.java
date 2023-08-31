@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Vector;
 
-import static com.dita.xd.util.helper.ResultSetBeanHelper.extractFeedBean;
+import static com.dita.xd.util.helper.ResultSetExtractHelper.extractFeedBean;
 
 public class FeedServiceImpl implements FeedService {
     private DBConnectionServiceImpl pool = null;
@@ -96,7 +96,9 @@ public class FeedServiceImpl implements FeedService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT * FROM feed_tbl WHERE user_tbl_id = ? ORDER BY id DESC";
+        String sql = "SELECT ut.id AS user_id, ut.nickname AS nickname, ut.profile_image AS profile_image, " +
+                "ft.id AS id, ft.content AS content, ft.created_at AS created_at, ft.viewer AS viewer " +
+                "FROM user_tbl ut JOIN feed_tbl ft ON ut.id = ft.user_tbl_id WHERE ut.id = ? ORDER BY ft.id DESC";
         Vector<FeedBean> beans = new Vector<>();
 
         try {
