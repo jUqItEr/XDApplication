@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
 
+import static com.dita.xd.util.helper.ResultSetExtractHelper.extractUserBean;
+
 public class UserServiceImpl implements UserService {
     private DBConnectionServiceImpl pool = null;
 
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                bean = ResultSetExtractHelper.extractUserBean(rs);
+                bean = extractUserBean(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,20 +44,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Vector<UserBean> search(String includedUserName) {
+    public Vector<UserBean> search(String includedUserInfo) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "";
+        String sql = "select * from user_tbl where id like ? or nickname like ?";
         Vector<UserBean> beans = new Vector<>();
 
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, '%' + includedUserInfo + '%');
+            pstmt.setString(2, '%' + includedUserInfo + '%');
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-
+                beans.addElement(extractUserBean(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,9 +1,6 @@
 package com.dita.xd.service.implementation;
 
-import com.dita.xd.model.FeedBean;
-import com.dita.xd.model.FeedUserTaggingBean;
-import com.dita.xd.model.HashtagBean;
-import com.dita.xd.model.MediaBean;
+import com.dita.xd.model.*;
 import com.dita.xd.service.FeedService;
 
 import java.sql.*;
@@ -19,21 +16,6 @@ public class FeedServiceImpl implements FeedService {
 
     public FeedServiceImpl() {
         pool = DBConnectionServiceImpl.getInstance();
-    }
-
-    @Override
-    public boolean comment(FeedBean targetBean, FeedBean commentBean) {
-        return false;
-    }
-
-    @Override
-    public void feedback(FeedBean bean, String userId) {
-
-    }
-
-    @Override
-    public void like(FeedBean bean, String userId) {
-
     }
 
     @Override
@@ -92,23 +74,31 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Vector<FeedBean> getFeeds(String userId) {
+    public Vector<FeedCommentBean> getComments(FeedBean bean) {
+        return null;
+    }
+
+    @Override
+    public Vector<FeedbackBean> getFeedbacks(FeedBean bean) {
+        return null;
+    }
+
+    @Override
+    public Vector<LikeBean> getLikes(FeedBean bean) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT ut.id AS user_id, ut.nickname AS nickname, ut.profile_image AS profile_image, " +
-                "ft.id AS id, ft.content AS content, ft.created_at AS created_at, ft.viewer AS viewer " +
-                "FROM user_tbl ut JOIN feed_tbl ft ON ut.id = ft.user_tbl_id WHERE ut.id = ? ORDER BY ft.id DESC";
-        Vector<FeedBean> beans = new Vector<>();
+        String sql = "select * from feed_like_view where feed_id";
+        Vector<LikeBean> beans = new Vector<>();
 
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, userId);
+            pstmt.setInt(1, bean.getId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                beans.addElement(extractFeedBean(rs));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,6 +109,37 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public Vector<FeedBean> getFeeds(String userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_user_view where user_id = ?";
+        Vector<FeedBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FeedBean bean = extractFeedBean(rs);
+
+                if (bean.getUserId() != null) {
+
+                    beans.addElement(bean);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    @Deprecated
     public Vector<FeedBean> getFeeds(String userId, Timestamp targetAt) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -145,6 +166,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    @Deprecated
     public Vector<FeedBean> getFeeds(String userId, Timestamp startAt, Timestamp endAt) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -173,6 +195,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    @Deprecated
     public Vector<FeedBean> search(String includedContent) {
         Connection conn = null;
         PreparedStatement pstmt = null;
