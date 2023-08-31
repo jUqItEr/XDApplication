@@ -19,7 +19,7 @@ public class HashtagDriver {
     }
 
     private static Matcher getMatcher(String text) {
-        String regex = "(#+[a-zA-Zㄱ-ㅎ가-힣0-9(_)]+)";
+        String regex = "(#[a-zA-Zㄱ-ㅎ가-힣0-9(_)]+)";
         Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(text);
     }
