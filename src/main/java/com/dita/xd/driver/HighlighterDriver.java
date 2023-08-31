@@ -45,59 +45,59 @@ public class HighlighterDriver extends JDialog {
 
         static class XdDocumentFilter extends DocumentFilter {
             private static final String HASHTAG_REGEX = "(#[a-zA-Zㄱ-ㅎ가-힣0-9(_)]+)";
-            private static final String USER_REGEX = "(@[a-zA-Z0-9]{14})";
+            private static final String USER_REGEX = "(@[a-zA-Z0-9]{1,15})";
 
             private final Pattern hashtagPattern;
+            private final Pattern userPattern;
 
-            protected final Highlighter.HighlightPainter hashtagPainter;
+            private final SimpleAttributeSet hashtagColor;
+            private final SimpleAttributeSet userColor;
 
             protected final JTextPane textPane;
 
             public XdDocumentFilter(JTextPane textPane) {
+                this.hashtagColor = new SimpleAttributeSet();
                 this.hashtagPattern = Pattern.compile(HASHTAG_REGEX);
-
-                this.hashtagPainter = new XdHashtagPainter(new Color(0x004d86f7));
+                this.userColor = new SimpleAttributeSet();
+                this.userPattern = Pattern.compile(USER_REGEX);
                 this.textPane = textPane;
+
+                StyleConstants.setForeground(this.hashtagColor, new Color(0x00_4D_86_F7));
+                StyleConstants.setForeground(this.userColor, new Color(0x00_F2_75_21));
             }
 
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                     throws BadLocationException {
                 super.replace(fb, offset, length, text, attrs);
-                removeHighlights();
 
                 try {
-                    Highlighter highlighter = textPane.getHighlighter();
-                    Document doc = textPane.getDocument();
+                    StyledDocument doc = textPane.getStyledDocument();
                     String currentText = doc.getText(0, doc.getLength());
-                    SimpleAttributeSet hashtagColor = new SimpleAttributeSet();
-                    StyleConstants.setForeground(hashtagColor, new Color(0x004d86f7));
-                    Matcher matcher = hashtagPattern.matcher(currentText);
+                    Matcher hashtagMatcher = hashtagPattern.matcher(currentText);
+                    Matcher userMatcher = userPattern.matcher(currentText);
 
-                    while (matcher.find()) {
-                        //highlighter.addHighlight(matcher.start(), matcher.end(), hashtagPainter);
+                    while (hashtagMatcher.find()) {
+                        doc.setCharacterAttributes(
+                                hashtagMatcher.start(),
+                                hashtagMatcher.end() - hashtagMatcher.start(),
+                                hashtagColor,
+                                false
+                        );
+                        textPane.getInputAttributes().removeAttributes(hashtagColor);
+                    }   // -- End of while
+                    while (userMatcher.find()) {
+                        doc.setCharacterAttributes(
+                                userMatcher.start(),
+                                userMatcher.end() - userMatcher.start(),
+                                userColor,
+                                false
+                        );
                     }
                 } catch (BadLocationException e) {
                     e.printStackTrace();
-                }
-            }
-
-            public void removeHighlights() {
-                Highlighter highlighter = textPane.getHighlighter();
-                Highlighter.Highlight[] highlights = highlighter.getHighlights();
-
-                for (Highlighter.Highlight highlight : highlights) {
-                    if (highlight.getPainter() instanceof XdHashtagPainter) {
-                        highlighter.removeHighlight(highlight);
-                    }
-                }
-            }
-        }
-
-        static class XdHashtagPainter extends DefaultHighlighter.DefaultHighlightPainter {
-            public XdHashtagPainter(Color color) {
-                super(color);
-            }
+                }   // -- End of try-catch
+            }   // -- End of function (replace: @Override)
         }
     }
 }
