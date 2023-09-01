@@ -22,6 +22,7 @@ public class LoginController {
         UserBean bean = loginSvc.login(id, pwd);
 
         if (bean != null) {
+            bean.setPassword("");
             repository.setLogin(bean);
         }
         return bean != null;
