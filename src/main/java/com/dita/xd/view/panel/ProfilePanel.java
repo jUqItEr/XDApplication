@@ -1,5 +1,8 @@
 package com.dita.xd.view.panel;
 
+import com.dita.xd.controller.FeedController;
+import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.FeedBean;
 import com.dita.xd.repository.UserRepository;
 
 import javax.swing.*;
@@ -8,65 +11,107 @@ import java.awt.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class ProfilePanel extends JPanel {
+public class ProfilePanel extends JPanel implements LocaleChangeListener{
     private ResourceBundle localeBundle;
     private Locale currentLocale;
     private final UserRepository repository;
+    private final FeedController controller;
+
+
+    private FeedPanel feedPanel;
+
+    private JLabel lblHeaderImg;
+    private JLabel lblProfileImg;
+    private JLabel lblNickName;
+
+    private JLabel lblFollower;
+    private JLabel lblFollowing;
+    private JLabel lblFeed;
+    private JLabel lblNumOfFollower;
+    private JLabel lblNumOfFollowing;
+    private JLabel lblNumOfFeed;
+
+    private JLabel lblUserId;
+    private JLabel lblCreatedAt;
+    private JLabel lblBirth;
+    private JLabel lblGender;
+    private JLabel lblLink;
+    private JLabel lblRegion;
+    private JLabel lblCreatedAtText;
+    private JLabel lblBirthText;
+    private JLabel lblGenderText;
+    private JLabel lblLinkText;
+    private JLabel lblRegionText;
+
+    private JLabel lblIntroduce;
+    private JTextArea txaIntroduce;
+
+    private JButton btnEditProfile;
+    private JButton btnToFeed;
+    private JButton btnToLike;
+    private JButton btnToBookMark;
 
 
     public ProfilePanel(Locale locale){
         localeBundle = ResourceBundle.getBundle("Language", locale);
         repository = UserRepository.getInstance();
+        controller = new FeedController();
+
+        feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
+
 
         initialize();
+
+        onLocaleChanged(locale);
     }
 
     private void initialize(){
         setLayout(new BorderLayout());
 
-        JScrollPane pnlMain = new JScrollPane();
+        JScrollPane mainPane = new JScrollPane();
 
-        JPanel pnlSubProfile = new JPanel();
-        JPanel pnlBirth = new JPanel();
-        JPanel pnlGender = new JPanel();
-        JPanel pnlLink = new JPanel();
-        JPanel pnlRegion = new JPanel();
-        JPanel pnlCreatedAt = new JPanel();
+        /* 생일 - 가입시각까지 묶기 위한 Panel 선언 */
+        JPanel subProfilePane = new JPanel();
+        JPanel birthPane = new JPanel();
+        JPanel genderPane = new JPanel();
+        JPanel linkPane = new JPanel();
+        JPanel regionPane = new JPanel();
+        JPanel createdAtPane = new JPanel();
 
-        JLabel lblHeaderImg = new JLabel();
-        JLabel lblProfileImg = new JLabel();
-        JLabel lblNickName = new JLabel();
+        lblHeaderImg = new JLabel();
+        lblProfileImg = new JLabel();
+        lblNickName = new JLabel();
 
-        JLabel lblFollower = new JLabel();
-        JLabel lblFollowing = new JLabel();
-        JLabel lblFeed = new JLabel();
-        JLabel lblNumOfFollower = new JLabel();
-        JLabel lblNumOfFollowing = new JLabel();
-        JLabel lblNumOfFeed = new JLabel();
+        lblFollower = new JLabel();
+        lblFollowing = new JLabel();
+        lblFeed = new JLabel();
+        lblNumOfFollower = new JLabel();
+        lblNumOfFollowing = new JLabel();
+        lblNumOfFeed = new JLabel();
 
-        JLabel lblUserId = new JLabel();
-        JLabel lblCreatedAt = new JLabel();
-        JLabel lblBirth = new JLabel();
-        JLabel lblGender = new JLabel();
-        JLabel lblLink = new JLabel();
-        JLabel lblRegion = new JLabel();
-        JLabel lblCreatedAtText = new JLabel();
-        JLabel lblBirthText = new JLabel();
-        JLabel lblGenderText = new JLabel();
-        JLabel lblLinkText = new JLabel();
-        JLabel lblRegionText = new JLabel();
+        lblUserId = new JLabel();
+        lblCreatedAt = new JLabel();
+        lblBirth = new JLabel();
+        lblGender = new JLabel();
+        lblLink = new JLabel();
+        lblRegion = new JLabel();
+        lblCreatedAtText = new JLabel();
+        lblBirthText = new JLabel();
+        lblGenderText = new JLabel();
+        lblLinkText = new JLabel();
+        lblRegionText = new JLabel();
 
-        JLabel lblIntroduce = new JLabel();
-        JTextArea txaIntroduce = new JTextArea();
+        lblIntroduce = new JLabel();
+        txaIntroduce = new JTextArea();
 
-        JButton btnEditProfile = new JButton();
-        JButton btnToFeed = new JButton();
-        JButton btnToLike = new JButton();
-        JButton btnToBookMark = new JButton();
+        btnEditProfile = new JButton();
+        btnToFeed = new JButton();
+        btnToLike = new JButton();
+        btnToBookMark = new JButton();
 
-        pnlMain.setLayout(null);
-        pnlSubProfile.setLayout(new FlowLayout(FlowLayout.LEFT,10,2));
-        pnlSubProfile.setBounds(30, 340, 390,70);
+        mainPane.setLayout(null);
+        subProfilePane.setLayout(new FlowLayout(FlowLayout.LEFT,10,2));
+        subProfilePane.setBounds(30, 340, 390,70);
         btnEditProfile.setBounds(340,10,80,25);
 
         lblHeaderImg.setBounds(0, 0 , 450, 165);
@@ -96,9 +141,9 @@ public class ProfilePanel extends JPanel {
 
         txaIntroduce.setBounds(30,275,400,60);
 
-        btnToFeed.setBounds(6, 505, 142, 30);
-        btnToLike.setBounds(154,505,142,30);
-        btnToBookMark.setBounds(302,505,142,30);
+        btnToFeed.setBounds(6, 410, 142, 30);
+        btnToLike.setBounds(154,410,142,30);
+        btnToBookMark.setBounds(302,410,142,30);
 
         lblHeaderImg.setBackground(Color.RED);
         lblHeaderImg.setOpaque(true);
@@ -106,7 +151,55 @@ public class ProfilePanel extends JPanel {
         lblProfileImg.setBackground(Color.BLUE);
         lblProfileImg.setOpaque(true);
 
+        feedPanel.setBounds(0,440,450,150);
+        feedPanel.setBackground(Color.BLUE);
+
+        loadText();
+
+        birthPane.add(lblBirth);
+        birthPane.add(lblBirthText);
+        genderPane.add(lblGender);
+        genderPane.add(lblGenderText);
+        linkPane.add(lblLink);
+        linkPane.add(lblLinkText);
+        regionPane.add(lblRegion);
+        regionPane.add(lblRegionText);
+        createdAtPane.add(lblCreatedAt);
+        createdAtPane.add(lblCreatedAtText);
+
+        subProfilePane.add(birthPane);
+        subProfilePane.add(genderPane);
+        subProfilePane.add(linkPane);
+        subProfilePane.add(regionPane);
+        subProfilePane.add(createdAtPane);
+
+        mainPane.add(lblProfileImg);
+        mainPane.add(btnEditProfile);
+        mainPane.add(lblNickName);
+        mainPane.add(lblFollower);
+        mainPane.add(lblFollowing);
+        mainPane.add(lblFeed);
+        mainPane.add(lblNumOfFollower);
+        mainPane.add(lblNumOfFollowing);
+        mainPane.add(lblNumOfFeed);
+        mainPane.add(lblHeaderImg);
+        mainPane.add(lblUserId);
+        mainPane.add(subProfilePane);
+        mainPane.add(lblIntroduce);
+        mainPane.add(txaIntroduce);
+        mainPane.add(btnToFeed);
+        mainPane.add(btnToLike);
+        mainPane.add(btnToBookMark);
+        mainPane.add(feedPanel);
+
+        this.add(mainPane);
+
+
+    }
+
+    private void loadText(){
         btnEditProfile.setText("수정버튼");
+
         lblNickName.setText(repository.getUserNickname());
         lblNickName.setFont(lblNickName.getFont().deriveFont(20f).deriveFont(Font.BOLD));
         lblFollower.setText("팔로워");
@@ -128,51 +221,19 @@ public class ProfilePanel extends JPanel {
         lblRegionText.setText("미국, LA");
 
         lblIntroduce.setText("자기소개");
-        txaIntroduce.setText("이게 그 자기소개 글이라는 건데 생각해보니까 그냥 글만 넣으면 되지 위에 뭔가" +
-                "달아 놓을 필요는 없네?");
+        txaIntroduce.setText("로렘입숨 - 모든 국민은 통신의 비밀을 침해받지 아니한다. 대통령의 임기가 만료되는 " +
+                "때에는 임기만료 70일 내지 40일전에 후임자를 선거한다.");
 
         btnToFeed.setText("게시글");
         btnToLike.setText("좋아요");
         btnToBookMark.setText("북마크");
-
-        pnlBirth.add(lblBirth);
-        pnlBirth.add(lblBirthText);
-        pnlGender.add(lblGender);
-        pnlGender.add(lblGenderText);
-        pnlLink.add(lblLink);
-        pnlLink.add(lblLinkText);
-        pnlRegion.add(lblRegion);
-        pnlRegion.add(lblRegionText);
-        pnlCreatedAt.add(lblCreatedAt);
-        pnlCreatedAt.add(lblCreatedAtText);
-
-        pnlSubProfile.add(pnlBirth);
-        pnlSubProfile.add(pnlGender);
-        pnlSubProfile.add(pnlLink);
-        pnlSubProfile.add(pnlRegion);
-        pnlSubProfile.add(pnlCreatedAt);
-
-        pnlMain.add(lblProfileImg);
-        pnlMain.add(btnEditProfile);
-        pnlMain.add(lblNickName);
-        pnlMain.add(lblFollower);
-        pnlMain.add(lblFollowing);
-        pnlMain.add(lblFeed);
-        pnlMain.add(lblNumOfFollower);
-        pnlMain.add(lblNumOfFollowing);
-        pnlMain.add(lblNumOfFeed);
-        pnlMain.add(lblHeaderImg);
-        pnlMain.add(lblUserId);
-        pnlMain.add(pnlSubProfile);
-        pnlMain.add(lblIntroduce);
-        pnlMain.add(txaIntroduce);
-        pnlMain.add(btnToFeed);
-        pnlMain.add(btnToLike);
-        pnlMain.add(btnToBookMark);
-
-        this.add(pnlMain);
-
-
     }
 
+    @Override
+    public void onLocaleChanged(Locale newLocale) {
+        currentLocale = newLocale;
+        localeBundle = ResourceBundle.getBundle("language", newLocale);
+        LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
+//        loadText();
+    }
 }

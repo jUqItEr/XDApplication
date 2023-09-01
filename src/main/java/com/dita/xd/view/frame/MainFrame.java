@@ -63,8 +63,6 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
         JPanel sidePane = new JPanel();
         JPanel logoPane = new JPanel();
 
-        JLabel lblLogo = new JLabel();
-
         sidePane.setLayout(new BorderLayout());
         logoPane.setLayout(new BorderLayout());
         mainPane.setLayout(clMain);

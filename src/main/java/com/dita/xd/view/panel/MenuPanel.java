@@ -34,7 +34,7 @@ public class MenuPanel extends JPanel{
         /* Set the default properties to parent panel. */
         setLayout(new BorderLayout());
 
-        JPanel pnlMain = new JPanel();
+        JPanel mainPane = new JPanel();
 
 
         /* Load to memory */
@@ -48,8 +48,8 @@ public class MenuPanel extends JPanel{
         loadText();
 
         /* Set the properties of sub panels */
-        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
-        pnlMain.setPreferredSize(new Dimension(250,400));
+        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
+        mainPane.setPreferredSize(new Dimension(250,400));
         /* Set the properties of components */
         lblHome.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblHome.setPreferredSize(new Dimension(150, 30));
@@ -103,17 +103,17 @@ public class MenuPanel extends JPanel{
             }
         });
 
-        pnlMain.add(lblHome);
-        pnlMain.add(Box.createVerticalStrut(20));
-        pnlMain.add(lblSearch);
-        pnlMain.add(Box.createVerticalStrut(20));
-        pnlMain.add(lblProfile);
-        pnlMain.add(Box.createVerticalStrut(20));
-        pnlMain.add(lblChat);
-        pnlMain.add(Box.createVerticalStrut(20));
-        pnlMain.add(Box.createVerticalGlue());
+        mainPane.add(lblHome);
+        mainPane.add(Box.createVerticalStrut(20));
+        mainPane.add(lblSearch);
+        mainPane.add(Box.createVerticalStrut(20));
+        mainPane.add(lblProfile);
+        mainPane.add(Box.createVerticalStrut(20));
+        mainPane.add(lblChat);
+        mainPane.add(Box.createVerticalStrut(20));
+        mainPane.add(Box.createVerticalGlue());
 
-        this.add(pnlMain);
+        this.add(mainPane);
     }
 
     private void loadText() {
