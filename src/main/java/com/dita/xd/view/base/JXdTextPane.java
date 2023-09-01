@@ -36,10 +36,21 @@ public class JXdTextPane extends JTextPane {
         }
 
         @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            super.insertString(fb, offset, string, attr);
+
+            highlight();
+        }
+
+        @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                 throws BadLocationException {
             super.replace(fb, offset, length, text, attrs);
 
+            highlight();
+        }   // -- End of function (replace: @Override)
+
+        private void highlight() {
             try {
                 StyledDocument doc = textPane.getStyledDocument();
                 String currentText = doc.getText(0, doc.getLength());
@@ -66,6 +77,6 @@ public class JXdTextPane extends JTextPane {
             } catch (BadLocationException e) {
                 e.printStackTrace();
             }   // -- End of try-catch
-        }   // -- End of function (replace: @Override)
+        }
     }
 }
