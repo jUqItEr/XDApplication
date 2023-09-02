@@ -20,4 +20,12 @@ public class ChatroomController {
     public Vector<ChatroomBean> getChatroom(UserBean bean) {
         return getChatroom(bean.getUserId());
     }
+
+    public Vector<UserBean> getUsers(int chatroomId) {
+        return svc.getUsers(chatroomId);
+    }
+
+    public Vector<UserBean> getUsers(ChatroomBean bean) {
+        return getUsers(bean.getChatroomId());
+    }
 }

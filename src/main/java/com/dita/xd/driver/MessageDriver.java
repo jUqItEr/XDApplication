@@ -17,7 +17,7 @@ public class MessageDriver {
         setUIFont(new FontUIResource("Nixgon.ttf", Font.PLAIN, 14));
 
         SwingUtilities.invokeLater(() -> {
-            MessageDialog driver = new MessageDialog(Locale.getDefault(), null, null, 1, "aaa");
+            MessageDialog driver = new MessageDialog(Locale.getDefault(), 1, "테스트 채팅방", "aaa");
             driver.setVisible(true);
         });
     }

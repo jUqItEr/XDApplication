@@ -1,55 +1,81 @@
 package com.dita.xd.view.dialog;
 
+import com.dita.xd.controller.ChatroomController;
 import com.dita.xd.controller.MessageController;
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.ChatMessageBean;
 import com.dita.xd.model.ChatroomBean;
+import com.dita.xd.model.UserBean;
+import com.dita.xd.repository.ChatroomRepository;
+import com.dita.xd.util.server.MessageProtocol;
+import com.dita.xd.util.server.ServerObject;
 import com.dita.xd.view.base.JHintTextField;
+import com.dita.xd.view.base.JRoundedImageView;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
-public class MessageDialog extends JDialog implements ActionListener, LocaleChangeListener {
-    private static final Dimension THUMB_SIZE = new Dimension(170, 100);
-    private final JPanel objectPane = new JPanel(new GridLayout(0, 1, 5, 5));
+public class MessageDialog extends JDialog implements ActionListener, LocaleChangeListener, Runnable {
+    private static final Dimension BUBBLE_SIZE = new Dimension(170, 100);
+    private final JPanel bubblePane = new JPanel(new GridLayout(0, 1, 2, 0));
 
     private ResourceBundle localeBundle;
 
+    private final ChatroomRepository repository;
+
     private JButton btnSend;
     private JHintTextField htfMessage;
+    private JScrollBar scrollBar;
 
-    protected MessageController controller;
+    protected ChatroomController chatroomController;
+    protected MessageController messageController;
 
     protected BufferedReader inputStream;
     protected PrintWriter outputStream;
+    protected Thread mainThread;
     protected int chatroomId;
     protected String userId;
 
-    public MessageDialog(Locale locale, BufferedReader in, PrintWriter out, int chatroomId, String userId) {
-        controller = new MessageController();
+    protected HashMap<String, UserBean> joinedUser;
 
-        this.inputStream = in;
-        this.outputStream = out;
+    public MessageDialog(Locale locale, int chatroomId, String chatroomName, String userId) {
+        chatroomController = new ChatroomController();
+        messageController = new MessageController();
+
+        repository = ChatroomRepository.getInstance();
+
+        ChatroomBean bean = new ChatroomBean();
+        bean.setChatroomId(chatroomId);
+        ServerObject obj = repository.getUser(bean);
+
+        this.inputStream = obj.getInputStream();
+        this.outputStream = obj.getOutputStream();
+
         this.chatroomId = chatroomId;
         this.userId = userId;
+
+        this.joinedUser = new HashMap<>();
+
+        setTitle(chatroomName);
 
         initialize();
         onLocaleChanged(locale);
     }
 
-    public MessageDialog(Locale locale, BufferedReader in, PrintWriter out, ChatroomBean bean, String userId) {
-        this(locale, in, out, bean.getChatroomId(), userId);
+    public MessageDialog(Locale locale, ChatroomBean bean, String userId) {
+        this(locale, bean.getChatroomId(), bean.getName(), userId);
     }
 
     private void initialize() {
-        setSize(600, 800);
+        setSize(450, 700);
         setLayout(new BorderLayout());
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -59,15 +85,14 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         JPanel holderPane = new JPanel();
         JPanel userPane = new JPanel();
         JScrollPane scrollPane = new JScrollPane(holderPane);
-        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
-
         btnSend = new JButton();
         htfMessage = new JHintTextField();
+        scrollBar = scrollPane.getVerticalScrollBar();
 
         holderPane.setLayout(new BorderLayout());
         userPane.setLayout(new BorderLayout());
 
-        holderPane.add(objectPane, BorderLayout.NORTH);
+        holderPane.add(bubblePane, BorderLayout.NORTH);
         holderPane.add(Box.createGlue(), BorderLayout.CENTER);
 
         userPane.add(btnSend, BorderLayout.EAST);
@@ -85,31 +110,109 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         add(scrollPane);
         add(userPane, BorderLayout.SOUTH);
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ChatroomBean tmp = new ChatroomBean();
+                tmp.setChatroomId(chatroomId);
+
+                sendMessage(MessageProtocol.BYE + MessageProtocol.SEPARATOR + userId + ';' + chatroomId);
+
+                try {
+                    ServerObject obj = repository.getUser(tmp);
+                    obj.getSock().close();
+                } catch (IOException ex) {
+                    System.err.println("Socket end");
+                }
+                repository.removeUser(tmp);
+            }
+        });
+
         btnSend.addActionListener(this);
         htfMessage.addActionListener(this);
 
-        Optional.ofNullable(controller.getMessages(this.chatroomId)).orElse(new Vector<>()).forEach(bean -> {
-            createThumb(bean.getContent());
+        chatroomController.getUsers(chatroomId).forEach(bean -> joinedUser.put(bean.getUserId(), bean));
+
+        /* Get message from databases. */
+        Optional.ofNullable(messageController.getMessages(this.chatroomId))
+                .orElse(new Vector<>())
+                .forEach(this::createBubble);
+        sendMessage(MessageProtocol.ID + MessageProtocol.SEPARATOR + userId + ';' + chatroomId);
+
+        mainThread = new Thread(this);
+        mainThread.start();
+    }
+
+    protected void createBubble(ChatMessageBean bean) {
+        JPanel bubbleHolderPane = new JPanel();
+        BubbleLabel bubble = new BubbleLabel(bean, userId);
+        bubblePane.add(bubbleHolderPane);
+
+        if (userId.equals(bean.getUserId())) {
+            bubbleHolderPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            bubbleHolderPane.add(bubble);
+        } else {
+            JRoundedImageView rivProfile = new JRoundedImageView();
+            UserBean userBean = joinedUser.get(bean.getUserId());
+
+            if (userBean != null) {
+                try {
+                    if (userBean.getProfileImage() != null) {
+                        rivProfile.setIcon(new ImageIcon(new URL(userBean.getProfileImage())));
+                    } else {
+                        rivProfile.setIcon(new ImageIcon("resources/images/anonymous.jpg"));
+                    }
+                    rivProfile.setMaximumSize(new Dimension(50, 50));
+                    rivProfile.setPreferredSize(new Dimension(50, 50));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            bubbleHolderPane.setLayout(new FlowLayout(FlowLayout.LEFT));
+            bubbleHolderPane.add(rivProfile);
+            bubbleHolderPane.add(bubble);
+        }
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                Adjustable adjustable = adjustmentEvent.getAdjustable();
+                adjustable.setValue(adjustable.getMaximum());
+                scrollBar.removeAdjustmentListener(this);
+            }
         });
         revalidate();
         repaint();
     }
 
-    protected void createThumb(String text) {
-        JButton thumb = new JButton(text);
-        thumb.setPreferredSize(THUMB_SIZE);
-        objectPane.add(thumb);
-    }
-
-    protected void createMessage(String message) {
-
-        revalidate();
-        repaint();
-    }
-
     private void loadText() {
-        setTitle("Message Tester");
         htfMessage.setHint("Type message");
+    }
+
+    private void process(String line) {
+        String[] tokens = line.split(MessageProtocol.SEPARATOR);
+        String cmd = tokens[0];
+        String data = tokens[1];
+
+        if (cmd.equals(MessageProtocol.CHAT_ALL)) {
+            tokens = data.split(";");
+            String userId = tokens[0];
+            String message = tokens[2];
+            int chatroomId = Integer.parseInt(tokens[1]);
+
+            if (this.chatroomId == chatroomId) {
+                ChatMessageBean bean = new ChatMessageBean();
+
+                bean.setChatroomId(chatroomId);
+                bean.setContent(message);
+                bean.setUserId(userId);
+
+                createBubble(bean);
+            }
+        }
+    }
+
+    private void sendMessage(String msg) {
+        outputStream.println(msg);
     }
 
     @Override
@@ -120,6 +223,8 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
             String msg = htfMessage.getText().trim();
 
             if (!msg.isEmpty()) {
+                sendMessage(MessageProtocol.CHAT_ALL + MessageProtocol.SEPARATOR +
+                        userId + ';' + chatroomId + ';' + msg);
             }
             htfMessage.setText("");     // clear
         }
@@ -130,5 +235,47 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         localeBundle = ResourceBundle.getBundle("language", newLocale);
         loadText();
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                String line = inputStream.readLine();
+
+                if (line == null) {
+                    break;
+                } else {
+                    process(line);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Socket close!!");
+        }
+    }
+
+    class BubbleLabel extends JLabel {
+        private final ChatMessageBean bean;
+        private final String loginUserId;
+
+        public BubbleLabel(ChatMessageBean bean, String loginUserId) {
+            super(bean.getContent());
+            this.bean = bean;
+            this.loginUserId = loginUserId;
+
+            initialize();
+        }
+
+        private void initialize() {
+            setBorder(new EmptyBorder(12, 12, 12, 12));
+            setOpaque(true);
+
+            if (loginUserId.equals(bean.getUserId())) {
+                setBackground(new Color(0x00_1D_9B_F0));
+                setForeground(Color.WHITE);
+            } else {
+                setBackground(new Color(0xD0D3D3));
+            }
+        }
     }
 }

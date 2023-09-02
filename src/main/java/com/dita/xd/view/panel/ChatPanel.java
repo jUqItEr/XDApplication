@@ -7,17 +7,16 @@ import com.dita.xd.repository.UserRepository;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.Timer;
 
 public class ChatPanel extends JPanel implements LocaleChangeListener {
-    private static final Dimension PANE_SIZE = new Dimension(0, 75);
+    private static final Dimension PANE_SIZE = new Dimension(0, 72);
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
 
+    private final HashMap<Integer, ChatroomPanel> chatroom;
     private final ChatroomController controller;
     private final UserRepository repository;
 
@@ -25,9 +24,13 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
     private JButton btnConnect;
 
+    private Timer alarm;
+
     public ChatPanel(Locale locale) {
         currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
+
+        chatroom = new HashMap<>();
 
         controller = new ChatroomController();
         repository = UserRepository.getInstance();
@@ -65,14 +68,6 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
         scrollBar.setPreferredSize(new Dimension(0, 0));
         scrollBar.setUnitIncrement(16);
-        scrollBar.addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                Adjustable adjustable = adjustmentEvent.getAdjustable();
-                adjustable.setValue(adjustable.getMaximum());
-                scrollBar.removeAdjustmentListener(this);
-            }
-        });
 
         scrollPane.setVerticalScrollBar(scrollBar);
 
@@ -80,14 +75,34 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
         controller.getChatroom(repository.getUserId())
                 .forEach(this::appendChatroom);
+
+        /* Alarm control */
+        alarm = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                for (int key : getChatroom().keySet()) {
+                    getChatroom().get(key).loadRecentMessage();
+                    revalidate();
+                    repaint();
+                }
+            }
+        };
+        alarm.schedule(task, 0, 5000);
+
         revalidate();
         repaint();
+    }
+
+    public HashMap<Integer, ChatroomPanel> getChatroom() {
+        return chatroom;
     }
 
     private void appendChatroom(ChatroomBean bean) {
         ChatroomPanel pane = new ChatroomPanel(currentLocale, bean);
         pane.setPreferredSize(PANE_SIZE);
         chatroomPane.add(pane);
+        chatroom.put(bean.getChatroomId(), pane);
     }
 
     private void loadText() {

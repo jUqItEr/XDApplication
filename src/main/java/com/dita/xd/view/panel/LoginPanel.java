@@ -91,50 +91,20 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
 
         /* Add listeners on components */
         btnLogin.addActionListener(e -> {
-            PlainDialog dialog = null;
-            boolean isError = false;
-            String id = htfId.getText().trim();
-            String pwd = new String(hpfPassword.getPassword());
-
-            if (id.isEmpty()) {
-                dialog = new PlainDialog(
-                        currentLocale,
-                        String.format(localeBundle.getString("dialog.plain.message"),
-                                localeBundle.getString("login.field.hint.id")),
-                        PlainDialog.MessageType.INFORMATION
-                );
-                isError = true;
-            } else if (pwd.isEmpty()) {
-                dialog = new PlainDialog(
-                        currentLocale,
-                        String.format(localeBundle.getString("dialog.plain.message"),
-                                localeBundle.getString("login.field.hint.password")),
-                        PlainDialog.MessageType.INFORMATION
-                );
-                isError = true;
-            } else if (!controller.login(id, pwd)) {
-                dialog = new PlainDialog(
-                        currentLocale,
-                        localeBundle.getString("dialog.plain.message.error.no_exists"),
-                        PlainDialog.MessageType.INFORMATION
-                );
-                isError = true;
-            }
-            if (isError) {
-                dialog.setVisible(true);
-            } else {
-                MainFrame frame = new MainFrame(currentLocale);
-                frame.setVisible(true);
-                mgr.dispose();
-                System.out.println("Login complete");
-            }
+            login();
         });
-
         btnRegister.addActionListener(e -> {
             clear();
             mgr.show("register");
         });
+        htfId.addActionListener(e -> {
+            String id = htfId.getText().trim();
 
+            if (!id.isEmpty()) {
+                hpfPassword.requestFocus();
+            }
+        });
+        hpfPassword.addActionListener( e -> login());
         lblFindPassword.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -179,6 +149,46 @@ public class LoginPanel extends JPanel implements LocaleChangeListener {
         htfId.repaint();
 
         lblFindPassword.setText(localeBundle.getString("login.label.password"));
+    }
+
+    private void login() {
+        PlainDialog dialog = null;
+        boolean isError = false;
+        String id = htfId.getText().trim();
+        String pwd = new String(hpfPassword.getPassword());
+
+        if (id.isEmpty()) {
+            dialog = new PlainDialog(
+                    currentLocale,
+                    String.format(localeBundle.getString("dialog.plain.message"),
+                            localeBundle.getString("login.field.hint.id")),
+                    PlainDialog.MessageType.INFORMATION
+            );
+            isError = true;
+        } else if (pwd.isEmpty()) {
+            dialog = new PlainDialog(
+                    currentLocale,
+                    String.format(localeBundle.getString("dialog.plain.message"),
+                            localeBundle.getString("login.field.hint.password")),
+                    PlainDialog.MessageType.INFORMATION
+            );
+            isError = true;
+        } else if (!controller.login(id, pwd)) {
+            dialog = new PlainDialog(
+                    currentLocale,
+                    localeBundle.getString("dialog.plain.message.error.no_exists"),
+                    PlainDialog.MessageType.INFORMATION
+            );
+            isError = true;
+        }
+        if (isError) {
+            dialog.setVisible(true);
+        } else {
+            MainFrame frame = new MainFrame(currentLocale);
+            frame.setVisible(true);
+            mgr.dispose();
+            System.out.println("Login complete");
+        }
     }
 
     @Override

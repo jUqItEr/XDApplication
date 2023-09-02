@@ -1,5 +1,7 @@
 package com.dita.xd.view.manager;
 
+import com.dita.xd.view.panel.ChatPanel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,6 +18,7 @@ public class MainLayoutMgr {
      * 2. initialize 함수에서 mgr내부 mainLayout, mainFrame, mainPane 등의 필드를 setter로 기입
      * */
     private CardLayout mainLayout;
+    private ChatPanel chatPane;
     private JFrame mainFrame;
     private JPanel mainPane;
 
@@ -40,6 +43,10 @@ public class MainLayoutMgr {
 
     public void setMainFrame(JFrame mainFrame) {
         this.mainFrame = mainFrame;
+    }
+
+    public void setChatPane(ChatPanel chatPane) {
+        this.chatPane = chatPane;
     }
 
     public void setMainPane(JPanel mainPane) {

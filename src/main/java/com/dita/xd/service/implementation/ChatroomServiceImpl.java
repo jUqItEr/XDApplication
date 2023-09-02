@@ -48,4 +48,43 @@ public class ChatroomServiceImpl implements ChatroomService {
     public Vector<ChatroomBean> getChatroom(UserBean bean) {
         return getChatroom(bean.getUserId());
     }
+
+    @Override
+    public Vector<UserBean> getUsers(int chatroomId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from chatroom_join_view where chatroom_id = ?";
+        Vector<UserBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, chatroomId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                UserBean bean = new UserBean();
+                String id = rs.getString("id");
+                String nickname = rs.getString("nickname");
+                String profile_image = rs.getString("profile_image");
+
+                bean.setUserId(id);
+                bean.setNickname(nickname);
+                bean.setProfileImage(profile_image);
+
+                beans.addElement(bean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<UserBean> getUsers(ChatroomBean bean) {
+        return getUsers(bean.getChatroomId());
+    }
 }
