@@ -7,6 +7,8 @@ import com.dita.xd.repository.UserRepository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -63,6 +65,14 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
         scrollBar.setPreferredSize(new Dimension(0, 0));
         scrollBar.setUnitIncrement(16);
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                Adjustable adjustable = adjustmentEvent.getAdjustable();
+                adjustable.setValue(adjustable.getMaximum());
+                scrollBar.removeAdjustmentListener(this);
+            }
+        });
 
         scrollPane.setVerticalScrollBar(scrollBar);
 
