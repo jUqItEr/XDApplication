@@ -1,9 +1,11 @@
 package com.dita.xd.driver;
 
+import com.dita.xd.model.FeedBean;
 import com.dita.xd.service.implementation.FeedServiceImpl;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Vector;
 
 /**
  * @deprecated For testing
@@ -16,7 +18,8 @@ public class FeedDriver {
         //System.out.println(impl.create("123", "테스트입니다"));
 
         // 피드 가져오기
-        impl.getFeeds("123").forEach(System.out::println);
+        Vector<FeedBean> feeds = impl.getFeeds("123");
+        feeds.forEach(System.out::println);
         // impl.getFeeds("123", Timestamp.valueOf("2023-08-30 23:59:59")).forEach(System.out::println);
 
         //impl.getFeeds("123", Timestamp.valueOf("2023-08-29 00:00:00"), Timestamp.valueOf("2023-08-30 23:59:59")).forEach(System.out::println);

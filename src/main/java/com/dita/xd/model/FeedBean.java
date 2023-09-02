@@ -16,9 +16,9 @@ public class FeedBean {
     private Timestamp createdAt;
     private int viewer;
     private Vector<MediaBean> mediaBeans;
-    private Vector<FeedCommentBean> feedCommentBeans;
-    private Vector<FeedbackBean> feedbackBeans;
-    private Vector<LikeBean> likeBeans;
+    private Vector<FeedBean> feedCommentBeans;
+    private Vector<UserBean> feedbackBeans;
+    private Vector<UserBean> likeBeans;
 
     public FeedBean() {
     }
@@ -87,27 +87,27 @@ public class FeedBean {
         this.mediaBeans = mediaBeans;
     }
 
-    public Vector<FeedCommentBean> getFeedCommentBeans() {
+    public Vector<FeedBean> getFeedCommentBeans() {
         return feedCommentBeans;
     }
 
-    public void setFeedCommentBeans(Vector<FeedCommentBean> feedCommentBeans) {
+    public void setFeedCommentBeans(Vector<FeedBean> feedCommentBeans) {
         this.feedCommentBeans = feedCommentBeans;
     }
 
-    public Vector<FeedbackBean> getFeedbackBeans() {
+    public Vector<UserBean> getFeedbackBeans() {
         return feedbackBeans;
     }
 
-    public void setFeedbackBeans(Vector<FeedbackBean> feedbackBeans) {
+    public void setFeedbackBeans(Vector<UserBean> feedbackBeans) {
         this.feedbackBeans = feedbackBeans;
     }
 
-    public Vector<LikeBean> getLikeBeans() {
+    public Vector<UserBean> getLikeBeans() {
         return likeBeans;
     }
 
-    public void setLikeBeans(Vector<LikeBean> likeBeans) {
+    public void setLikeBeans(Vector<UserBean> likeBeans) {
         this.likeBeans = likeBeans;
     }
 

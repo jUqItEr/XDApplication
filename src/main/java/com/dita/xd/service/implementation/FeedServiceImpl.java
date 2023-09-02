@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Vector;
 
-import static com.dita.xd.util.helper.ResultSetExtractHelper.extractFeedBean;
+import static com.dita.xd.util.helper.ResultSetExtractHelper.*;
 
 public class FeedServiceImpl implements FeedService {
     private DBConnectionServiceImpl pool = null;
@@ -74,22 +74,42 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public Vector<FeedCommentBean> getComments(FeedBean bean) {
-        return null;
-    }
-
-    @Override
-    public Vector<FeedbackBean> getFeedbacks(FeedBean bean) {
-        return null;
-    }
-
-    @Override
-    public Vector<LikeBean> getLikes(FeedBean bean) {
+    public Vector<FeedBean> getBookmarks(String userId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from feed_like_view where feed_id";
-        Vector<LikeBean> beans = new Vector<>();
+        String sql = "select * from feed_bookmark_view where bookmark_user_id = ?";
+        Vector<FeedBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FeedBean bean = extractBookmarkBean(rs);
+                bean.setFeedbackBeans(getFeedbacks(bean));
+                bean.setFeedCommentBeans(getComments(bean));
+                bean.setLikeBeans(getLikes(bean));
+                bean.setMediaBeans(getMedium(bean));
+                beans.addElement(bean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<FeedBean> getComments(FeedBean bean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_comment_view where feed_original_id = ?";
+        Vector<FeedBean> beans = new Vector<>();
 
         try {
             conn = pool.getConnection();
@@ -98,7 +118,87 @@ public class FeedServiceImpl implements FeedService {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
+                FeedBean newBean = new FeedBean();
+                newBean.setFeedbackBeans(getFeedbacks(newBean));
+                newBean.setFeedCommentBeans(getComments(newBean));
+                newBean.setLikeBeans(getLikes(newBean));
+                newBean.setMediaBeans(getMedium(newBean));
+                beans.addElement(newBean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
 
+    @Override
+    public Vector<UserBean> getFeedbacks(FeedBean bean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_feedback_view where feed_id = ?";
+        Vector<UserBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bean.getId());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                beans.addElement(extractFeedbackUserBean(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<UserBean> getLikes(FeedBean bean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_like_view where feed_id = ?";
+        Vector<UserBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bean.getId());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                beans.add(extractLikeUserBean(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<MediaBean> getMedium(FeedBean bean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_media_view where feed_id = ?";
+        Vector<MediaBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, bean.getId());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                beans.addElement(extractMediaBean(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,7 +226,10 @@ public class FeedServiceImpl implements FeedService {
                 FeedBean bean = extractFeedBean(rs);
 
                 if (bean.getUserId() != null) {
-
+                    bean.setFeedbackBeans(getFeedbacks(bean));
+                    bean.setFeedCommentBeans(getComments(bean));
+                    bean.setLikeBeans(getLikes(bean));
+                    bean.setMediaBeans(getMedium(bean));
                     beans.addElement(bean);
                 }
             }
@@ -219,6 +322,4 @@ public class FeedServiceImpl implements FeedService {
         }
         return beans;
     }
-
-
 }

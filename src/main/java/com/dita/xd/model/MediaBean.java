@@ -1,19 +1,20 @@
 package com.dita.xd.model;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 public class MediaBean {
     private int id;
     private String userId;
-    private char contentType;
+    private String contentType;
     private String contentAddress;
-    private char contentCensoredType;
+    private String contentCensoredType;
     private Timestamp createdAt;
 
     public MediaBean() {
     }
 
-    public MediaBean(int id, String userId, char contentType, String contentAddress, char contentCensoredType, Timestamp createdAt) {
+    public MediaBean(int id, String userId, String contentType, String contentAddress,
+                     String contentCensoredType, Timestamp createdAt) {
         this.id = id;
         this.userId = userId;
         this.contentType = contentType;
@@ -38,11 +39,11 @@ public class MediaBean {
         this.userId = userId;
     }
 
-    public char getContentType() {
+    public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(char contentType) {
+    public void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
@@ -54,11 +55,11 @@ public class MediaBean {
         this.contentAddress = contentAddress;
     }
 
-    public char getContentCensoredType() {
+    public String getContentCensoredType() {
         return contentCensoredType;
     }
 
-    public void setContentCensoredType(char contentCensoredType) {
+    public void setContentCensoredType(String contentCensoredType) {
         this.contentCensoredType = contentCensoredType;
     }
 

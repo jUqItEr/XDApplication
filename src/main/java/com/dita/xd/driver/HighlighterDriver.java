@@ -93,6 +93,7 @@ public class HighlighterDriver extends JDialog {
                                 userColor,
                                 false
                         );
+                        textPane.getInputAttributes().removeAttributes(userColor);
                     }
                 } catch (BadLocationException e) {
                     e.printStackTrace();
