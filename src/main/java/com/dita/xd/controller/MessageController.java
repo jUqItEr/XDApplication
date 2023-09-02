@@ -20,7 +20,9 @@ public class MessageController {
     }
 
     public Vector<ChatMessageBean> getMessages(int chatroomId) {
-        return svc.getMessages(chatroomId);
+        Vector<ChatMessageBean> beans = svc.getMessages(chatroomId);
+
+        return beans.size() > 0 ? beans : null;
     }
 
     public Vector<ChatMessageBean> getMessages(int chatroomId, String userId) {

@@ -5,10 +5,7 @@ import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.dialog.ProfileDialog;
 import com.dita.xd.view.manager.MainLayoutMgr;
-import com.dita.xd.view.panel.HomePagePanel;
-import com.dita.xd.view.panel.MenuPanel;
-import com.dita.xd.view.panel.ProfilePanel;
-import com.dita.xd.view.panel.SearchPanel;
+import com.dita.xd.view.panel.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -27,6 +24,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
     private final MenuPanel menuPanel;
     private final ProfilePanel profilePanel;
     private final SearchPanel searchPanel;
+    private final ChatPanel chatPanel;
 
     public MainFrame(Locale locale) {
         currentLocale = locale;
@@ -38,6 +36,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
         menuPanel = new MenuPanel(locale);
         searchPanel = new SearchPanel(locale);
         profilePanel = new ProfilePanel(locale);
+        chatPanel = new ChatPanel(locale);
 
         mgr = MainLayoutMgr.getInstance();
 
@@ -48,7 +47,8 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
     private void initialize() {
         setLayout(new BorderLayout());
 
-        setSize(new Dimension(750, 600));
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(new Dimension(750, 900));
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -85,6 +85,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
         mainPane.add(homePagePanel, "home");
         mainPane.add(searchPanel, "search");
         mainPane.add(profilePanel, "profile");
+        mainPane.add(chatPanel, "chat");
 
         this.add(sidePane, BorderLayout.WEST);
         this.add(mainPane);

@@ -1,6 +1,7 @@
 package com.dita.xd.util.helper;
 
 import com.dita.xd.model.ChatMessageBean;
+import com.dita.xd.model.ChatroomBean;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
 
@@ -10,8 +11,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class ResultSetExtractHelper {
-    public static ChatMessageBean extractChatMessageBean(ResultSet rs)
-            throws SQLException {
+    public static ChatMessageBean extractChatMessageBean(ResultSet rs) throws SQLException {
         Timestamp beanCreatedAt = rs.getTimestamp("created_at");
         String beanContent = rs.getString("content");
         String beanReadState = rs.getString("read_state");
@@ -23,6 +23,17 @@ public class ResultSetExtractHelper {
 
         return new ChatMessageBean(beanId, beanContent, beanChatRoomId, beanUserId,
                 beanUserNickname, beanProfileImage, beanCreatedAt, beanReadState);
+    }
+
+    public static ChatroomBean extractChatroomBean(ResultSet rs) throws SQLException {
+        String createdAt = rs.getString("created_at");
+        String deletedAt = rs.getString("deleted_at");
+        String name = rs.getString("name");
+        String status = rs.getString("status");
+        String updatedAt = rs.getString("updated_at");
+        int id = rs.getInt("id");
+
+        return new ChatroomBean(id, name, status, createdAt, updatedAt, deletedAt);
     }
 
     public static FeedBean extractFeedBean(ResultSet rs) throws SQLException {

@@ -1,21 +1,17 @@
 package com.dita.xd.model;
 
-
-import java.sql.Timestamp;
-
 public class ChatroomBean {
     private int chatroomId;
     private String name;
-    private char status;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
-    private Timestamp deletedAt;
+    private String status;
+    private String createdAt;
+    private String updatedAt;
+    private String deletedAt;
 
     public ChatroomBean() {
     }
 
-    public ChatroomBean(int id, String name, char status,
-                        Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+    public ChatroomBean(int id, String name, String status, String createdAt, String updatedAt, String deletedAt) {
         this.chatroomId = id;
         this.name = name;
         this.status = status;
@@ -40,35 +36,35 @@ public class ChatroomBean {
         this.name = name;
     }
 
-    public char getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(char status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Timestamp getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public Timestamp getDeletedAt() {
+    public String getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(Timestamp deletedAt) {
+    public void setDeletedAt(String deletedAt) {
         this.deletedAt = deletedAt;
     }
 }

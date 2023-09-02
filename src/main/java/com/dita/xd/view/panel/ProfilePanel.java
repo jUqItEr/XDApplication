@@ -57,7 +57,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         repository = UserRepository.getInstance();
         controller = new FeedController();
 
-        feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
+        //feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
 
 
         initialize();
@@ -151,8 +151,10 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         lblProfileImg.setBackground(Color.BLUE);
         lblProfileImg.setOpaque(true);
 
-        feedPanel.setBounds(0,440,450,150);
-        feedPanel.setBackground(Color.BLUE);
+        if (feedPanel != null) {
+            feedPanel.setBounds(0,440,450,150);
+            feedPanel.setBackground(Color.BLUE);
+        }
 
         loadText();
 
@@ -190,7 +192,10 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         mainPane.add(btnToFeed);
         mainPane.add(btnToLike);
         mainPane.add(btnToBookMark);
-        mainPane.add(feedPanel);
+
+        if (feedPanel != null) {
+            mainPane.add(feedPanel);
+        }
 
         this.add(mainPane);
 
