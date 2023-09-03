@@ -96,7 +96,7 @@ public class ChatroomPanel extends JPanel implements LocaleChangeListener {
         JPanel subPane = new JPanel();
         JPanel topPane = new JPanel();
         JRoundedImageView rivProfile = new JRoundedImageView();
-        ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
+        ImageIcon icon = new ImageIcon("resources/images/xd.png");
 
         btnConnect = new JButton();
         btnExit = new JButton();

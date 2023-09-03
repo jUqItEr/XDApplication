@@ -10,6 +10,7 @@ import com.dita.xd.repository.ChatroomRepository;
 import com.dita.xd.util.server.MessageProtocol;
 import com.dita.xd.util.server.ServerObject;
 import com.dita.xd.view.base.JHintTextField;
+import com.dita.xd.view.base.JVerticalScrollPane;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -86,7 +87,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
 
         JPanel holderPane = new JPanel();
         JPanel userPane = new JPanel();
-        JScrollPane scrollPane = new JScrollPane(new VerticalScrollPane(holderPane));
+        JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(holderPane));
         btnSend = new JButton();
         htfMessage = new JHintTextField();
         scrollBar = scrollPane.getVerticalScrollBar();
@@ -365,47 +366,6 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
                 }
             }
             super.paintComponent(g);
-        }
-    }
-
-    private static class VerticalScrollPane extends JPanel implements Scrollable {
-
-        public VerticalScrollPane() {
-            this(new GridLayout(0, 1));
-        }
-
-        public VerticalScrollPane(LayoutManager lm) {
-            super(lm);
-        }
-
-        public VerticalScrollPane(Component comp) {
-            this();
-            add(comp);
-        }
-
-        @Override
-        public Dimension getPreferredScrollableViewportSize() {
-            return getPreferredSize();
-        }
-
-        @Override
-        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-            return 8;
-        }
-
-        @Override
-        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-            return 100;
-        }
-
-        @Override
-        public boolean getScrollableTracksViewportWidth() {
-            return true;
-        }
-
-        @Override
-        public boolean getScrollableTracksViewportHeight() {
-            return false;
         }
     }
 }
