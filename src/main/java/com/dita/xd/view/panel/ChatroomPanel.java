@@ -85,6 +85,7 @@ public class ChatroomPanel extends JPanel implements LocaleChangeListener {
     }
 
     private void initialize() {
+        setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         setLayout(new BorderLayout());
 
         JLabel lblTitle = new JLabel();
@@ -111,8 +112,6 @@ public class ChatroomPanel extends JPanel implements LocaleChangeListener {
         lblTitle.setText(bean.getName());
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD).deriveFont(16f));
 
-        mainPane.setBackground(new Color(0xBBBBBB));
-
         rivProfile.setMaximumSize(new Dimension(60, 60));
         rivProfile.setPreferredSize(new Dimension(60, 60));
         rivProfile.setIcon(icon);
@@ -120,8 +119,8 @@ public class ChatroomPanel extends JPanel implements LocaleChangeListener {
         bottomPane.add(lblMessage);
         buttonPane.add(btnConnect);
         buttonPane.add(btnExit);
-        mainPane.add(Box.createHorizontalStrut(4));
         mainPane.add(rivProfile);
+        mainPane.add(Box.createHorizontalStrut(1));
         messagePane.add(topPane);
         messagePane.add(bottomPane);
         topPane.add(lblTitle);

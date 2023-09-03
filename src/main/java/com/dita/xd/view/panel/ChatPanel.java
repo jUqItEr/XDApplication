@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.Timer;
 
 public class ChatPanel extends JPanel implements LocaleChangeListener {
-    private static final Dimension PANE_SIZE = new Dimension(0, 72);
+    private static final Dimension PANE_SIZE = new Dimension(0, 88);
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
@@ -36,7 +36,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
         repository = UserRepository.getInstance();
 
         chatroomPane = new JPanel();
-        chatroomPane.setLayout(new GridLayout(0, 1, 10, 10));
+        chatroomPane.setLayout(new GridLayout(0, 1, 4, 4));
 
         initialize();
         onLocaleChanged(locale);

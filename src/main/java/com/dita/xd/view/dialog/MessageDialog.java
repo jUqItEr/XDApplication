@@ -16,15 +16,18 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.geom.Area;
+import java.awt.geom.RoundRectangle2D;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.util.*;
 
 public class MessageDialog extends JDialog implements ActionListener, LocaleChangeListener, Runnable {
-    private static final Dimension BUBBLE_SIZE = new Dimension(170, 100);
     private final JPanel bubblePane = new JPanel(new GridLayout(0, 1, 2, 0));
 
     private ResourceBundle localeBundle;
@@ -75,16 +78,16 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
     }
 
     private void initialize() {
-        setSize(450, 700);
+        setBackground(Color.WHITE);
+        setSize(560, 700);
         setLayout(new BorderLayout());
-
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
         JPanel holderPane = new JPanel();
         JPanel userPane = new JPanel();
-        JScrollPane scrollPane = new JScrollPane(holderPane);
+        JScrollPane scrollPane = new JScrollPane(new VerticalScrollPane(holderPane));
         btnSend = new JButton();
         htfMessage = new JHintTextField();
         scrollBar = scrollPane.getVerticalScrollBar();
@@ -104,7 +107,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
 
         scrollBar.setPreferredSize(new Dimension(0, 0));
         scrollBar.setUnitIncrement(16);
-
+        scrollPane.setBackground(Color.WHITE);
         scrollPane.setVerticalScrollBar(scrollBar);
 
         add(scrollPane);
@@ -144,34 +147,41 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
     }
 
     protected void createBubble(ChatMessageBean bean) {
+        GridBagConstraints gbc = new GridBagConstraints();
         JPanel bubbleHolderPane = new JPanel();
-        BubbleLabel bubble = new BubbleLabel(bean, userId);
+        JLabel lblName = new JLabel();
+        BubbleLabel bubble = new BubbleLabel(bubbleHolderPane, bean, userId);
+
         bubblePane.add(bubbleHolderPane);
 
-        if (userId.equals(bean.getUserId())) {
-            bubbleHolderPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            bubbleHolderPane.add(bubble);
-        } else {
-            JRoundedImageView rivProfile = new JRoundedImageView();
-            UserBean userBean = joinedUser.get(bean.getUserId());
+        bubbleHolderPane.setBackground(Color.WHITE);
+        bubbleHolderPane.setBorder(new EmptyBorder(0, 8, 0, 8));
+        bubbleHolderPane.setLayout(new GridBagLayout());
 
-            if (userBean != null) {
-                try {
-                    if (userBean.getProfileImage() != null) {
-                        rivProfile.setIcon(new ImageIcon(new URL(userBean.getProfileImage())));
-                    } else {
-                        rivProfile.setIcon(new ImageIcon("resources/images/anonymous.jpg"));
-                    }
-                    rivProfile.setMaximumSize(new Dimension(50, 50));
-                    rivProfile.setPreferredSize(new Dimension(50, 50));
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-            bubbleHolderPane.setLayout(new FlowLayout(FlowLayout.LEFT));
-            bubbleHolderPane.add(rivProfile);
-            bubbleHolderPane.add(bubble);
+        lblName.setText(joinedUser.get(bean.getUserId()).getNickname());
+
+        if (userId.equals(bean.getUserId())) {
+            gbc.anchor = GridBagConstraints.EAST;
+        } else {
+            gbc.anchor = GridBagConstraints.WEST;
         }
+        gbc.insets.set(0, 0, 0, 0);
+        gbc.weightx = 1.0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.NONE;
+        bubbleHolderPane.add(lblName, gbc);
+
+        if (gbc.anchor == GridBagConstraints.WEST) {
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.insets.set(0, 0, 8, 80);
+            bubbleHolderPane.add(bubble, gbc);
+        }
+        else {
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.insets.set(0, 80, 8, 0);
+            bubbleHolderPane.add(bubble, gbc);
+        }
+
         scrollBar.addAdjustmentListener(new AdjustmentListener() {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
@@ -207,6 +217,14 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
                 bean.setUserId(userId);
 
                 createBubble(bean);
+            }
+        } else if (cmd.equals(MessageProtocol.DISMISS)) {
+            tokens = data.split(";");
+            String userId = tokens[0];
+            int chatroomId = Integer.parseInt(tokens[1]);
+
+            if (this.chatroomId == chatroomId) {
+                joinedUser.remove(userId);
             }
         }
     }
@@ -254,21 +272,31 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         }
     }
 
-    class BubbleLabel extends JLabel {
+    private static class BubbleLabel extends JTextArea {
         private final ChatMessageBean bean;
         private final String loginUserId;
 
-        public BubbleLabel(ChatMessageBean bean, String loginUserId) {
+        private int radius = 12;
+        private int strokeThickness = 4;
+        private int padding = strokeThickness / 2;
+        private JPanel mParent;
+
+        public BubbleLabel(JPanel parent, ChatMessageBean bean, String loginUserId) {
             super(bean.getContent());
             this.bean = bean;
             this.loginUserId = loginUserId;
+            this.mParent = parent;
 
             initialize();
         }
 
         private void initialize() {
             setBorder(new EmptyBorder(12, 12, 12, 12));
-            setOpaque(true);
+            setEditable(false);
+            setFocusable(false);
+            setLineWrap(true);
+            setOpaque(false);
+            setWrapStyleWord(true);
 
             if (loginUserId.equals(bean.getUserId())) {
                 setBackground(new Color(0x00_1D_9B_F0));
@@ -276,6 +304,109 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
             } else {
                 setBackground(new Color(0xD0D3D3));
             }
+        }
+
+        private int countLines(JTextArea textArea) {
+            AttributedString text = new AttributedString(textArea.getText());
+            FontRenderContext frc = textArea.getFontMetrics(textArea.getFont())
+                    .getFontRenderContext();
+            AttributedCharacterIterator charIt = text.getIterator();
+            LineBreakMeasurer lineMeasurer = new LineBreakMeasurer(charIt, frc);
+            float formatWidth = (float) textArea.getSize().width;
+            lineMeasurer.setPosition(charIt.getBeginIndex());
+
+            int noLines = 0;
+            while (lineMeasurer.getPosition() < charIt.getEndIndex()) {
+                lineMeasurer.nextLayout(formatWidth);
+                noLines++;
+            }
+
+            return noLines;
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(getBackground());
+            int x = padding + strokeThickness;
+            int width = getWidth() - (strokeThickness * 2);
+            int bottomLineY = getHeight() - strokeThickness;
+            g2d.fillRect(x, padding, width, bottomLineY);
+            g2d.setRenderingHints(new RenderingHints(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON));
+            g2d.setStroke(new BasicStroke(strokeThickness));
+            RoundRectangle2D.Double rect = new RoundRectangle2D.Double(x, padding,
+                    width, bottomLineY, radius, radius);
+            Area area = new Area(rect);
+            g2d.draw(area);
+
+            int lc = countLines(this);
+            GridBagLayout gbl = (GridBagLayout) mParent.getLayout();
+            GridBagConstraints constraints = gbl.getConstraints(this);
+
+            if (lc == 1) {
+                if (constraints.fill == GridBagConstraints.HORIZONTAL) {
+                    constraints.fill = GridBagConstraints.NONE;
+                    gbl.setConstraints(this, constraints);
+
+                    this.setSize(
+                            getFontMetrics(getFont()).stringWidth(getText()) +
+                                    this.getBorder().getBorderInsets(this).left +
+                                    this.getBorder().getBorderInsets(this).right + 10,
+                            getHeight() +
+                                    this.getBorder().getBorderInsets(this).top +
+                                    this.getBorder().getBorderInsets(this).bottom);
+                }
+            } else {
+                if (constraints.fill == GridBagConstraints.NONE) {
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    gbl.setConstraints(this, constraints);
+
+                }
+            }
+            super.paintComponent(g);
+        }
+    }
+
+    private static class VerticalScrollPane extends JPanel implements Scrollable {
+
+        public VerticalScrollPane() {
+            this(new GridLayout(0, 1));
+        }
+
+        public VerticalScrollPane(LayoutManager lm) {
+            super(lm);
+        }
+
+        public VerticalScrollPane(Component comp) {
+            this();
+            add(comp);
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 8;
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 100;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return true;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return false;
         }
     }
 }
