@@ -43,7 +43,6 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
     private JLabel lblLinkText;
     private JLabel lblRegionText;
 
-    private JLabel lblIntroduce;
     private JTextArea txaIntroduce;
 
     private JButton btnEditProfile;
@@ -57,7 +56,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         repository = UserRepository.getInstance();
         controller = new FeedController();
 
-        //feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
+        feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
 
 
         initialize();
@@ -68,15 +67,26 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
     private void initialize(){
         setLayout(new BorderLayout());
 
-        JScrollPane mainPane = new JScrollPane();
+        JScrollPane scrollPane = new JScrollPane();
 
-        /* 생일 - 가입시각까지 묶기 위한 Panel 선언 */
-        JPanel subProfilePane = new JPanel();
+        JPanel mainPane = new JPanel();
+        JPanel subProfilePane = new JPanel(); /* 생일 - 가입시각까지 묶기 위한 Panel 선언 */
         JPanel birthPane = new JPanel();
         JPanel genderPane = new JPanel();
         JPanel linkPane = new JPanel();
         JPanel regionPane = new JPanel();
         JPanel createdAtPane = new JPanel();
+
+        JPanel followerPane = new JPanel();
+        JPanel followingPane = new JPanel();
+        JPanel feedCountPane = new JPanel();
+
+        JPanel headPane = new JPanel();
+        JPanel headSubPane = new JPanel();
+        JPanel userInfoPane = new JPanel();
+        JPanel userInfoSubPane = new JPanel();
+        JPanel btnBoxPane = new JPanel();
+        JPanel feedPane = new JPanel();
 
         lblHeaderImg = new JLabel();
         lblProfileImg = new JLabel();
@@ -101,7 +111,6 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         lblLinkText = new JLabel();
         lblRegionText = new JLabel();
 
-        lblIntroduce = new JLabel();
         txaIntroduce = new JTextArea();
 
         btnEditProfile = new JButton();
@@ -109,54 +118,68 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         btnToLike = new JButton();
         btnToBookMark = new JButton();
 
-        mainPane.setLayout(null);
+        /* 서브 패널 추가 */
+        headPane.add(headSubPane);
+
+        userInfoPane.add(userInfoSubPane);
+
+        subProfilePane.add(birthPane);
+        subProfilePane.add(genderPane);
+        subProfilePane.add(linkPane);
+        subProfilePane.add(regionPane);
+        subProfilePane.add(createdAtPane);
+
+        /* 패널 크기 및 레이아웃 조정 */
+        mainPane.setLayout(new BorderLayout());
         subProfilePane.setLayout(new FlowLayout(FlowLayout.LEFT,10,2));
-        subProfilePane.setBounds(30, 340, 390,70);
-        btnEditProfile.setBounds(340,10,80,25);
+        userInfoPane.setLayout(new BoxLayout(userInfoPane, BoxLayout.Y_AXIS));
+        headPane.setLayout(new BorderLayout());
+        headSubPane.setLayout(new BoxLayout(headSubPane, BoxLayout.X_AXIS));
+        followerPane.setLayout(new BoxLayout(followerPane,BoxLayout.Y_AXIS));
+        followingPane.setLayout(new BoxLayout(followingPane,BoxLayout.Y_AXIS));
+        feedCountPane.setLayout(new BoxLayout(feedCountPane,BoxLayout.Y_AXIS));
+        btnBoxPane.setLayout(new BoxLayout(btnBoxPane,BoxLayout.X_AXIS));
 
-        lblHeaderImg.setBounds(0, 0 , 450, 165);
-        lblProfileImg.setBounds(25, 100, 120, 120);
-
-        lblFollower.setBounds(175, 175,50, 25);
-        lblFollowing.setBounds(255, 175, 50, 25);
-        lblFeed.setBounds(340,175,50,25);
-        lblNumOfFollower.setBounds(175,200, 50,25);
-        lblNumOfFollowing.setBounds(255,200,50,25);
-        lblNumOfFeed.setBounds(340,200,50,25);
-
-        lblNickName.setBounds(30, 225,80,25);
-        lblUserId.setBounds(30,250,50,20);
-
-        lblBirth.setBounds(30,340,50,20);
-        lblGender.setBounds(160,340,50,20);
-        lblLink.setBounds(280,340,80,20);
-        lblRegion.setBounds(30,370,80,20);
-        lblCreatedAt.setBounds(160,370,80,20);
-
-        lblBirth.setPreferredSize(new Dimension(30,20));
-        lblGender.setPreferredSize(new Dimension(30,20));
-        lblLink.setPreferredSize(new Dimension(30,20));
-        lblRegion.setPreferredSize(new Dimension(30,20));
-        lblCreatedAt.setPreferredSize(new Dimension(60,20));
-
-        txaIntroduce.setBounds(30,275,400,60);
-
-        btnToFeed.setBounds(6, 410, 142, 30);
-        btnToLike.setBounds(154,410,142,30);
-        btnToBookMark.setBounds(302,410,142,30);
-
+        subProfilePane.setPreferredSize(new Dimension(400, 50));
+        userInfoPane.setPreferredSize(new Dimension(430,100));
+        /* 컴포넌트 크기 및 세부 조정 */
+        lblHeaderImg.setPreferredSize(new Dimension(450, 165));
+        lblHeaderImg.setMaximumSize(new Dimension(450, 165));
         lblHeaderImg.setBackground(Color.RED);
         lblHeaderImg.setOpaque(true);
 
         lblProfileImg.setBackground(Color.BLUE);
         lblProfileImg.setOpaque(true);
 
-        if (feedPanel != null) {
-            feedPanel.setBounds(0,440,450,150);
-            feedPanel.setBackground(Color.BLUE);
-        }
+        txaIntroduce.setMaximumSize(new Dimension(400,60));
+
+        lblNickName.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblUserId.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblNickName.setHorizontalAlignment(JLabel.LEFT);
 
         loadText();
+
+        /* 여백 공간 추가 */
+        followerPane.add(lblFollower);
+        followerPane.add(Box.createRigidArea(new Dimension(0, 10)));
+        followerPane.add(lblNumOfFollower);
+
+        followingPane.add(lblFollowing);
+        followingPane.add(Box.createRigidArea(new Dimension(0, 10)));
+        followingPane.add(lblNumOfFollowing);
+
+        feedCountPane.add(lblFeed);
+        feedCountPane.add(Box.createRigidArea(new Dimension(0, 10)));
+        feedCountPane.add(lblNumOfFeed);
+
+        headSubPane.add(Box.createRigidArea(new Dimension(200, 0)));
+        headSubPane.add(followerPane);
+        headSubPane.add(Box.createRigidArea(new Dimension(40, 0)));
+        headSubPane.add(followingPane);
+        headSubPane.add(Box.createRigidArea(new Dimension(40, 0)));
+        headSubPane.add(feedCountPane);
+
+        headPane.add(Box.createRigidArea(new Dimension(0, 10)));
 
         birthPane.add(lblBirth);
         birthPane.add(lblBirthText);
@@ -169,36 +192,34 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         createdAtPane.add(lblCreatedAt);
         createdAtPane.add(lblCreatedAtText);
 
-        subProfilePane.add(birthPane);
-        subProfilePane.add(genderPane);
-        subProfilePane.add(linkPane);
-        subProfilePane.add(regionPane);
-        subProfilePane.add(createdAtPane);
+        headPane.add(lblHeaderImg, BorderLayout.NORTH);
+        headPane.add(headSubPane, BorderLayout.SOUTH);
 
-        mainPane.add(lblProfileImg);
-        mainPane.add(btnEditProfile);
-        mainPane.add(lblNickName);
-        mainPane.add(lblFollower);
-        mainPane.add(lblFollowing);
-        mainPane.add(lblFeed);
-        mainPane.add(lblNumOfFollower);
-        mainPane.add(lblNumOfFollowing);
-        mainPane.add(lblNumOfFeed);
-        mainPane.add(lblHeaderImg);
-        mainPane.add(lblUserId);
-        mainPane.add(subProfilePane);
-        mainPane.add(lblIntroduce);
-        mainPane.add(txaIntroduce);
-        mainPane.add(btnToFeed);
-        mainPane.add(btnToLike);
-        mainPane.add(btnToBookMark);
+        userInfoPane.add(lblNickName);
+        userInfoPane.add(lblUserId);
+        userInfoPane.add(txaIntroduce);
+        userInfoPane.add(subProfilePane);
+        userInfoPane.add(btnBoxPane);
+
+        btnBoxPane.add(btnToFeed);
+        btnBoxPane.add(btnToLike);
+        btnBoxPane.add(btnToBookMark);
+
+        mainPane.add(headPane, BorderLayout.NORTH);
+        mainPane.add(Box.createRigidArea(new Dimension(20,0)),BorderLayout.WEST);
+        mainPane.add(userInfoPane);
+        mainPane.add(feedPane, BorderLayout.SOUTH);
 
         if (feedPanel != null) {
-            mainPane.add(feedPanel);
+//            scrollPane.add(feedPanel,BorderLayout.SOUTH);
         }
 
-        this.add(mainPane);
+        feedPane.add(feedPanel);
+        scrollPane.add(mainPane);
+        scrollPane.add(feedPane);
+        scrollPane.setViewportView(mainPane);
 
+        add(scrollPane);
 
     }
 
@@ -225,7 +246,6 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         lblLinkText.setText("google.co.kr");
         lblRegionText.setText("미국, LA");
 
-        lblIntroduce.setText("자기소개");
         txaIntroduce.setText("로렘입숨 - 모든 국민은 통신의 비밀을 침해받지 아니한다. 대통령의 임기가 만료되는 " +
                 "때에는 임기만료 70일 내지 40일전에 후임자를 선거한다.");
 
