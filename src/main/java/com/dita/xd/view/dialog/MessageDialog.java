@@ -10,7 +10,6 @@ import com.dita.xd.repository.ChatroomRepository;
 import com.dita.xd.util.server.MessageProtocol;
 import com.dita.xd.util.server.ServerObject;
 import com.dita.xd.view.base.JHintTextField;
-import com.dita.xd.view.base.JRoundedImageView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
