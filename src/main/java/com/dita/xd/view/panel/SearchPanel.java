@@ -25,23 +25,19 @@ public class SearchPanel extends JPanel{
     private void initialize(){
         setLayout(new BorderLayout());
 
-        JPanel pnlMain = new JPanel();
-        JPanel pnlSearch = new JPanel();
-        JPanel pnlResult = new JPanel();
+        CardLayout clmain = new CardLayout();
 
-        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+        JPanel searchPane = new JPanel();
+        JPanel trendPane = new JPanel();
+        JPanel mainPane = new JPanel();
 
-        pnlSearch.setBorder(new TitledBorder(new LineBorder(Color.GREEN,2)));
-        pnlResult.setBorder(new TitledBorder(new LineBorder(Color.PINK, 2)));
+        
 
-        pnlSearch.setPreferredSize(new Dimension(400, 200));
-        pnlSearch.setMaximumSize(new Dimension(400,200));
-        pnlResult.setPreferredSize(new Dimension(400,350));
-        pnlResult.setMaximumSize(new Dimension(400,350));
+        this.add(searchPane, BorderLayout.NORTH);
+        this.add(mainPane);
+    }
 
-        pnlMain.add(pnlSearch);
-        pnlMain.add(pnlResult);
+    private void loadText(){
 
-        this.add(pnlMain);
     }
 }

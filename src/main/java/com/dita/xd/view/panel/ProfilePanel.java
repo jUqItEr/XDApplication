@@ -58,7 +58,6 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
 
         feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
 
-
         initialize();
 
         onLocaleChanged(locale);
