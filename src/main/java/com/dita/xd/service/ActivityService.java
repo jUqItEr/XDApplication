@@ -1,9 +1,6 @@
 package com.dita.xd.service;
 
-import com.dita.xd.model.ChatroomBean;
-import com.dita.xd.model.FeedBean;
-import com.dita.xd.model.MediaBean;
-import com.dita.xd.model.UserBean;
+import com.dita.xd.model.*;
 
 import java.util.Vector;
 
@@ -18,7 +15,6 @@ public interface ActivityService {
     boolean exitChatroom(ChatroomBean chatroomBean, UserBean userBean);
     boolean inviteChatroom(ChatroomBean chatroomBean, UserBean userBean);
     boolean setProfile(UserBean userBean);
-    boolean search(String searchContent);
     boolean removeBookmark(UserBean userBean, FeedBean feedBean);
     boolean removeFeed(UserBean userBean, FeedBean feedBean);
     boolean removeComment(UserBean userBean, FeedBean feedBean);
@@ -29,4 +25,12 @@ public interface ActivityService {
     boolean uploadProfileImage(UserBean userBean, String address);
     boolean updateViewer(FeedBean feedBean);
     ChatroomBean createChatroom(String name);
+    ChatroomBean getChatroom(int chatroomId);
+
+    Vector<FeedBean> searchFeed(String includedContent);
+    Vector<HashtagBean> searchHashtag(String includedHashtag);
+    Vector<FeedBean> searchFeedHashtag(String includedHashtag);
+    Vector<UserBean> searchUser(String includedUserInfo);
+
+    Vector<UserBean> getChatroomUsers(int chatroomId);
 }
