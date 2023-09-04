@@ -51,8 +51,7 @@ public class ImageTransferHelper {
                     .header("Content-Type", "multipart/form-data;boundary=" + boundary)
                     .POST(ofMimeMultipartData(data, boundary))
                     .build();
-            String responseBody = client
-                    .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            String responseBody = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .get();
             JSONParser parser = new JSONParser();
