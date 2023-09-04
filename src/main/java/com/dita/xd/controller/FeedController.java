@@ -16,6 +16,10 @@ public class FeedController {
         repository = UserRepository.getInstance();
     }
 
+    public boolean create(String userId, String content){
+        return feedSvc.create(userId, content);
+    }
+
     public Vector<FeedBean> getFeeds(String userId) {
         return feedSvc.getFeeds(userId);
     }

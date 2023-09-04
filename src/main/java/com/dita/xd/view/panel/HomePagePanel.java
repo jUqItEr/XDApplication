@@ -3,6 +3,7 @@ package com.dita.xd.view.panel;
 import com.dita.xd.controller.FeedController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.FeedBean;
+import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JVerticalScrollPane;
@@ -21,6 +22,7 @@ import java.util.ResourceBundle;
 
 public class HomePagePanel extends JPanel{
     private final FeedController controller;
+    private final UserRepository repository;
     private ResourceBundle localeBundle;
     private Locale currentLocale;
     private FeedPanel feedPanel;
@@ -35,6 +37,8 @@ public class HomePagePanel extends JPanel{
         currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
         controller = new FeedController();
+
+        repository = UserRepository.getInstance();
 
         initialize();
 
@@ -127,6 +131,16 @@ public class HomePagePanel extends JPanel{
         activityPane.add(Box.createRigidArea(new Dimension(300,0)));
         activityPane.add(btnUpload);
 
+        btnUpload.addActionListener(e-> {
+            if(txaFeedText.getText() != null) {
+                controller.create(repository.getUserId(), txaFeedText.getText());
+                FeedBean bean = controller.getFeeds("123").firstElement();
+                feedPanel = new FeedPanel(currentLocale, bean);
+                objectPane.add(feedPanel, 1);
+                revalidate();
+                repaint();
+            }
+        });
         /* 패널에 컴포넌트 추가 */
         profileSubPane.add(rivProfile);
 
