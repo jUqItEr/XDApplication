@@ -1,5 +1,6 @@
 package com.dita.xd.view.panel;
 
+import com.dita.xd.controller.FeedController;
 import com.dita.xd.listener.LocaleChangeListener;
 
 import javax.swing.*;
@@ -13,9 +14,10 @@ public class SearchPanel extends JPanel{
     //private final ?Controller controller;
     private ResourceBundle localeBundle;
     private Locale currentLocale;
+    private FeedController controller;
 
     public SearchPanel(Locale locale){
-        //controller = new ?Controller();
+        controller = new FeedController();
         localeBundle = ResourceBundle.getBundle("language", locale);
 
         initialize();
@@ -25,19 +27,21 @@ public class SearchPanel extends JPanel{
     private void initialize(){
         setLayout(new BorderLayout());
 
-        CardLayout clmain = new CardLayout();
+        CardLayout clMain = new CardLayout();
 
-        JPanel searchPane = new JPanel();
         JPanel trendPane = new JPanel();
+        JPanel searchPane = new JPanel();
         JPanel mainPane = new JPanel();
 
-        
+        mainPane.setLayout(clMain);
 
-        this.add(searchPane, BorderLayout.NORTH);
-        this.add(mainPane);
+        add(searchPane, BorderLayout.NORTH);
+        add(mainPane);
     }
 
     private void loadText(){
 
     }
+
+
 }
