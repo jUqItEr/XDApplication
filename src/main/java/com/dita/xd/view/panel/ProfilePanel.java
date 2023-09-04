@@ -56,7 +56,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
         repository = UserRepository.getInstance();
         controller = new FeedController();
 
-        feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
+        //feedPanel = new FeedPanel(locale,controller.getFeeds(repository.getUserId()).firstElement());
 
         initialize();
 
@@ -213,7 +213,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener{
 //            scrollPane.add(feedPanel,BorderLayout.SOUTH);
         }
 
-        feedPane.add(feedPanel);
+        //feedPane.add(feedPanel);
         scrollPane.add(mainPane);
         scrollPane.add(feedPane);
         scrollPane.setViewportView(mainPane);
