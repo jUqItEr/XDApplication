@@ -10,7 +10,7 @@ import java.util.Vector;
 public class DBConnectionServiceImpl implements Service {
     private Vector connections = new Vector(10);
     private String _driver = "com.mysql.cj.jdbc.Driver",
-            _url = "jdbc:mysql://hxlab.co.kr:13307/xd_chat?characterEncoding=UTF-8&serverTimezone=UTC",
+            _url = "jdbc:mysql://hxlab.co.kr:13307/xd_chat?characterEncoding=UTF-8&serverTimezone=Asia/Seoul",
             _user = "root",
             _password = "dita2414";
 
