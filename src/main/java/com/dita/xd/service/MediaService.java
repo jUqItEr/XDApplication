@@ -1,4 +1,4 @@
 package com.dita.xd.service;
 
-public interface MediaService {
+public interface MediaService extends Service {
 }

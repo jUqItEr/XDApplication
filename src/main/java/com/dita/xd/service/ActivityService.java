@@ -4,7 +4,7 @@ import com.dita.xd.model.*;
 
 import java.util.Vector;
 
-public interface ActivityService {
+public interface ActivityService extends Service {
     boolean addBookmark(UserBean userBean, FeedBean feedBean);
     boolean addComment(UserBean userBean, FeedBean feedBean, String content, Vector<MediaBean> medium);
     boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium);
