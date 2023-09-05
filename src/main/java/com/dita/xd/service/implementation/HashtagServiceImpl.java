@@ -134,6 +134,7 @@ public class HashtagServiceImpl implements HashtagService {
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, hashtag);
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -181,8 +182,8 @@ public class HashtagServiceImpl implements HashtagService {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         String sql = "select ht.content as content, count(*) as total_count " +
-                "from hashtag_tbl ht join feed_hashtag_tbl fht on ht.id = fht.hashtag_tbl_id" +
-                "where date(fht.updated_at) = curdate() group by content order by count(*) desc limit ?";
+                "from hashtag_tbl ht join feed_hashtag_tbl fht on ht.id = fht.hashtag_tbl_id " +
+                "where date(uploaded_at) = curdate() group by content order by count(*) desc limit ?";
         Vector<HashtagBean> beans = new Vector<>();
 
         try {
