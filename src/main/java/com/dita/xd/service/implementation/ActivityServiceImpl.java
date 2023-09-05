@@ -25,7 +25,8 @@ public class ActivityServiceImpl implements ActivityService {
     public boolean addBookmark(UserBean userBean, FeedBean feedBean) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "insert into bookmark_tbl values (null, ?, ?, now())";
+        String sql = "insert into bookmark_tbl select null, ?, ?, now() from dual where not exists(" +
+                "select null from bookmark_tbl where user_tbl_id = ? and feed_tbl_id = ?)";
         boolean flag = false;
 
         try {
@@ -33,6 +34,9 @@ public class ActivityServiceImpl implements ActivityService {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userBean.getUserId());
             pstmt.setInt(2, feedBean.getId());
+            pstmt.setString(3, userBean.getUserId());
+            pstmt.setInt(4, feedBean.getId());
+
             flag = pstmt.executeUpdate() == 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +58,27 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public boolean addFeedback(UserBean userBean, FeedBean feedBean) {
-        return false;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "insert into feedback_tbl select null, ?, ?, now() from dual where not exists(" +
+                "select null from feedback_tbl where feed_tbl_id = ? and user_tbl_id = ?)";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, feedBean.getId());
+            pstmt.setString(2, userBean.getUserId());
+            pstmt.setInt(3, feedBean.getId());
+            pstmt.setString(4, userBean.getUserId());
+
+            flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
     }
 
     @Override
