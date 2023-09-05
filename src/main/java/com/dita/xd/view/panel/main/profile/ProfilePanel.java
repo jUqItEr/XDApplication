@@ -1,12 +1,11 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.main.profile;
 
 import com.dita.xd.controller.FeedController;
 import com.dita.xd.listener.LocaleChangeListener;
-import com.dita.xd.model.FeedBean;
 import com.dita.xd.repository.UserRepository;
+import com.dita.xd.view.panel.main.FeedPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Locale;
 import java.util.ResourceBundle;

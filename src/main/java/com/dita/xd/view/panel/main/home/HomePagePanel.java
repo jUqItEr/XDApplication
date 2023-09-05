@@ -1,23 +1,19 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.main.home;
 
 import com.dita.xd.controller.FeedController;
-import com.dita.xd.controller.TranslationController;
-import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JVerticalScrollPane;
 import com.dita.xd.view.base.JXdTextPane;
+import com.dita.xd.view.panel.main.FeedPanel;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 

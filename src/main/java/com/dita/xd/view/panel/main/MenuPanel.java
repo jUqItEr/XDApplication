@@ -1,4 +1,4 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.main;
 
 import com.dita.xd.view.manager.MainLayoutMgr;
 

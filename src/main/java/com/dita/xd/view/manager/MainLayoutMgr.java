@@ -1,6 +1,6 @@
 package com.dita.xd.view.manager;
 
-import com.dita.xd.view.panel.ChatPanel;
+import com.dita.xd.view.panel.main.chat.ChatPanel;
 
 import javax.swing.*;
 import java.awt.*;

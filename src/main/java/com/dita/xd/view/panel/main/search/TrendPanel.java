@@ -1,4 +1,4 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.main.search;
 
 import com.dita.xd.controller.FeedController;
 import com.dita.xd.model.FeedBean;

@@ -1,4 +1,4 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.login;
 
 import com.dita.xd.controller.RegisterController;
 import com.dita.xd.listener.LocaleChangeListener;

@@ -5,7 +5,11 @@ import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.dialog.ProfileDialog;
 import com.dita.xd.view.manager.MainLayoutMgr;
-import com.dita.xd.view.panel.*;
+import com.dita.xd.view.panel.main.MenuPanel;
+import com.dita.xd.view.panel.main.chat.ChatPanel;
+import com.dita.xd.view.panel.main.home.HomePagePanel;
+import com.dita.xd.view.panel.main.profile.ProfilePanel;
+import com.dita.xd.view.panel.main.search.SearchPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

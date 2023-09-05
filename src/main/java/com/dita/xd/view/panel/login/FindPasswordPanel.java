@@ -1,9 +1,10 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.login;
 
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.controller.MailController;
 import com.dita.xd.controller.RegisterController;
 import com.dita.xd.listener.LocaleChangeListener;
-import com.dita.xd.view.base.JHintPasswordField;
+import com.dita.xd.model.UserBean;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.view.dialog.MailCodeDialog;
 import com.dita.xd.view.dialog.PlainDialog;
@@ -14,49 +15,42 @@ import java.awt.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-/**
- * <p>The Register Panel</p>
- *
- * @author DelynMk2 (Hyeong-won Park)
- * @version 1.0.2
- * @see CardLayout
- */
-public class RegisterPanel extends JPanel implements LocaleChangeListener {
-    private final RegisterController registerController;
+public class FindPasswordPanel extends JPanel implements LocaleChangeListener {
+    private final LoginController loginController;
     private final MailController mailController;
+    private final RegisterController registerController;
     private final LoginLayoutMgr mgr;
 
-    private ResourceBundle localeBundle;
     private Locale currentLocale;
+    private ResourceBundle localeBundle;
 
     /* Variables declaration */
     private JButton btnCancel;
-    private JButton btnRegister;
+    private JButton btnAuth;
 
-    private JHintPasswordField hpfPassword;
     private JHintTextField htfEmail;
     private JHintTextField htfId;
 
-    public RegisterPanel(Locale locale) {
+    public FindPasswordPanel(Locale locale) {
         localeBundle = ResourceBundle.getBundle("language", locale);
 
-        registerController = new RegisterController();
+        loginController = new LoginController();
         mailController = new MailController();
+        registerController = new RegisterController();
         mgr = LoginLayoutMgr.getInstance();
 
         initialize();
 
         onLocaleChanged(locale);
-    }   // -- End of constructor
+    }
 
     private void initialize() {
         setLayout(new BorderLayout());
 
         /* Load to memory */
         btnCancel = new JButton();
-        btnRegister = new JButton();
+        btnAuth = new JButton();
 
-        hpfPassword = new JHintPasswordField();
         htfEmail = new JHintTextField();
         htfId = new JHintTextField();
 
@@ -71,17 +65,14 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.X_AXIS));
 
         /* Add components to sub panel */
-
         mainPane.add(Box.createVerticalGlue());
         mainPane.add(htfId);
-        mainPane.add(Box.createVerticalStrut(30));
-        mainPane.add(hpfPassword);
-        mainPane.add(Box.createVerticalStrut(30));
+        mainPane.add(Box.createVerticalStrut(10));
         mainPane.add(htfEmail);
         mainPane.add(Box.createVerticalStrut(10));
         mainPane.add(buttonPane);
 
-        buttonPane.add(btnRegister);
+        buttonPane.add(btnAuth);
         buttonPane.add(Box.createHorizontalStrut(20));
         buttonPane.add(btnCancel);
 
@@ -93,27 +84,21 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
         /* Set the properties of components */
         htfId.setMaximumSize(new Dimension(300, 40));
         htfId.setPreferredSize(new Dimension(300, 40));
-        hpfPassword.setMaximumSize(new Dimension(300, 40));
-        hpfPassword.setPreferredSize(new Dimension(300, 40));
         htfEmail.setMaximumSize(new Dimension(300, 40));
         htfEmail.setPreferredSize(new Dimension(300, 40));
 
-        btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnRegister.setMaximumSize(new Dimension(120, 35));
+        btnAuth.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnAuth.setMaximumSize(new Dimension(120, 35));
         btnCancel.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnCancel.setMaximumSize(new Dimension(120, 35));
 
         setBackground(Color.GRAY);
 
-        btnCancel.addActionListener(e -> {
-            clear();
-            mgr.show("login");
-        });
-        btnRegister.addActionListener(e -> {
+        btnAuth.addActionListener(e -> {
             PlainDialog dialog = null;
+            UserBean bean;
             boolean isError = false;
             String id = htfId.getText().trim();
-            String pwd = new String(hpfPassword.getPassword());
             String email = htfEmail.getText().trim();
 
             if (id.isEmpty()) {
@@ -121,14 +106,6 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
                         currentLocale,
                         String.format(localeBundle.getString("dialog.plain.message"),
                                 localeBundle.getString("register.field.hint.id")),
-                        PlainDialog.MessageType.INFORMATION
-                );
-                isError = true;
-            } else if (pwd.isEmpty()) {
-                dialog = new PlainDialog(
-                        currentLocale,
-                        String.format(localeBundle.getString("dialog.plain.message"),
-                                localeBundle.getString("register.field.hint.password")),
                         PlainDialog.MessageType.INFORMATION
                 );
                 isError = true;
@@ -147,60 +124,52 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
                         PlainDialog.MessageType.ERROR
                 );
                 isError = true;
-            } else if (registerController.hasId(id)) {
+            } else if (!registerController.hasId(id)) {
                 dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("dialog.plain.message.error.id_exists"),
+                        localeBundle.getString("dialog.plain.message.error.id"),
                         PlainDialog.MessageType.ERROR
                 );
                 isError = true;
-            } else if (registerController.hasEmail(email)) {
+            } else if (!registerController.hasEmail(email)) {
                 dialog = new PlainDialog(
                         currentLocale,
-                        localeBundle.getString("dialog.plain.message.error.email_exists"),
+                        localeBundle.getString("dialog.plain.message.error.email"),
                         PlainDialog.MessageType.ERROR
                 );
                 isError = true;
-            }   // End of if-else if (Validation)
+            }
+            bean = loginController.getUser(id);
 
             if (isError) {
                 dialog.setVisible(true);
-            } else if (mailController.sendRequestCode(email)) {
-                MailCodeDialog mailCodeDialog = new MailCodeDialog(currentLocale, email);
+            } else if (loginController.checkEmail(bean, email)) {
+                if (mailController.sendRequestCode(email)) {
+                    MailCodeDialog mailCodeDialog = new MailCodeDialog(currentLocale, email);
 
-                if (mailCodeDialog.showDialog()) {
-                    if (registerController.register(id, pwd, email)) {
-                        PlainDialog registerDialog = new PlainDialog(
-                                currentLocale,
-                                "회원가입 완료",
-                                PlainDialog.MessageType.INFORMATION
-                        );
-                        registerDialog.setVisible(true);
+                    if (mailCodeDialog.showDialog()) {
+                        mgr.setId(id);
                         clear();
-                        System.out.println("Register complete");
-                        mgr.show("login");
-                    }   // -- End of if (registerController.register)
-                } else {
-                    System.err.println("Register failed");
-                }   // -- End of if (mailCodeDialog.showDialog)
-            }   // -- End of if (mailController.sendRequestCode)
-
+                        mgr.show("change");
+                    }
+                }
+            }
         });
-
-    }   // -- End of function (initialize)
+        btnCancel.addActionListener(e -> {
+            clear();
+            mgr.show("login");
+        });
+    }
 
     private void clear() {
         htfId.setText("");
         htfEmail.setText("");
-        hpfPassword.setText("");
     }
 
     private void loadText() {
+        btnAuth.setText(localeBundle.getString("find.button.auth"));
         btnCancel.setText(localeBundle.getString("register.button.cancel"));
-        btnRegister.setText(localeBundle.getString("register.button.register"));
 
-        hpfPassword.setHint(localeBundle.getString("register.field.hint.password"));
-        hpfPassword.repaint();
         htfEmail.setHint(localeBundle.getString("register.field.hint.email"));
         htfEmail.repaint();
         htfId.setHint(localeBundle.getString("register.field.hint.id"));
@@ -214,4 +183,4 @@ public class RegisterPanel extends JPanel implements LocaleChangeListener {
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();
     }
-}   // -- End of class
+}

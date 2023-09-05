@@ -1,4 +1,4 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.profile;
 
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.manager.ProfileLayoutMgr;
@@ -8,12 +8,12 @@ import java.awt.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
+public class IntroducePanel extends JPanel implements LocaleChangeListener {
     private final ProfileLayoutMgr mgr;
 
     private ResourceBundle localeBundle;
 
-    public OtherInfoPanel(Locale locale) {
+    public IntroducePanel(Locale locale) {
         localeBundle = ResourceBundle.getBundle("language", locale);
         mgr = ProfileLayoutMgr.getInstance();
 

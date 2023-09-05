@@ -2,7 +2,11 @@ package com.dita.xd.view.dialog;
 
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.manager.ProfileLayoutMgr;
-import com.dita.xd.view.panel.*;
+import com.dita.xd.view.panel.profile.HeaderPanel;
+import com.dita.xd.view.panel.profile.BirthdayPanel;
+import com.dita.xd.view.panel.profile.IntroducePanel;
+import com.dita.xd.view.panel.profile.NicknamePanel;
+import com.dita.xd.view.panel.profile.OtherInfoPanel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,6 @@
 package com.dita.xd.view.manager;
 
-import com.dita.xd.view.panel.ProfilePanel;
+import com.dita.xd.view.panel.main.profile.ProfilePanel;
 
 import javax.swing.*;
 import java.awt.*;

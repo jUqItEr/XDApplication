@@ -3,10 +3,10 @@ package com.dita.xd.view.frame;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.manager.LoginLayoutMgr;
-import com.dita.xd.view.panel.ChangePasswordPanel;
-import com.dita.xd.view.panel.FindPasswordPanel;
-import com.dita.xd.view.panel.LoginPanel;
-import com.dita.xd.view.panel.RegisterPanel;
+import com.dita.xd.view.panel.login.ChangePasswordPanel;
+import com.dita.xd.view.panel.login.FindPasswordPanel;
+import com.dita.xd.view.panel.login.LoginPanel;
+import com.dita.xd.view.panel.login.RegisterPanel;
 
 import javax.swing.*;
 import java.awt.*;

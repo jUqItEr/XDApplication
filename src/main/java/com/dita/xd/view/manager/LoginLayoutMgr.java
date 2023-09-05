@@ -1,6 +1,6 @@
 package com.dita.xd.view.manager;
 
-import com.dita.xd.view.panel.ChangePasswordPanel;
+import com.dita.xd.view.panel.login.ChangePasswordPanel;
 
 import javax.swing.*;
 import java.awt.*;

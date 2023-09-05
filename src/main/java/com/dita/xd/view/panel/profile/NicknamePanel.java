@@ -1,4 +1,4 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.profile;
 
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.view.base.JHintTextField;

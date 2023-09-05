@@ -1,4 +1,4 @@
-package com.dita.xd.view.panel;
+package com.dita.xd.view.panel.main.chat;
 
 import com.dita.xd.controller.MessageController;
 import com.dita.xd.listener.LocaleChangeListener;
