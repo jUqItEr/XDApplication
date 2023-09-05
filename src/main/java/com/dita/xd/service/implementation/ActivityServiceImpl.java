@@ -437,7 +437,7 @@ public class ActivityServiceImpl implements ActivityService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from feed_tbl where content like ?";
+        String sql = "select * from feed_user_view where content like ?";
         Vector<FeedBean> beans = new Vector<>();
 
         try {

@@ -7,6 +7,7 @@ import com.dita.xd.model.UserBean;
 import com.dita.xd.service.implementation.ActivityServiceImpl;
 
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class ActivityController {
     private final ActivityServiceImpl svc;
@@ -37,14 +38,20 @@ public class ActivityController {
 //    public ChatroomBean createChatroom(String name);
 //    public ChatroomBean getChatroom(int chatroomId);
 
-    public Vector search(String searchContent) {
-        Vector result;
-        char delimiter = searchContent.charAt(0);
+    public Vector<Object> search(String searchContent) {
+        Vector<Object> result = null;
 
-        switch (delimiter) {
-            case '@' -> result = svc.searchUser(searchContent);
-            case '#' -> result = svc.searchFeedHashtag(searchContent);
-            default -> result = svc.searchFeed(searchContent);
+        if (!searchContent.isEmpty()) {
+            char delimiter = searchContent.charAt(0);
+
+            switch (delimiter) {
+                case '@' -> result = svc.searchUser(searchContent.substring(1))
+                        .stream().map(bean -> (Object) bean).collect(Collectors.toCollection(Vector::new));
+                case '#' -> result = svc.searchFeedHashtag(searchContent.substring(1))
+                        .stream().map(bean -> (Object) bean).collect(Collectors.toCollection(Vector::new));
+                default -> result = svc.searchFeed(searchContent)
+                        .stream().map(bean -> (Object) bean).collect(Collectors.toCollection(Vector::new));
+            }
         }
         return result;
     }
