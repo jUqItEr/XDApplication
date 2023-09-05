@@ -153,6 +153,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         txaFeedContent.setPreferredSize( /* txaFeedContent의 높이는 줄바꿈의 개수만큼 기본 높이에 추가하여 설정 */
                 new Dimension(370, 20 * countEnter(txaFeedContent.getText())));
         txaFeedContent.setEditable(false);
+        txaFeedContent.setFocusable(false);
 
         JRoundedImageView rivProfile = new JRoundedImageView();
         ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
@@ -234,10 +235,10 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblUserId.setText("@" + feedBean.getUserId());
         lblUserId.setForeground(Color.gray);
 
-        lblFeedComment.setText("");
-        lblFeedBack.setText("10");
-        lblFeedLike.setText("10");
-        lblViewr.setText("10");
+        lblFeedComment.setText(String.valueOf(feedBean.getFeedCommentBeans().size()));
+        lblFeedBack.setText(String.valueOf(feedBean.getFeedbackBeans().size()));
+        lblFeedLike.setText(String.valueOf(feedBean.getLikeBeans().size()));
+        lblViewr.setText(String.valueOf(feedBean.getViewer()));
 
         if(createdTime < 60) {
             lblCreatedAt.setText(createdTime + "초 전");

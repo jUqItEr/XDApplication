@@ -12,6 +12,8 @@ import com.dita.xd.view.panel.main.FeedPanel;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
@@ -38,7 +40,6 @@ public class HomePagePanel extends JPanel{
         repository = UserRepository.getInstance();
 
         initialize();
-
     }
 
     private void initialize(){
@@ -150,8 +151,6 @@ public class HomePagePanel extends JPanel{
         /* 패널에 컴포넌트 추가 */
         profileSubPane.add(rivProfile);
 
-
-
         contentPane.add(txaFeedText);
 
         objectPane.add(boxPane);
@@ -160,9 +159,19 @@ public class HomePagePanel extends JPanel{
             createFeed(bean);
         }
 
+        scrollBar.setValue(-200);
+
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                Adjustable adjustable = adjustmentEvent.getAdjustable();
+                adjustable.setValue(adjustable.getMinimum());
+                scrollBar.removeAdjustmentListener(this);
+            }
+        });
+
         mainPane.add(objectPane, BorderLayout.NORTH);
         mainPane.add(Box.createGlue(), BorderLayout.CENTER);
-
         add(scrollPane);
 
     }
@@ -183,8 +192,5 @@ public class HomePagePanel extends JPanel{
 
         feedPanel = new FeedPanel(currentLocale, bean);
         objectPane.add(feedPanel);
-
-        revalidate();
-        repaint();
     }
 }
