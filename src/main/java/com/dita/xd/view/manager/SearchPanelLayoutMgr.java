@@ -1,6 +1,7 @@
 package com.dita.xd.view.manager;
 
 import com.dita.xd.view.panel.main.profile.ProfilePanel;
+import com.dita.xd.view.panel.main.search.SearchPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +10,7 @@ public class SearchPanelLayoutMgr {
     public static volatile SearchPanelLayoutMgr instance = null;
 
     private CardLayout childLayout;
-    private ProfilePanel mainPane;
+    private SearchPanel mainPane;
     private JPanel subPane;
 
     private SearchPanelLayoutMgr() {
@@ -34,11 +35,11 @@ public class SearchPanelLayoutMgr {
         this.childLayout = childLayout;
     }
 
-    public ProfilePanel getMainPane() {
+    public SearchPanel getMainPane() {
         return mainPane;
     }
 
-    public void setMainPane(ProfilePanel mainPane) {
+    public void setMainPane(SearchPanel mainPane) {
         this.mainPane = mainPane;
     }
 
