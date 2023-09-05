@@ -47,7 +47,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public boolean addComment(UserBean userBean, FeedBean feedBean, String content, Vector<MediaBean> medium) {
+    public boolean addComment(UserBean userBean, FeedBean fromBean, FeedBean toBean, String content, Vector<MediaBean> medium) {
         return false;
     }
 
@@ -73,6 +73,27 @@ public class ActivityServiceImpl implements ActivityService {
             pstmt.setString(4, userBean.getUserId());
 
             flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean addMedium(Vector<MediaBean> mediaBeans) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = null;
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+
+
+            int cnt = pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -235,12 +256,47 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public boolean removeFeed(UserBean userBean, FeedBean feedBean) {
-        return false;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "delete from feed_tbl where id = ? and user_tbl_id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, feedBean.getId());
+            pstmt.setString(2, userBean.getUserId());
+
+            flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
     }
 
     @Override
-    public boolean removeComment(UserBean userBean, FeedBean feedBean) {
-        return false;
+    public boolean removeComment(UserBean userBean, FeedBean fromBean, FeedBean toBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "delete from feed_comment_tbl where feed_tbl_original_id = ? and feed_tbl_reply_id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, fromBean.getId());
+            pstmt.setInt(2, toBean.getId());
+
+            flag = pstmt.executeUpdate() == 1;
+            flag |= removeFeed(userBean, toBean);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
     }
 
     @Override
@@ -489,7 +545,7 @@ public class ActivityServiceImpl implements ActivityService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from feed_tbl where content like ?";
+        String sql = "select * from feed_user_view where content like ?";
         Vector<FeedBean> beans = new Vector<>();
 
         try {
