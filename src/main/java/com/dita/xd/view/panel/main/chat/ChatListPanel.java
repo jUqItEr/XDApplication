@@ -23,7 +23,7 @@ import java.util.Vector;
 
 public class ChatListPanel extends JPanel implements LocaleChangeListener {
     private static final String HOST = "hxlab.co.kr";
-    private static final int PORT = 8003;
+    private static final int PORT = 9002;
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
