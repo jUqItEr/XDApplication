@@ -137,9 +137,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         chatroomController.getUsers(chatroomId).forEach(bean -> joinedUser.put(bean.getUserId(), bean));
 
         /* Get message from databases. */
-        Optional.ofNullable(messageController.getMessages(this.chatroomId))
-                .orElse(new Vector<>())
-                .forEach(this::createBubble);
+        loadBubbles(Optional.ofNullable(messageController.getMessages(this.chatroomId)).orElse(new Vector<>()));
         sendMessage(MessageProtocol.ID + MessageProtocol.SEPARATOR + userId + ';' + chatroomId);
 
         mainThread = new Thread(this);
@@ -182,6 +180,55 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
             bubbleHolderPane.add(bubble, gbc);
         }
 
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                Adjustable adjustable = adjustmentEvent.getAdjustable();
+                adjustable.setValue(adjustable.getMaximum());
+                scrollBar.removeAdjustmentListener(this);
+            }
+        });
+        revalidate();
+        repaint();
+    }
+
+    protected void loadBubbles(Vector<ChatMessageBean> beans) {
+        beans.forEach(bean -> {
+            GridBagConstraints gbc = new GridBagConstraints();
+            JPanel bubbleHolderPane = new JPanel();
+            JLabel lblName = new JLabel();
+            BubbleLabel bubble = new BubbleLabel(bubbleHolderPane, bean, userId);
+
+            bubblePane.add(bubbleHolderPane);
+
+            bubbleHolderPane.setBackground(Color.WHITE);
+            bubbleHolderPane.setBorder(new EmptyBorder(0, 8, 0, 8));
+            bubbleHolderPane.setLayout(new GridBagLayout());
+
+            lblName.setText(joinedUser.get(bean.getUserId()).getNickname());
+
+            if (userId.equals(bean.getUserId())) {
+                gbc.anchor = GridBagConstraints.EAST;
+            } else {
+                gbc.anchor = GridBagConstraints.WEST;
+            }
+            gbc.insets.set(0, 0, 0, 0);
+            gbc.weightx = 1.0;
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            gbc.fill = GridBagConstraints.NONE;
+            bubbleHolderPane.add(lblName, gbc);
+
+            if (gbc.anchor == GridBagConstraints.WEST) {
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.insets.set(0, 0, 8, 80);
+                bubbleHolderPane.add(bubble, gbc);
+            }
+            else {
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.insets.set(0, 80, 8, 0);
+                bubbleHolderPane.add(bubble, gbc);
+            }
+        });
         scrollBar.addAdjustmentListener(new AdjustmentListener() {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {

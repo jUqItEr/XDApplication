@@ -47,12 +47,19 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public boolean addComment(UserBean userBean, FeedBean fromBean, FeedBean toBean, String content, Vector<MediaBean> medium) {
+    public boolean addComment(UserBean userBean, FeedBean fromBean, FeedBean toBean,
+                              String content, Vector<MediaBean> medium) {
+        if (medium == null || !medium.isEmpty()) {
+
+        }
         return false;
     }
 
     @Override
     public boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium) {
+        if (medium == null || !medium.isEmpty()) {
+
+        }
         return false;
     }
 
