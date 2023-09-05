@@ -16,7 +16,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
     private Locale currentLocale;
     private ResourceBundle localeBundle;
 
-    private final HashMap<Integer, ChatroomPanel> chatroom;
+    private final HashMap<Integer, ChatListPanel> chatroom;
     private final ChatroomController controller;
     private final UserRepository repository;
 
@@ -94,12 +94,12 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
         repaint();
     }
 
-    public HashMap<Integer, ChatroomPanel> getChatroom() {
+    public HashMap<Integer, ChatListPanel> getChatroom() {
         return chatroom;
     }
 
     private void appendChatroom(ChatroomBean bean) {
-        ChatroomPanel pane = new ChatroomPanel(currentLocale, bean);
+        ChatListPanel pane = new ChatListPanel(currentLocale, bean);
         pane.setPreferredSize(PANE_SIZE);
         chatroomPane.add(pane);
         chatroom.put(bean.getChatroomId(), pane);

@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-public class ChatroomPanel extends JPanel implements LocaleChangeListener {
+public class ChatListPanel extends JPanel implements LocaleChangeListener {
     private static final String HOST = "hxlab.co.kr";
     private static final int PORT = 8003;
 
@@ -41,7 +41,7 @@ public class ChatroomPanel extends JPanel implements LocaleChangeListener {
 
     private String dummyContent;
 
-    public ChatroomPanel(Locale locale, ChatroomBean bean) {
+    public ChatListPanel(Locale locale, ChatroomBean bean) {
         currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
 
