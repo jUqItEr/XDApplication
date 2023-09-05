@@ -128,7 +128,7 @@ public class HashtagServiceImpl implements HashtagService {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         String sql = "select count(ht.content) from hashtag_tbl ht join feed_hashtag_tbl fht " +
-                "on ht.id = fht.feed_tbl_id where ht.content = ?";
+                "on ht.id = fht.hashtag_tbl_id where ht.content = ?";
         int result = -1;
 
         try {
