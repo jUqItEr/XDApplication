@@ -1,6 +1,7 @@
 package com.dita.xd.view.panel;
 
 import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.TranslationController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.repository.UserRepository;
@@ -119,6 +120,7 @@ public class HomePagePanel extends JPanel{
         btnImageUpload.setPreferredSize(new Dimension(20, 20));
         btnImageUpload.setMaximumSize(new Dimension(20, 20));
         btnImageUpload.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         /* 여백 공간 추가 */
         boxPane.setBorder(BorderFactory.createEmptyBorder(10,10,0,0));
 
@@ -141,6 +143,14 @@ public class HomePagePanel extends JPanel{
                 repaint();
             }
         });
+
+//        btnTranslation.addActionListener(e -> {
+//            TranslationController transController = new TranslationController();
+//            String text = txaFeedText.getText();
+//            text = transController.translate(text, "en");
+//            System.out.println(text);
+//            txaFeedText.setText(text);
+//        });
         /* 패널에 컴포넌트 추가 */
         profileSubPane.add(rivProfile);
 
