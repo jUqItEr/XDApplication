@@ -14,10 +14,12 @@ import static com.dita.xd.util.helper.ResultSetExtractHelper.*;
 
 public class ActivityServiceImpl implements ActivityService {
     private final DBConnectionServiceImpl pool;
-    private final UserService userSvc;
+    private final FeedServiceImpl feedSvc;
+    private final UserServiceImpl userSvc;
 
     public ActivityServiceImpl() {
         pool = DBConnectionServiceImpl.getInstance();
+        feedSvc = new FeedServiceImpl();
         userSvc = new UserServiceImpl();
     }
 
@@ -660,7 +662,15 @@ public class ActivityServiceImpl implements ActivityService {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                beans.addElement(extractFeedBean(rs));
+                FeedBean bean = extractFeedBean(rs);
+
+                if (bean.getUserId() != null) {
+                    bean.setFeedbackBeans(feedSvc.getFeedbacks(bean));
+                    bean.setFeedCommentBeans(feedSvc.getComments(bean));
+                    bean.setLikeBeans(feedSvc.getLikes(bean));
+                    bean.setMediaBeans(feedSvc.getMedium(bean));
+                    beans.addElement(bean);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -712,7 +722,15 @@ public class ActivityServiceImpl implements ActivityService {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                beans.addElement(extractFeedBean(rs));
+                FeedBean bean = extractFeedBean(rs);
+
+                if (bean.getUserId() != null) {
+                    bean.setFeedbackBeans(feedSvc.getFeedbacks(bean));
+                    bean.setFeedCommentBeans(feedSvc.getComments(bean));
+                    bean.setLikeBeans(feedSvc.getLikes(bean));
+                    bean.setMediaBeans(feedSvc.getMedium(bean));
+                    beans.addElement(bean);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
