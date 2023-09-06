@@ -1,4 +1,4 @@
-package com.dita.xd.view.dialog;
+package com.dita.xd.view.frame;
 
 import com.dita.xd.controller.ChatroomController;
 import com.dita.xd.controller.MessageController;
@@ -27,8 +27,8 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.*;
 
-public class MessageDialog extends JDialog implements ActionListener, LocaleChangeListener, Runnable {
-    private final JPanel bubblePane = new JPanel(new GridLayout(0, 1, 2, 0));
+public class MessageFrame extends JFrame implements ActionListener, LocaleChangeListener, Runnable {
+    //private final JPanel bubblePane = new JPanel(new GridLayout(0, 1, 2, 0));
 
     private ResourceBundle localeBundle;
 
@@ -36,6 +36,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
 
     private JButton btnSend;
     private JHintTextField htfMessage;
+    private JPanel holderPane;
     private JScrollBar scrollBar;
 
     protected ChatroomController chatroomController;
@@ -49,7 +50,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
 
     protected HashMap<String, UserBean> joinedUser;
 
-    public MessageDialog(Locale locale, int chatroomId, String chatroomName, String userId) {
+    public MessageFrame(Locale locale, int chatroomId, String chatroomName, String userId) {
         chatroomController = new ChatroomController();
         messageController = new MessageController();
 
@@ -73,7 +74,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         onLocaleChanged(locale);
     }
 
-    public MessageDialog(Locale locale, ChatroomBean bean, String userId) {
+    public MessageFrame(Locale locale, ChatroomBean bean, String userId) {
         this(locale, bean.getChatroomId(), bean.getName(), userId);
     }
 
@@ -83,20 +84,24 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
         setLayout(new BorderLayout());
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
 
-        JPanel holderPane = new JPanel();
+        holderPane = new JPanel();
         JPanel userPane = new JPanel();
         JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(holderPane));
         btnSend = new JButton();
         htfMessage = new JHintTextField();
         scrollBar = scrollPane.getVerticalScrollBar();
 
-        holderPane.setLayout(new BorderLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        holderPane.setLayout(new GridBagLayout());
         userPane.setLayout(new BorderLayout());
 
-        holderPane.add(bubblePane, BorderLayout.NORTH);
-        holderPane.add(Box.createGlue(), BorderLayout.CENTER);
+//        holderPane.add(bubblePane, BorderLayout.NORTH);
+//        holderPane.add(Box.createGlue(), BorderLayout.CENTER);
 
         userPane.add(btnSend, BorderLayout.EAST);
         userPane.add(htfMessage);
@@ -138,6 +143,11 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
 
         /* Get message from databases. */
         loadBubbles(Optional.ofNullable(messageController.getMessages(this.chatroomId)).orElse(new Vector<>()));
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        holderPane.add(new JPanel(), gbc);
+
         sendMessage(MessageProtocol.ID + MessageProtocol.SEPARATOR + userId + ';' + chatroomId);
 
         mainThread = new Thread(this);
@@ -146,11 +156,14 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
 
     protected void createBubble(ChatMessageBean bean) {
         GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel bubbleHolderPane = new JPanel();
         JLabel lblName = new JLabel();
         BubbleLabel bubble = new BubbleLabel(bubbleHolderPane, bean, userId);
 
-        bubblePane.add(bubbleHolderPane);
+        holderPane.add(bubbleHolderPane, gbc);
 
         bubbleHolderPane.setBackground(Color.WHITE);
         bubbleHolderPane.setBorder(new EmptyBorder(0, 8, 0, 8));
@@ -195,11 +208,14 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
     protected void loadBubbles(Vector<ChatMessageBean> beans) {
         beans.forEach(bean -> {
             GridBagConstraints gbc = new GridBagConstraints();
+            gbc.weightx = 1.0;
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             JPanel bubbleHolderPane = new JPanel();
             JLabel lblName = new JLabel();
             BubbleLabel bubble = new BubbleLabel(bubbleHolderPane, bean, userId);
 
-            bubblePane.add(bubbleHolderPane);
+            holderPane.add(bubbleHolderPane, gbc);
 
             bubbleHolderPane.setBackground(Color.WHITE);
             bubbleHolderPane.setBorder(new EmptyBorder(0, 8, 0, 8));

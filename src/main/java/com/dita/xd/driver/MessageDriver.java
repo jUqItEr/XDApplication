@@ -1,6 +1,6 @@
 package com.dita.xd.driver;
 
-import com.dita.xd.view.dialog.MessageDialog;
+import com.dita.xd.view.frame.MessageFrame;
 import mdlaf.MaterialLookAndFeel;
 import mdlaf.themes.MaterialLiteTheme;
 
@@ -17,7 +17,7 @@ public class MessageDriver {
         setUIFont(new FontUIResource("Nixgon.ttf", Font.PLAIN, 14));
 
         SwingUtilities.invokeLater(() -> {
-            MessageDialog driver = new MessageDialog(Locale.getDefault(), 1, "테스트 채팅방", "aaa");
+            MessageFrame driver = new MessageFrame(Locale.getDefault(), 1, "테스트 채팅방", "aaa");
             driver.setVisible(true);
         });
     }

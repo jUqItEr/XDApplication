@@ -8,7 +8,7 @@ import com.dita.xd.repository.ChatroomRepository;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.util.server.ServerObject;
 import com.dita.xd.view.base.JRoundedImageView;
-import com.dita.xd.view.dialog.MessageDialog;
+import com.dita.xd.view.frame.MessageFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -136,8 +136,8 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
             if (chatroomRepository.getUser(bean) == null) {
                 connect();
 
-                MessageDialog dialog =
-                        new MessageDialog(currentLocale, bean, userRepository.getUserId());
+                MessageFrame dialog =
+                        new MessageFrame(currentLocale, bean, userRepository.getUserId());
                 dialog.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null,
