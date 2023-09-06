@@ -43,13 +43,6 @@ public class ChatPanelDriver extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    protected void createThumb() {
-        JButton thumb = new JButton("Thumb");
-        thumb.setPreferredSize(THUMB_SIZE);
-        thumbPanel.add(thumb);
-        revalidate();
-        repaint();
-    }
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(screen.width / 10 * 6,

@@ -20,7 +20,7 @@ public class MailCodeDialogDriver {
         setUIFont(new FontUIResource("Nixgon.ttf", Font.PLAIN, 14));
 
         SwingUtilities.invokeLater(() -> {
-            MailCodeDialog dialog = new MailCodeDialog(new Locale("es_ES"), "aaa@aaa.com");
+            MailCodeDialog dialog = new MailCodeDialog(new Locale("String"), "aaa@aaa.com");
 
             System.out.println(dialog.showDialog());
         });

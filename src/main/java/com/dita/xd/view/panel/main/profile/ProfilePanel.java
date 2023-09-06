@@ -7,25 +7,39 @@ import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JVerticalScrollPane;
+import com.dita.xd.view.base.JXdTextPane;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class ProfilePanel extends JPanel implements LocaleChangeListener {
-    private ResourceBundle localeBundle;
+    private static final String[] EN_MONTH = new String[] {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
+    private static final String[] ES_MONTH = new String[] {
+            "enero", "febrero", "marzo", "abril", "mayo", "junio",
+            "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    };
 
-    private final JPanel feedPane;
+    private Locale currentLocale;
+    private ResourceBundle localeBundle;
 
     private final ActivityController activityController;
     private final FeedController feedController;
     private final UserRepository repository;
 
     private UserBean currentUser;
+
+    private JButton btnBookmark;
+    private JButton btnFeed;
+    private JButton btnLike;
 
     private JLabel lblFeedCount;
     private JLabel lblFeedCountTitle;
@@ -34,11 +48,28 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
     private JLabel lblFollowingCount;
     private JLabel lblFollowingCountTitle;
 
+    private JLabel lblUserNickname;
+    private JLabel lblUserId;
+
+    private JLabel lblBirthday;
+    private JLabel lblBirthdayTitle;
+    private JLabel lblCreatedAt;
+    private JLabel lblCreatedAtTitle;
+    private JLabel lblGender;
+    private JLabel lblGenderTitle;
+    private JLabel lblAddress;
+    private JLabel lblAddressTitle;
+    private JLabel lblWebsite;
+    private JLabel lblWebsiteTitle;
+
+    private JXdTextPane xtpIntroduce;
+
+    protected JPanel mainPane;
+
 
     public ProfilePanel(Locale locale) {
+        currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
-
-        feedPane = new JPanel(new GridLayout(0, 1, 5, 5));
 
         activityController = new ActivityController();
         feedController = new FeedController();
@@ -52,31 +83,40 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
     }
 
     private void initialize() {
+        final ImageIcon icoBirthday = new ImageIcon("resources/icons/birthday.png");
+        final ImageIcon icoCalendar = new ImageIcon("resources/icons/calendar.png");
+        final ImageIcon icoGender = new ImageIcon("resources/icons/gender.png");
+        final ImageIcon icoLink = new ImageIcon("resources/icons/link.png");
+        final ImageIcon icoPin = new ImageIcon("resources/icons/pin.png");
+
         setLayout(new BorderLayout());
 
         GridLayout gridProfileHeader = new GridLayout(2, 3, 4, 4);
-        GridBagConstraints constraints = new GridBagConstraints();
-
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.PAGE_START;
-        constraints.weightx = 1;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
+        GridBagConstraints paneGbc = new GridBagConstraints();
+        GridBagConstraints profileGbc = new GridBagConstraints();
+        GridBagConstraints introGbc = new GridBagConstraints();
+        paneGbc.weightx = 1.0;
+        paneGbc.gridwidth = GridBagConstraints.REMAINDER;
+        paneGbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel lblHeaderImage = new JLabel();
 
-        JLayeredPane mainPane = new JLayeredPane();
         JLayeredPane headerMainPane = new JLayeredPane();
-        JLayeredPane headerBottomPane = new JLayeredPane();        // 내부 프로필
+
+        JPanel buttonPane = new JPanel();
+        JPanel headerBottomPane = new JPanel();        // 내부 프로필
         JPanel headerTopPane = new JPanel();
         JPanel headerLeftPane = new JPanel();
         JPanel headerRightPane = new JPanel();
+        JPanel introducePane = new JPanel();
         JPanel profileHeaderPane = new JPanel();
+        JPanel userInfoPane = new JPanel();
+        JPanel userInfoSubPane = new JPanel();
+        JPanel wrapperPane = new JPanel();
 
-        JRoundedImageView rivProfileImage = new JRoundedImageView();
-
-        JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
-        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+        btnBookmark = new JButton();
+        btnFeed = new JButton();
+        btnLike = new JButton();
 
         lblFeedCount = new JLabel();
         lblFeedCountTitle = new JLabel();
@@ -85,22 +125,53 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         lblFollowingCount = new JLabel();
         lblFollowingCountTitle = new JLabel();
 
+        lblAddress = new JLabel();
+        lblBirthday = new JLabel();
+        lblCreatedAt = new JLabel();
+        lblGender = new JLabel();
+        lblWebsite = new JLabel();
+        lblAddressTitle = new JLabel(icoPin);
+        lblBirthdayTitle = new JLabel(icoBirthday);
+        lblCreatedAtTitle = new JLabel(icoCalendar);
+        lblGenderTitle = new JLabel(icoGender);
+        lblWebsiteTitle = new JLabel(icoLink);
 
+        lblUserId = new JLabel();
+        lblUserNickname = new JLabel();
+
+        mainPane = new JPanel();
+
+        xtpIntroduce = new JXdTextPane();
+
+        JRoundedImageView rivProfileImage = new JRoundedImageView();
+
+        JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
+        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+
+
+
+        buttonPane.setLayout(new GridLayout(1, 3));
         headerMainPane.setLayout(new OverlayLayout(headerMainPane));
-        headerBottomPane.setLayout(new FlowLayout());
-        headerTopPane.setLayout(new GridBagLayout());
-        headerLeftPane.setLayout(new FlowLayout(FlowLayout.LEFT));
+        headerBottomPane.setLayout(new GridBagLayout());
+        headerTopPane.setLayout(new BorderLayout());
+        headerLeftPane.setLayout(new BorderLayout());
         headerRightPane.setLayout(new BoxLayout(headerRightPane, BoxLayout.Y_AXIS));
-        mainPane.setLayout(new BorderLayout());
+        introducePane.setLayout(new GridBagLayout());
         profileHeaderPane.setLayout(gridProfileHeader);
+        userInfoPane.setLayout(new BoxLayout(userInfoPane, BoxLayout.Y_AXIS));
+        userInfoSubPane.setLayout(new FlowLayout(FlowLayout.LEFT));
+        wrapperPane.setLayout(new GridBagLayout());
 
+        mainPane.setLayout(new GridBagLayout());
 
         try {
             String headerUrl = currentUser.getHeaderImage();
 
             if (headerUrl != null) {
-                lblHeaderImage.setIcon(new ImageIcon(new URL(headerUrl)));
-                throw new MalformedURLException("No valid URL");
+                ImageIcon icon = new ImageIcon(new URL(headerUrl));
+                icon = new ImageIcon(icon.getImage()
+                        .getScaledInstance(483, 190, Image.SCALE_SMOOTH));
+                lblHeaderImage.setIcon(icon);
             } else {
                 throw new MalformedURLException("No valid URL");
             }
@@ -119,10 +190,14 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         } catch (MalformedURLException e) {
             rivProfileImage.setIcon(new ImageIcon("resources/images/anonymous.jpg"));
         }
+
+        lblUserNickname.setFont(lblUserNickname.getFont().deriveFont(22f).deriveFont(Font.BOLD));
+
+        profileHeaderPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         profileHeaderPane.setMaximumSize(new Dimension(200, 60));
         profileHeaderPane.setPreferredSize(new Dimension(200, 60));
 
-        rivProfileImage.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 100));
+        rivProfileImage.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
         rivProfileImage.setMaximumSize(new Dimension(140, 140));
         rivProfileImage.setPreferredSize(new Dimension(140, 140));
 
@@ -131,12 +206,13 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
         scrollPane.setVerticalScrollBar(scrollBar);
 
-//        headerMainPane.setMaximumSize(new Dimension(0, 300));
-//        headerMainPane.setPreferredSize(new Dimension(0, 300));
+        headerMainPane.setMaximumSize(new Dimension(0, 255));
+        headerMainPane.setPreferredSize(new Dimension(0, 255));
 
         headerBottomPane.setOpaque(false);
         headerLeftPane.setOpaque(false);
         headerRightPane.setOpaque(false);
+        profileHeaderPane.setOpaque(false);
 
         headerRightPane.setBorder(BorderFactory.createEmptyBorder(0, 16, 0, 0));
         headerRightPane.setMaximumSize(new Dimension(240, 140));
@@ -145,18 +221,43 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         lblHeaderImage.setMaximumSize(new Dimension(0, 190));
         lblHeaderImage.setPreferredSize(new Dimension(0, 190));
 
-        profileHeaderPane.setOpaque(false);
 
-        //headerMainPane.add(headerBottomPane);
-        headerMainPane.add(headerTopPane);
+        lblUserNickname.setMaximumSize(new Dimension(400, 20));
+        lblUserNickname.setPreferredSize(new Dimension(400, 20));
 
+        userInfoPane.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 0));
+        userInfoSubPane.setBorder(BorderFactory.createEmptyBorder(15, 15, 35, 15));
+
+        xtpIntroduce.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        xtpIntroduce.setEditable(false);
+        xtpIntroduce.setFocusable(false);
+        xtpIntroduce.setOpaque(false);
+
+        loadText();
+
+        final JButton[] btns = new JButton[] {
+                btnFeed, btnLike, btnBookmark
+        };
+
+        for (JButton btn : btns) {
+            JPanel tmpBorderPane = new JPanel();
+            tmpBorderPane.setLayout(new BorderLayout());
+            tmpBorderPane.add(btn);
+            buttonPane.add(tmpBorderPane);
+        }
+
+        headerMainPane.add(headerBottomPane, 1, 1);
+        headerMainPane.add(headerTopPane, 0, 0);
         headerLeftPane.add(rivProfileImage, BorderLayout.SOUTH);
-        headerLeftPane.add(Box.createHorizontalStrut(24));
         headerRightPane.add(Box.createVerticalGlue());
         headerRightPane.add(profileHeaderPane);
-        headerBottomPane.add(headerLeftPane);
-        headerBottomPane.add(headerRightPane);
-        headerTopPane.add(lblHeaderImage, constraints);
+
+        profileGbc.ipady = 110;
+        profileGbc.weightx = 0.1;
+        headerBottomPane.add(headerLeftPane, profileGbc);
+        profileGbc.weightx = 0.3;
+        headerBottomPane.add(headerRightPane, profileGbc);
+        headerTopPane.add(lblHeaderImage, BorderLayout.NORTH);
 
         profileHeaderPane.add(lblFollowingCountTitle);
         profileHeaderPane.add(lblFollowerCountTitle);
@@ -165,51 +266,177 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         profileHeaderPane.add(lblFollowerCount);
         profileHeaderPane.add(lblFeedCount);
 
-        loadText();
+        userInfoPane.add(lblUserNickname);
+        userInfoPane.add(lblUserId);
 
-        mainPane.add(feedPane, BorderLayout.NORTH);
-        mainPane.add(Box.createGlue(), BorderLayout.CENTER);
+        String introduce = currentUser.getIntroduce();
+        introGbc.weightx = 1.0;
+        introGbc.gridwidth = GridBagConstraints.REMAINDER;
+        introGbc.fill = GridBagConstraints.HORIZONTAL;
 
+        try {
+            if (introduce != null) {
+                xtpIntroduce.getStyledDocument().insertString(0, introduce, null);
+            }
+        } catch (BadLocationException e) {
+            System.err.println("문자열 배치 에러");
+        }
+        introducePane.add(xtpIntroduce, introGbc);
 
-        feedPane.add(headerMainPane);
+        final JLabel[] labelTitles = new JLabel[] {
+                lblAddressTitle, lblWebsiteTitle, lblBirthdayTitle, lblGenderTitle, lblCreatedAtTitle
+        };
+        final JLabel[] labels = new JLabel[] {
+                lblAddress, lblWebsite, lblBirthday, lblGender, lblCreatedAt
+        };
+        // 자동 추가 구문
+
+        for (int i = 0; i < labels.length; ++i) {
+            if (!labels[i].getText().isEmpty()) {
+                JPanel boxTmpPane = new JPanel();
+                boxTmpPane.setLayout(new BoxLayout(boxTmpPane, BoxLayout.X_AXIS));
+
+                boxTmpPane.add(labelTitles[i]);
+                boxTmpPane.add(labels[i]);
+                labels[i].setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 22));
+
+                userInfoSubPane.add(boxTmpPane);
+            }
+        }
+        userInfoSubPane.setMaximumSize(new Dimension(-1, 80));
+        userInfoSubPane.setPreferredSize(new Dimension(-1, 80));
+
+        wrapperPane.add(headerMainPane, paneGbc);
+        wrapperPane.add(userInfoPane, paneGbc);
+        wrapperPane.add(introducePane, paneGbc);
+        wrapperPane.add(userInfoSubPane, paneGbc);
+        wrapperPane.add(buttonPane, paneGbc);
+        mainPane.add(wrapperPane, paneGbc);
+
+        paneGbc.fill = GridBagConstraints.BOTH;
+        paneGbc.weighty = 1.0;
+
+        mainPane.add(new JLabel(), paneGbc);
+
+        createThumb();
+        createThumb();
+        createThumb();
+        createThumb();
+        createThumb();
+        createThumb();
 
         add(scrollPane);
     }
 
-    @Deprecated
     protected void createThumb() {
+        GridBagConstraints paneGbc = new GridBagConstraints();
+        paneGbc.weightx = 1.0;
+        paneGbc.gridwidth = GridBagConstraints.REMAINDER;
+        paneGbc.fill = GridBagConstraints.HORIZONTAL;
         JButton thumb = new JButton("Thumb");
-        thumb.setPreferredSize(new Dimension(170, 150));
-        feedPane.add(thumb);
+        thumb.setPreferredSize(new Dimension(150, 120));
+        mainPane.add(thumb, paneGbc);
         revalidate();
         repaint();
     }
 
     private void clear() {
-
+        mainPane.removeAll();
     }
 
     private void loadText() {
-        NumberFormat fmt = NumberFormat.getInstance();
+        final NumberFormat fmt = NumberFormat.getInstance();
+        final LinkedHashMap<String, String> subInfo = createUserSubInfo(currentUser);
 
-        lblFeedCount.setText(fmt.format(feedController
-                .getFeeds(currentUser.getUserId()).size()));
+        lblFeedCount.setText(fmt.format(feedController.getFeeds(currentUser.getUserId()).size()));
         lblFeedCountTitle.setText("피드수");
-        lblFollowerCount.setText(fmt.format(activityController
-                .getFollowerCount(currentUser.getUserId())));
+        lblFollowerCount.setText(fmt.format(activityController.getFollowerCount(currentUser.getUserId())));
         lblFollowerCountTitle.setText("팔로워");
-        lblFollowingCount.setText(fmt.format(activityController
-                .getFollowingCount(currentUser.getUserId())));
+        lblFollowingCount.setText(fmt.format(activityController.getFollowingCount(currentUser.getUserId())));
         lblFollowingCountTitle.setText("팔로잉");
+
+        lblUserNickname.setText(currentUser.getNickname());
+        lblUserId.setText('@' + currentUser.getUserId());
+
+        String address = subInfo.get("address");
+        String birthday = subInfo.get("birthday");
+        String createdAt = subInfo.get("createdAt");
+        String gender = subInfo.get("gender");
+        String website = subInfo.get("website");
+
+        if (address != null) {
+            lblAddress.setText(address);
+        }
+        if (birthday != null) {
+            lblBirthday.setText(birthday);
+        }
+        if (createdAt != null) {
+            String[] token = createdAt.split("-");
+            String lang = localeToTargetString(currentLocale);
+            int year = Integer.parseInt(token[0]);
+            int month = Integer.parseInt(token[1]);
+
+            switch (lang) {
+                case "en" ->
+                    lblCreatedAt.setText(String.format(localeBundle
+                            .getString("profile.panel.created"), EN_MONTH[month - 1], year));
+                case "es" ->
+                        lblCreatedAt.setText(String.format(localeBundle
+                                .getString("profile.panel.created"), ES_MONTH[month - 1], year));
+                default -> {
+                    lblCreatedAt.setText(String.format(localeBundle
+                            .getString("profile.panel.created"), year, month));
+                }
+            }
+        }
+        if (gender != null) {
+            switch (gender) {
+                case "M" -> {
+                    lblGender.setText("남");
+                }
+                case "F" -> {
+                    lblGender.setText("여");
+                }
+            }
+        }
+        if (website != null) {
+            lblWebsite.setText(website);
+        }
     }
 
     public void setCurrentUser(UserBean currentUser) {
         this.currentUser = currentUser;
         clear();
+        initialize();
+    }
+
+    private LinkedHashMap<String, String> createUserSubInfo(UserBean bean) {
+        final LinkedHashMap<String, String> hash = new LinkedHashMap<>();
+        final SimpleDateFormat sdfBirthday = new SimpleDateFormat("yyyy-MM-dd");
+        final SimpleDateFormat sdfCreatedAt = new SimpleDateFormat("yyyy-MM");
+
+        Date birthday = bean.getBirthday();
+        String fmtString = null;
+
+        if (birthday != null) {
+            fmtString = sdfBirthday.format(birthday);
+        }
+        hash.put("birthday", fmtString);
+        hash.put("createdAt", sdfCreatedAt.format(bean.getCreatedAt()));
+        hash.put("gender", bean.getGender());
+        hash.put("address", bean.getAddress());
+        hash.put("website", bean.getWebsite());
+
+        return hash;
+    }
+
+    public String localeToTargetString(Locale locale) {
+        return locale.getLanguage();
     }
 
     @Override
     public void onLocaleChanged(Locale newLocale) {
+        currentLocale = newLocale;
         localeBundle = ResourceBundle.getBundle("language", newLocale);
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();

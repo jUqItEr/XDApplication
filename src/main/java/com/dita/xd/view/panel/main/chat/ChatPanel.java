@@ -4,6 +4,7 @@ import com.dita.xd.controller.ChatroomController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.ChatroomBean;
 import com.dita.xd.repository.UserRepository;
+import com.dita.xd.view.dialog.ChatroomDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,8 +46,12 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
     private void initialize() {
         setLayout(new BorderLayout());
 
+        JButton btnAddChatroom = new JButton(new ImageIcon("resources/icons/chat.png"));
+        JButton btnInviteFriends = new JButton(new ImageIcon("resources/icons/invite.png"));
+
         JPanel buttonPane = new JPanel();
         JPanel buttonMainPane = new JPanel();
+        JPanel buttonTopPane = new JPanel();
         JPanel mainPane = new JPanel();
         JScrollPane scrollPane = new JScrollPane(mainPane);
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
@@ -55,12 +60,17 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
         buttonPane.setLayout(new BorderLayout());
         buttonMainPane.setLayout(new BoxLayout(buttonMainPane, BoxLayout.Y_AXIS));
+        buttonTopPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         mainPane.setLayout(new BorderLayout());
 
         buttonPane.add(btnConnect, BorderLayout.CENTER);
         buttonMainPane.add(Box.createVerticalStrut(20));
         buttonMainPane.add(buttonPane);
         buttonMainPane.add(Box.createVerticalStrut(30));
+
+        buttonTopPane.add(btnAddChatroom);
+        buttonTopPane.add(btnInviteFriends);
+
         mainPane.add(chatroomPane, BorderLayout.NORTH);
         mainPane.add(Box.createGlue(), BorderLayout.CENTER);
 
@@ -71,6 +81,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
         scrollPane.setVerticalScrollBar(scrollBar);
 
+        add(buttonTopPane, BorderLayout.NORTH);
         add(scrollPane);
 
         controller.getChatroom(repository.getUserId())
@@ -89,6 +100,29 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
             }
         };
         alarm.schedule(task, 0, 5000);
+
+        /* Event listeners */
+        btnAddChatroom.addActionListener(e -> {
+            ChatroomDialog dialog = new ChatroomDialog(currentLocale);
+
+            dialog.toggleComboBox(false);
+
+            if (dialog.showDialog()) {
+                controller.getChatroom(repository.getUserId()).stream()
+                        .filter(v -> !chatroom.containsKey(v.getChatroomId()))
+                        .forEach(this::appendChatroom);
+            }
+        });
+
+        btnInviteFriends.addActionListener(e -> {
+            ChatroomDialog dialog = new ChatroomDialog(currentLocale);
+
+            dialog.toggleTextField(false);
+
+            if (dialog.showDialog()) {
+
+            }
+        });
 
         revalidate();
         repaint();

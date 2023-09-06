@@ -306,10 +306,10 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
                 boolean result = activityController.addFeedback(currentUser, feedBean);
 
                 if (result) {
-                    System.out.println("좋아요 성공");
+                    System.out.println("피드백 성공");
                     feedbackImageView.setIcon(clickedFeedbackIcon);
                 } else {
-                    System.out.println("이미 눌렀던 피드네요...");
+                    System.out.println("이미 피드백을 눌렀던 피드네요...");
                     feedbackImageView.setIcon(feedbackIcon);
                     result = activityController.removeFeedback(currentUser, feedBean);
                 }
@@ -336,15 +336,16 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
                 boolean result = activityController.addBookmark(currentUser, feedBean);
 
                 if (result) {
-                    System.out.println("좋아요 성공");
-                    feedbackImageView.setIcon(clickedFeedbackIcon);
+                    System.out.println("북마크 성공");
+                    bookmarkImageView.setIcon(clickedBookmarkIcon);
                 } else {
-                    System.out.println("이미 눌렀던 피드네요...");
-                    feedbackImageView.setIcon(feedbackIcon);
-                    result = activityController.removeFeedback(currentUser, feedBean);
-                }
-                if (result) {
-                    lblFeedBack.setText(String.valueOf(feedController.getFeedbacks(feedBean).size()));
+                    System.out.println("이미 북마크를 눌렀던 피드네요...");
+
+                    result = activityController.removeBookmark(currentUser, feedBean);
+
+                    if (result) {
+                        bookmarkImageView.setIcon(bookmarkIcon);
+                    }
                 }
             }
 
@@ -444,11 +445,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
     }
 
     public String localeToTargetString(Locale locale) {
-        String lang = locale.getLanguage();
-
-        if (lang.contains("es")) {
-            lang = lang.substring(3);
-        }
-        return lang;
+        return locale.getLanguage();
     }
 }

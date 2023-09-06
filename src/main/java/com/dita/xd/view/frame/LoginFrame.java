@@ -93,7 +93,7 @@ public class LoginFrame extends JFrame implements LocaleChangeListener {
                     case "日本語" -> onLocaleChanged(Locale.JAPAN);
                     case "中文" -> onLocaleChanged(Locale.CHINA);
                     case "English" -> onLocaleChanged(Locale.US);
-                    case "Español" -> onLocaleChanged(new Locale("es_ES"));
+                    case "Español" -> onLocaleChanged(new Locale("es", "ES"));
                 }
             }
         });

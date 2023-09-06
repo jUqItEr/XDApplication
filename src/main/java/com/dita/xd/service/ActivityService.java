@@ -38,6 +38,9 @@ public interface ActivityService extends Service {
     ChatroomBean createChatroom(String name);
     ChatroomBean getChatroom(int chatroomId);
 
+    Vector<UserBean> getFollowerList(UserBean userBean);
+    Vector<UserBean> getFollowingList(UserBean userBean);
+
     Vector<FeedBean> searchFeed(String includedContent);
     Vector<HashtagBean> searchHashtag(String includedHashtag);
     Vector<FeedBean> searchFeedHashtag(String includedHashtag);

@@ -18,7 +18,7 @@ public class TranslationDriver {
 //                "그 존엄과 권리에 있어 동등하다. 인간은 천부적으로 이성과 양심을 부여받았으며" +
 //                "서로 형제애의 정신으로 행동하여야 한다.", "ja"));
 
-        System.out.println(driver.localeToTargetString(new Locale("es_ES")));
+        System.out.println(driver.localeToTargetString(new Locale("es", "ES")));
     }
 
     public String translate(String text, String targetLang) {

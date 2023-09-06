@@ -4,10 +4,7 @@ import com.dita.xd.model.*;
 import com.dita.xd.service.ActivityService;
 import com.dita.xd.service.UserService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Vector;
 
 import static com.dita.xd.util.helper.ResultSetExtractHelper.*;
@@ -656,13 +653,15 @@ public class ActivityServiceImpl implements ActivityService {
 
         try {
             conn = pool.getConnection();
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, name);
             pstmt.setString(2, "A");
 
+            pstmt.executeUpdate();
+
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    int id = rs.getInt("id");
+                    int id = rs.getInt(1);
                     bean = getChatroom(id);
                 } else {
                     throw new SQLException("Creating chatroom failed, no ID obtained.");
@@ -699,6 +698,58 @@ public class ActivityServiceImpl implements ActivityService {
             pool.freeConnection(conn, pstmt, rs);
         }
         return bean;
+    }
+
+    @Override
+    public Vector<UserBean> getFollowerList(UserBean userBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select user_tbl_id from follower_tbl where user_tbl_follower_id = ?";
+        Vector<UserBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                UserBean bean = new UserBean();
+                bean.setUserId(rs.getString(1));
+                beans.addElement(bean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<UserBean> getFollowingList(UserBean userBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select user_follower_tbl_id from follower_tbl where user_tbl_id = ?";
+        Vector<UserBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                UserBean bean = new UserBean();
+                bean.setUserId(rs.getString(1));
+                beans.addElement(bean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
     }
 
     @Override
