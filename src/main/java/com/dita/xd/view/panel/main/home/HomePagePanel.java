@@ -1,5 +1,6 @@
 package com.dita.xd.view.panel.main.home;
 
+import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.FeedController;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.repository.UserRepository;
@@ -10,7 +11,6 @@ import com.dita.xd.view.base.JXdTextPane;
 import com.dita.xd.view.panel.main.FeedPanel;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -22,7 +22,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class HomePagePanel extends JPanel{
-    private final FeedController controller;
+    private final FeedController feedController;
+    private final ActivityController activityController;
     private final UserRepository repository;
     private ResourceBundle localeBundle;
     private Locale currentLocale;
@@ -40,7 +41,9 @@ public class HomePagePanel extends JPanel{
     public HomePagePanel(Locale locale){
         currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
-        controller = new FeedController();
+
+        feedController = new FeedController();
+        activityController = new ActivityController();
 
         repository = UserRepository.getInstance();
 
@@ -83,6 +86,8 @@ public class HomePagePanel extends JPanel{
         profileSubPane.setLayout(new FlowLayout(FlowLayout.LEFT));
         contentPane.setLayout(new BorderLayout());
         activityPane.setLayout(new BorderLayout());
+
+        boxParentPane.add(boxPane);
 
         boxPane.add(profilePane, BorderLayout.WEST);
         boxPane.add(contentPane);
@@ -144,29 +149,28 @@ public class HomePagePanel extends JPanel{
         boxPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         boxParentPane.setBorder(BorderFactory.createMatteBorder(0,0, 2, 0, Color.LIGHT_GRAY));
 
-        boxParentPane.add(boxPane);
-
         contentPane.add(Box.createRigidArea(new Dimension(0,10)),BorderLayout.NORTH);
         contentPane.add(Box.createRigidArea(new Dimension(10,0)),BorderLayout.EAST);
 
         activityPane.setBorder(BorderFactory.createEmptyBorder(10,0,0,10));
-        activityPane.add(Box.createRigidArea(new Dimension(10, 0)));
-        activityPane.add(imvImageIcon);
-        activityPane.add(Box.createRigidArea(new Dimension(300,0)));
-        activityPane.add(btnUpload);
+
+        activityPane.add(imvImageIcon, BorderLayout.WEST);
+        activityPane.add(Box.createGlue(), BorderLayout.CENTER);
+        activityPane.add(btnUpload, BorderLayout.EAST);
 
         btnUpload.addActionListener(e-> {
             if(!txaFeedText.getText().isEmpty()) {
-                boolean result = controller.create(repository.getUserId(), txaFeedText.getText());
+                boolean result = feedController.create(repository.getUserId(), txaFeedText.getText());
 
                 if (result) {
-                    FeedBean bean = controller.getFeeds("123").firstElement();
+                    FeedBean bean = feedController.getFeeds("123").firstElement();
                     feedPanel = new FeedPanel(currentLocale, bean);
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.weightx = 1.0;
                     gbc.gridwidth = GridBagConstraints.REMAINDER;
                     gbc.fill = GridBagConstraints.HORIZONTAL;
                     mainPane.add(feedPanel, gbc, 0);
+                    txaFeedText.setText("");
                     revalidate();
                     repaint();
                 }
@@ -175,13 +179,6 @@ public class HomePagePanel extends JPanel{
             }
         });
 
-//        btnTranslation.addActionListener(e -> {
-//            TranslationController transController = new TranslationController();
-//            String text = txaFeedText.getText();
-//            text = transController.translate(text, "en");
-//            System.out.println(text);
-//            txaFeedText.setText(text);
-//        });
         /* 패널에 컴포넌트 추가 */
         profileSubPane.add(rivProfile);
 
@@ -192,7 +189,7 @@ public class HomePagePanel extends JPanel{
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        for(FeedBean bean : controller.getFeeds("123")) {
+        for(FeedBean bean : feedController.getFeeds("123")) {
             createFeed(bean, gbc);
         }
 
@@ -213,8 +210,6 @@ public class HomePagePanel extends JPanel{
 
 
         mainPane.add(boxParentPane, gbc);
-//        mainPane.add(objectPane);
-//        mainPane.add(Box.createGlue(), BorderLayout.SOUTH);
 
         boardPane.add(boxParentPane, BorderLayout.NORTH);
         boardPane.add(scrollPane);
@@ -232,7 +227,9 @@ public class HomePagePanel extends JPanel{
     }
 
     protected void createFeed(FeedBean bean, GridBagConstraints gbc){
-
+//        if (!isBlocked(repository.getUserId(), bean.getUserId())){
+//
+//        }
         feedPanel = new FeedPanel(currentLocale, bean);
         mainPane.add(feedPanel, gbc);
     }

@@ -23,6 +23,10 @@ public class BirthdayPanel extends JPanel implements LocaleChangeListener {
 
     private void initialize() {
         setLayout(new BorderLayout());
+
+        JPanel mainPane = new JPanel();
+
+
     }
 
     private void loadText() {
