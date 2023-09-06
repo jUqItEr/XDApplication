@@ -2,6 +2,7 @@ package com.dita.xd.view.panel.main;
 
 import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.TranslationController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
@@ -25,26 +26,23 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
     private ResourceBundle localeBundle;
     private final ActivityController activityController;
     private final FeedController feedController;
+    private final TranslationController translationController;
     private final UserRepository repository;
 
     private FeedBean feedBean;
-
-    private JButton btnProfileImg;
 
     private JLabel lblUserId;
     private JLabel lblNickName;
     private JLabel lblCreatedAt;
 
-    private JXdTextPane txaFeedContent;
 
-    private JButton btnFeedComment;
-    private JButton btnFeedBack;
-    private JButton btnFeedLike;
-    private JButton btnViewer;
     private JLabel lblFeedComment;
     private JLabel lblFeedBack;
     private JLabel lblFeedLike;
     private JLabel lblViewer;
+    private JLabel lblTranslation;
+
+    private JXdTextPane txaFeedContent;
     private int nameLength;
     private int idLength;
     private int createdLength;
@@ -54,11 +52,13 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
 
     public FeedPanel(Locale locale, FeedBean bean){
+        currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
         repository = UserRepository.getInstance();
 
         activityController = new ActivityController();
         feedController = new FeedController();
+        translationController = new TranslationController();
 
         feedBean = bean ;
 
@@ -96,12 +96,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblFeedBack = new JLabel();
         lblFeedLike = new JLabel();
         lblViewer = new JLabel();
-
-        btnProfileImg = new JButton();
-        btnFeedComment = new JButton();
-        btnFeedBack = new JButton();
-        btnFeedLike = new JButton();
-        btnViewer = new JButton();
+        lblTranslation = new JLabel();
 
         txaFeedContent = new JXdTextPane();
 
@@ -110,12 +105,14 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         profilePane.setLayout(new BorderLayout());
 
         boxPane.setLayout(new BorderLayout());
+        boxTopPane.setLayout(new BorderLayout());
+        contentPane.setLayout(new BorderLayout());
         feedInfoPane.setLayout(new BorderLayout());
+        feedInfoSubPane.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
         feedInfoCommentPane.setLayout(new BorderLayout());
         feedInfoFeedBackPane.setLayout(new BorderLayout());
         feedInfoLikePane.setLayout(new BorderLayout());
         feedInfoViewerPane.setLayout(new BorderLayout());
-        boxTopPane.setLayout(new BorderLayout());
 
         boxTopPane.add(userInfoPane, BorderLayout.WEST);
 
@@ -123,7 +120,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         boxPane.add(contentPane);
         boxPane.add(feedInfoPane, BorderLayout.SOUTH);
 
-        feedInfoPane.add(feedInfoSubPane);
+        feedInfoPane.add(feedInfoSubPane, BorderLayout.WEST);
 
         feedInfoSubPane.add(feedInfoCommentPane);
         feedInfoSubPane.add(feedInfoFeedBackPane);
@@ -171,7 +168,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         JImageView feedbackImageView = new JImageView();
         ImageIcon feedbackIcon = new ImageIcon("resources/images/feedback.png");
-        ImageIcon clickedFeedbackIcon = new ImageIcon("resources/images/checked-feedback.png");
+        ImageIcon clickedFeedbackIcon = new ImageIcon("resources/images/clicked-feedback.png");
         feedbackImageView.setMaximumSize(new Dimension(20,20));
         feedbackImageView.setPreferredSize(new Dimension(20,20));
 
@@ -189,9 +186,16 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         JImageView bookmarkImageView = new JImageView();
         ImageIcon bookmarkIcon = new ImageIcon("resources/images/bookmark.png");
+        ImageIcon clickedBookmarkIcon = new ImageIcon("resources/images/clicked-bookmark.png");
         bookmarkImageView.setMaximumSize(new Dimension(20,20));
         bookmarkImageView.setPreferredSize(new Dimension(20,20));
         bookmarkImageView.setIcon(bookmarkIcon);
+
+        JImageView translationImageView = new JImageView();
+        ImageIcon translationIcon = new ImageIcon("resources/images/translation.png");
+        translationImageView.setMaximumSize(new Dimension(20,20));
+        translationImageView.setPreferredSize(new Dimension(20,20));
+        translationImageView.setIcon(translationIcon);
 
         lblNickName.setPreferredSize(new Dimension(nameLength,20));
         lblUserId.setPreferredSize(new Dimension(idLength, 20));
@@ -202,29 +206,36 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblViewer.setPreferredSize(new Dimension(50,20));
 
         // Box Vertical Glue
+        mainPane.setBorder(BorderFactory.createEmptyBorder(15,0,10,0));
+
         profilePane.add(Box.createGlue(), BorderLayout.CENTER);
         profilePane.setBorder(BorderFactory.createEmptyBorder(5,15,0,10));
 
-        mainPane.add(Box.createRigidArea(new Dimension(
-                0,15)),BorderLayout.NORTH);
-
         boxTopPane.add(Box.createGlue(), BorderLayout.CENTER);
+        boxTopPane.setBorder(BorderFactory.createEmptyBorder(3,0,3,50));
+
+        contentPane.add(Box.createGlue(), BorderLayout.CENTER);
 
         feedInfoCommentPane.add(Box.createRigidArea(new Dimension(10,0)));
         feedInfoFeedBackPane.add(Box.createRigidArea(new Dimension(10, 0)));
         feedInfoLikePane.add(Box.createRigidArea(new Dimension(10, 0)));
         feedInfoViewerPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        feedInfoPane.add(Box.createRigidArea(new Dimension(0, 10)), BorderLayout.NORTH);
-        feedInfoPane.add(Box.createRigidArea(new Dimension(0, 10)), BorderLayout.SOUTH);
+        feedInfoPane.add(Box.createGlue(), BorderLayout.CENTER);
+        feedInfoPane.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+
         /* Add components to panel */
         profilePane.add(rivProfile, BorderLayout.NORTH);
 
-        contentPane.add(txaFeedContent);
+        boxTopPane.add(translationImageView, BorderLayout.EAST);
+
+        contentPane.add(txaFeedContent, BorderLayout.WEST);
 
         userInfoPane.add(lblNickName);
         userInfoPane.add(lblUserId);
         userInfoPane.add(lblCreatedAt);
+
+        feedInfoPane.add(bookmarkImageView, BorderLayout.EAST);
 
         feedInfoCommentPane.add(commentImageView, BorderLayout.WEST);
         feedInfoCommentPane.add(lblFeedComment, BorderLayout.EAST);
@@ -250,6 +261,12 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
             feedbackImageView.setIcon(clickedFeedbackIcon);
         } else {
             feedbackImageView.setIcon(feedbackIcon);
+        }
+
+        if (activityController.isCheckedBookmark(repository.getUserAccount(),feedBean)){
+            bookmarkImageView.setIcon(clickedBookmarkIcon);
+        } else {
+            bookmarkImageView.setIcon(bookmarkIcon);
         }
         likeImageView.addMouseListener(new MouseAdapter() {
             @Override
@@ -312,7 +329,62 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
             }
         });
 
+        bookmarkImageView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                UserBean currentUser = repository.getUserAccount();
+                boolean result = activityController.addBookmark(currentUser, feedBean);
 
+                if (result) {
+                    System.out.println("좋아요 성공");
+                    feedbackImageView.setIcon(clickedFeedbackIcon);
+                } else {
+                    System.out.println("이미 눌렀던 피드네요...");
+                    feedbackImageView.setIcon(feedbackIcon);
+                    result = activityController.removeFeedback(currentUser, feedBean);
+                }
+                if (result) {
+                    lblFeedBack.setText(String.valueOf(feedController.getFeedbacks(feedBean).size()));
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                bookmarkImageView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                bookmarkImageView.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+
+        translationImageView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String text = txaFeedContent.getText();
+                txaFeedContent.setText("");
+                try{
+                    txaFeedContent.getStyledDocument().insertString(
+                            0, translationController.translate(text, localeToTargetString(currentLocale)),null);
+                }catch (BadLocationException e2){
+                    e2.printStackTrace();
+                }
+
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                translationImageView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                translationImageView.setCursor(Cursor.getDefaultCursor());
+            }
+        });
 
         this.add(mainPane);
     }
@@ -338,6 +410,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblFeedBack.setText(String.valueOf(feedBean.getFeedbackBeans().size()));
         lblFeedLike.setText(String.valueOf(feedBean.getLikeBeans().size()));
         lblViewer.setText(String.valueOf(feedBean.getViewer()));
+        lblTranslation.setText("번역");
 
         if(createdTime < 60) {
             lblCreatedAt.setText(createdTime + "초 전");
@@ -368,5 +441,14 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         localeBundle = ResourceBundle.getBundle("language", newLocale);
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();
+    }
+
+    public String localeToTargetString(Locale locale) {
+        String lang = locale.getLanguage();
+
+        if (lang.contains("es")) {
+            lang = lang.substring(3);
+        }
+        return lang;
     }
 }

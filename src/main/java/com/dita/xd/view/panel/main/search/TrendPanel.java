@@ -4,9 +4,12 @@ import com.dita.xd.controller.FeedController;
 import com.dita.xd.controller.HashtagController;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.HashtagBean;
+import com.dita.xd.view.manager.SearchPanelLayoutMgr;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -102,6 +105,23 @@ public class TrendPanel extends JPanel{
             mainPane.add(lblIssue);
             mainPane.add(lblHash);
             mainPane.add(lblHashCount);
+
+            lblHash.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    lblHash.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    lblHash.setCursor(Cursor.getDefaultCursor());
+                }
+            });
 
             add(mainPane);
         }

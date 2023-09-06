@@ -122,4 +122,8 @@ public class SearchPanel extends JPanel implements ActionListener {
         revalidate();
         repaint();
     }
+
+    private void setSearchText(String text){
+
+    }
 }
