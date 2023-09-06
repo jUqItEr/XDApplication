@@ -30,7 +30,10 @@ public class HomePagePanel extends JPanel{
     private JButton btnImageUpload;
     private JXdTextPane txaFeedText;
 
-    private final JPanel objectPane = new JPanel(new GridLayout(0, 1, 2, 0));
+    //private final JPanel objectPane = new JPanel(new GridLayout(0, 1, 4, 4));
+    private JPanel mainPane;
+
+    private String messageEmptyError;
 
     public HomePagePanel(Locale locale){
         currentLocale = locale;
@@ -45,7 +48,11 @@ public class HomePagePanel extends JPanel{
     private void initialize(){
         setLayout(new BorderLayout());
 
-        JPanel mainPane = new JPanel();
+
+
+        mainPane = new JPanel();
+        JPanel boardPane = new JPanel();
+        JPanel boxParentPane = new JPanel();
         JPanel boxPane = new JPanel();
         JPanel profilePane = new JPanel();
         JPanel profileSubPane = new JPanel();
@@ -64,13 +71,16 @@ public class HomePagePanel extends JPanel{
         scrollBar.setUnitIncrement(16);
         scrollPane.setVerticalScrollBar(scrollBar);
 
-        mainPane.setLayout(new BorderLayout());
+        mainPane.setLayout(new GridBagLayout());
+
 //        boxPane.setLayout(new GridLayout(1,2));
+        boardPane.setLayout(new BorderLayout());
         boxPane.setLayout(new BorderLayout());
+        boxParentPane.setLayout(new BorderLayout());
         profilePane.setLayout(new BorderLayout());
         profileSubPane.setLayout(new FlowLayout(FlowLayout.LEFT));
         contentPane.setLayout(new BorderLayout());
-        activityPane.setLayout(new BoxLayout(activityPane, BoxLayout.X_AXIS));
+        activityPane.setLayout(new BorderLayout());
 
         boxPane.add(profilePane, BorderLayout.WEST);
         boxPane.add(contentPane);
@@ -119,25 +129,37 @@ public class HomePagePanel extends JPanel{
         btnImageUpload.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         /* 여백 공간 추가 */
-        boxPane.setBorder(BorderFactory.createEmptyBorder(10,10,0,0));
+        boxPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        boxParentPane.setBorder(BorderFactory.createMatteBorder(0,0, 2, 0, Color.LIGHT_GRAY));
+
+        boxParentPane.add(boxPane);
 
         contentPane.add(Box.createRigidArea(new Dimension(0,10)),BorderLayout.NORTH);
         contentPane.add(Box.createRigidArea(new Dimension(10,0)),BorderLayout.EAST);
 
-        activityPane.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
+        activityPane.setBorder(BorderFactory.createEmptyBorder(10,0,0,10));
         activityPane.add(Box.createRigidArea(new Dimension(10, 0)));
         activityPane.add(imvImageIcon);
         activityPane.add(Box.createRigidArea(new Dimension(300,0)));
         activityPane.add(btnUpload);
 
         btnUpload.addActionListener(e-> {
-            if(txaFeedText.getText() != null) {
-                controller.create(repository.getUserId(), txaFeedText.getText());
-                FeedBean bean = controller.getFeeds("123").firstElement();
-                feedPanel = new FeedPanel(currentLocale, bean);
-                objectPane.add(feedPanel, 1);
-                revalidate();
-                repaint();
+            if(!txaFeedText.getText().isEmpty()) {
+                boolean result = controller.create(repository.getUserId(), txaFeedText.getText());
+
+                if (result) {
+                    FeedBean bean = controller.getFeeds("123").firstElement();
+                    feedPanel = new FeedPanel(currentLocale, bean);
+                    GridBagConstraints gbc = new GridBagConstraints();
+                    gbc.weightx = 1.0;
+                    gbc.gridwidth = GridBagConstraints.REMAINDER;
+                    gbc.fill = GridBagConstraints.HORIZONTAL;
+                    mainPane.add(feedPanel, gbc, 0);
+                    revalidate();
+                    repaint();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, messageEmptyError);
             }
         });
 
@@ -153,11 +175,18 @@ public class HomePagePanel extends JPanel{
 
         contentPane.add(txaFeedText);
 
-        objectPane.add(boxPane);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         for(FeedBean bean : controller.getFeeds("123")) {
-            createFeed(bean);
+            createFeed(bean, gbc);
         }
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+//        mainPane.add(new JLabel(), gbc);
 
         scrollBar.setValue(-200);
 
@@ -170,9 +199,14 @@ public class HomePagePanel extends JPanel{
             }
         });
 
-        mainPane.add(objectPane, BorderLayout.NORTH);
-        mainPane.add(Box.createGlue(), BorderLayout.CENTER);
-        add(scrollPane);
+
+        mainPane.add(boxParentPane, gbc);
+//        mainPane.add(objectPane);
+//        mainPane.add(Box.createGlue(), BorderLayout.SOUTH);
+
+        boardPane.add(boxParentPane, BorderLayout.NORTH);
+        boardPane.add(scrollPane);
+        add(boardPane);
 
     }
 
@@ -186,11 +220,13 @@ public class HomePagePanel extends JPanel{
         } catch (BadLocationException e){
             e.printStackTrace();
         }
+
+        messageEmptyError = "작성할 글이 비어있습니다.";
     }
 
-    protected void createFeed(FeedBean bean){
+    protected void createFeed(FeedBean bean, GridBagConstraints gbc){
 
         feedPanel = new FeedPanel(currentLocale, bean);
-        objectPane.add(feedPanel);
+        mainPane.add(feedPanel, gbc);
     }
 }
