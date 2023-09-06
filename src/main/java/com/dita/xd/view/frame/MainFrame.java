@@ -10,6 +10,8 @@ import com.dita.xd.view.panel.main.chat.ChatPanel;
 import com.dita.xd.view.panel.main.home.HomePagePanel;
 import com.dita.xd.view.panel.main.profile.ProfilePanel;
 import com.dita.xd.view.panel.main.search.SearchPanel;
+import com.dita.xd.view.theme.XdMaterialTheme;
+import mdlaf.MaterialLookAndFeel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -46,6 +48,12 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
         initialize();
         onLocaleChanged(locale);
+
+        try {
+            UIManager.setLookAndFeel(new MaterialLookAndFeel(new XdMaterialTheme()));
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initialize() {
@@ -80,7 +88,8 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
         sidePane.add(logoPane, BorderLayout.NORTH);
         sidePane.add(menuPanel);
-        sidePane.setBorder(new TitledBorder(new LineBorder(Color.BLACK,2)));
+        sidePane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2,
+                Color.LIGHT_GRAY));
 
         mgr.setMainFrame(this);
         mgr.setMainLayout(clMain);
