@@ -9,6 +9,7 @@ public class JHintTextField extends JTextField {
     private String hint;
 
     public JHintTextField() {
+        hint = "";
     }
 
     public JHintTextField(int columns) {
