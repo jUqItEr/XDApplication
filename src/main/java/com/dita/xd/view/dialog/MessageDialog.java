@@ -349,7 +349,7 @@ public class MessageDialog extends JDialog implements ActionListener, LocaleChan
                 setBackground(new Color(0x00_1D_9B_F0));
                 setForeground(Color.WHITE);
             } else {
-                setBackground(new Color(0xD0D3D3));
+                setBackground(new Color(0x00_D0_D3_D3));
             }
         }
 

@@ -55,6 +55,13 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         setLayout(new BorderLayout());
 
         GridLayout gridProfileHeader = new GridLayout(2, 3, 4, 4);
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.PAGE_START;
+        constraints.weightx = 1;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
 
         JLabel lblHeaderImage = new JLabel();
 
@@ -81,7 +88,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
         headerMainPane.setLayout(new OverlayLayout(headerMainPane));
         headerBottomPane.setLayout(new FlowLayout());
-        headerTopPane.setLayout(new BorderLayout());
+        headerTopPane.setLayout(new GridBagLayout());
         headerLeftPane.setLayout(new FlowLayout(FlowLayout.LEFT));
         headerRightPane.setLayout(new BoxLayout(headerRightPane, BoxLayout.Y_AXIS));
         mainPane.setLayout(new BorderLayout());
@@ -93,6 +100,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
             if (headerUrl != null) {
                 lblHeaderImage.setIcon(new ImageIcon(new URL(headerUrl)));
+                throw new MalformedURLException("No valid URL");
             } else {
                 throw new MalformedURLException("No valid URL");
             }
@@ -127,7 +135,6 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 //        headerMainPane.setPreferredSize(new Dimension(0, 300));
 
         headerBottomPane.setOpaque(false);
-        headerBottomPane.setAlignmentY(10f);
         headerLeftPane.setOpaque(false);
         headerRightPane.setOpaque(false);
 
@@ -140,7 +147,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
         profileHeaderPane.setOpaque(false);
 
-        headerMainPane.add(headerBottomPane);
+        //headerMainPane.add(headerBottomPane);
         headerMainPane.add(headerTopPane);
 
         headerLeftPane.add(rivProfileImage, BorderLayout.SOUTH);
@@ -149,7 +156,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         headerRightPane.add(profileHeaderPane);
         headerBottomPane.add(headerLeftPane);
         headerBottomPane.add(headerRightPane);
-        headerTopPane.add(lblHeaderImage);
+        headerTopPane.add(lblHeaderImage, constraints);
 
         profileHeaderPane.add(lblFollowingCountTitle);
         profileHeaderPane.add(lblFollowerCountTitle);
