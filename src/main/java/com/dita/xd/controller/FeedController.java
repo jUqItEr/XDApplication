@@ -1,6 +1,7 @@
 package com.dita.xd.controller;
 
 import com.dita.xd.model.FeedBean;
+import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.service.implementation.FeedServiceImpl;
 
@@ -24,6 +25,9 @@ public class FeedController {
         return feedSvc.getFeeds(userId);
     }
 
+    public Vector<UserBean> getLikes(FeedBean feedBean) {
+        return feedSvc.getLikes(feedBean);
+    }
     public Vector<FeedBean> search() {
         return null;
     }

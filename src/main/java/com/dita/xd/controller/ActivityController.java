@@ -54,6 +54,18 @@ public class ActivityController {
         return svc.inviteChatroom(chatroomBean, userBean);
     }
 
+    public boolean isCheckedBookmark(UserBean userBean, FeedBean feedBean) {
+        return svc.isCheckedBookmark(userBean, feedBean);
+    }
+
+    public boolean isCheckedFeedback(UserBean userBean, FeedBean feedBean) {
+        return svc.isCheckedFeedback(userBean, feedBean);
+    }
+
+    public boolean isCheckedLike(UserBean userBean, FeedBean feedBean) {
+        return svc.isCheckedLike(userBean, feedBean);
+    }
+
     public boolean setProfile(UserBean userBean) {
         return svc.setProfile(userBean);
     }
