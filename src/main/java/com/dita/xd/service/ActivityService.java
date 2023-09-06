@@ -15,9 +15,11 @@ public interface ActivityService extends Service {
     boolean addUserFollow(UserBean fromUserBean, UserBean toUserBean);
     boolean exitChatroom(ChatroomBean chatroomBean, UserBean userBean);
     boolean inviteChatroom(ChatroomBean chatroomBean, UserBean userBean);
+    boolean isBlocked(UserBean fromBean, UserBean toBean);
     boolean isCheckedBookmark(UserBean userBean, FeedBean feedBean);
     boolean isCheckedFeedback(UserBean userBean, FeedBean feedBean);
     boolean isCheckedLike(UserBean userBean, FeedBean feedBean);
+    boolean isFollowed(UserBean fromBean, UserBean toBean);
     boolean setProfile(UserBean userBean);
     boolean removeBookmark(UserBean userBean, FeedBean feedBean);
     boolean removeFeed(UserBean userBean, FeedBean feedBean);

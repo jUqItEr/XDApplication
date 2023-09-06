@@ -237,6 +237,33 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public boolean isBlocked(UserBean fromBean, UserBean toBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select count(*) from block_tbl where user_tbl_id = ? and user_tbl_block_id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, fromBean.getUserId());
+            pstmt.setString(2, toBean.getUserId());
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                flag = rs.getInt(1) == 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return flag;
+    }
+
+    @Override
     public boolean isCheckedBookmark(UserBean userBean, FeedBean feedBean) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -301,6 +328,33 @@ public class ActivityServiceImpl implements ActivityService {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userBean.getUserId());
             pstmt.setInt(2, feedBean.getId());
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                flag = rs.getInt(1) == 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean isFollowed(UserBean fromBean, UserBean toBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select count(*) from follower_tbl where user_tbl_id = ? and user_tbl_follower_id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, fromBean.getUserId());
+            pstmt.setString(2, toBean.getUserId());
+
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
