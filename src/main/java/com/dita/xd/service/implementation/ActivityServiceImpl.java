@@ -331,7 +331,7 @@ public class ActivityServiceImpl implements ActivityService {
     public boolean removeLike(UserBean userBean, FeedBean feedBean) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "delete from like_tbl where user_tbl_id = ?, feed_tbl_id = ?";
+        String sql = "delete from like_tbl where user_tbl_id = ? and feed_tbl_id = ?";
         boolean flag = false;
 
         try {
