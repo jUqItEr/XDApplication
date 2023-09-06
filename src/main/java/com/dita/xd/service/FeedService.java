@@ -13,7 +13,8 @@ public interface  FeedService {
                     Vector<FeedUserTaggingBean> userTags, Timestamp createAt);
     FeedBean getFeed(int feedId);
 
-    public Vector<FeedBean> getBookmarks(String userId);
+    Vector<UserBean> getBookmarks(FeedBean feedBean);
+    Vector<FeedBean> getBookmarks(String userId);
     Vector<FeedBean> getComments(FeedBean bean);
     Vector<UserBean> getFeedbacks(FeedBean bean);
     Vector<UserBean> getLikes(FeedBean bean);

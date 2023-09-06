@@ -25,6 +25,14 @@ public class FeedController {
         return feedSvc.getFeeds(userId);
     }
 
+    public Vector<UserBean> getBookmarks(FeedBean feedBean) {
+        return feedSvc.getBookmarks(feedBean);
+    }
+
+    public Vector<UserBean> getFeedbacks(FeedBean feedBean) {
+        return feedSvc.getFeedbacks(feedBean);
+    }
+
     public Vector<UserBean> getLikes(FeedBean feedBean) {
         return feedSvc.getLikes(feedBean);
     }

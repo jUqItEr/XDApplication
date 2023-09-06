@@ -74,6 +74,37 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public Vector<UserBean> getBookmarks(FeedBean feedBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_bookmark_view where feed_id = ?";
+        Vector<UserBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, feedBean.getId());
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String userId = rs.getString("bookmark_user_id");
+                String userNickname = rs.getString("bookmark_user_nickname");
+                UserBean bean = new UserBean();
+
+                bean.setUserId(userId);
+                bean.setNickname(userNickname);
+                beans.addElement(bean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
     public Vector<FeedBean> getBookmarks(String userId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
