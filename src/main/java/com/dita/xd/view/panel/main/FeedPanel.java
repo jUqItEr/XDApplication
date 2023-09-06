@@ -77,6 +77,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         JPanel profilePane = new JPanel(); /* 피드 좌측  */
 
         JPanel boxPane = new JPanel(); /* profilePane을 제외한 Panel 묶기 위해 선언 */
+        JPanel boxTopPane = new JPanel();
         JPanel userInfoPane = new JPanel();
         JPanel contentPane = new JPanel();
         JPanel mediaPane = new JPanel();
@@ -114,8 +115,11 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         feedInfoFeedBackPane.setLayout(new BorderLayout());
         feedInfoLikePane.setLayout(new BorderLayout());
         feedInfoViewerPane.setLayout(new BorderLayout());
+        boxTopPane.setLayout(new BorderLayout());
 
-        boxPane.add(userInfoPane, BorderLayout.NORTH);
+        boxTopPane.add(userInfoPane, BorderLayout.WEST);
+
+        boxPane.add(boxTopPane, BorderLayout.NORTH);
         boxPane.add(contentPane);
         boxPane.add(feedInfoPane, BorderLayout.SOUTH);
 
@@ -167,21 +171,27 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         JImageView feedbackImageView = new JImageView();
         ImageIcon feedbackIcon = new ImageIcon("resources/images/feedback.png");
+        ImageIcon clickedFeedbackIcon = new ImageIcon("resources/images/checked-feedback.png");
         feedbackImageView.setMaximumSize(new Dimension(20,20));
         feedbackImageView.setPreferredSize(new Dimension(20,20));
-        feedbackImageView.setIcon(feedbackIcon);
 
         JImageView likeImageView = new JImageView();
         ImageIcon likeIcon = new ImageIcon("resources/images/like.png");
+        ImageIcon clickedLikeIcon = new ImageIcon("resources/images/clicked-like.png");
         likeImageView.setMaximumSize(new Dimension(20,20));
         likeImageView.setPreferredSize(new Dimension(20,20));
-        likeImageView.setIcon(likeIcon);
 
         JImageView viewImageView = new JImageView();
         ImageIcon viewIcon = new ImageIcon("resources/images/line-chart.png");
         viewImageView.setMaximumSize(new Dimension(20,20));
         viewImageView.setPreferredSize(new Dimension(20,20));
         viewImageView.setIcon(viewIcon);
+
+        JImageView bookmarkImageView = new JImageView();
+        ImageIcon bookmarkIcon = new ImageIcon("resources/images/bookmark.png");
+        bookmarkImageView.setMaximumSize(new Dimension(20,20));
+        bookmarkImageView.setPreferredSize(new Dimension(20,20));
+        bookmarkImageView.setIcon(bookmarkIcon);
 
         lblNickName.setPreferredSize(new Dimension(nameLength,20));
         lblUserId.setPreferredSize(new Dimension(idLength, 20));
@@ -197,6 +207,8 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         mainPane.add(Box.createRigidArea(new Dimension(
                 0,15)),BorderLayout.NORTH);
+
+        boxTopPane.add(Box.createGlue(), BorderLayout.CENTER);
 
         feedInfoCommentPane.add(Box.createRigidArea(new Dimension(10,0)));
         feedInfoFeedBackPane.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -226,38 +238,80 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         mainPane.add(profilePane, BorderLayout.WEST);
         mainPane.add(boxPane);
 
+        /* 사용자가 해당 피드에 좋아요를 이미 하였는지 */
+        if (activityController.isCheckedLike(repository.getUserAccount(), feedBean)) {
+            likeImageView.setIcon(clickedLikeIcon);
+        } else {
+            likeImageView.setIcon(likeIcon);
+        }
 
+        /* 사용자가 해당 피드에 리트윗을 이미 하였는지 */
+        if (activityController.isCheckedFeedback(repository.getUserAccount(),feedBean)) {
+            feedbackImageView.setIcon(clickedFeedbackIcon);
+        } else {
+            feedbackImageView.setIcon(feedbackIcon);
+        }
         likeImageView.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 UserBean currentUser = repository.getUserAccount();
-                int currentLike = Integer.parseInt(lblFeedLike.getText());
                 boolean result = activityController.addLike(currentUser, feedBean);
                 System.out.println("[" + currentUser.getNickname() + "]이 " + feedBean.getId() + "번 피드에 좋아요를 눌렀습니다.");
 
                 if (result) {
                     System.out.println("좋아요 성공");
-                    lblFeedLike.setText(String.valueOf(++currentLike));
+                    likeImageView.setIcon(clickedLikeIcon);
                 } else {
                     System.out.println("이미 눌렀던 피드네요...");
+                    likeImageView.setIcon(likeIcon);
                     result = activityController.removeLike(currentUser, feedBean);
-
-                    if (result) {
-                        lblFeedLike.setText(String.valueOf(--currentLike));
-                    }
+                }
+                if (result) {
+                    lblFeedLike.setText(String.valueOf(feedController.getLikes(feedBean).size()));
                 }
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
+                likeImageView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
+                likeImageView.setCursor(Cursor.getDefaultCursor());
             }
         });
+
+        feedbackImageView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                UserBean currentUser = repository.getUserAccount();
+                boolean result = activityController.addFeedback(currentUser, feedBean);
+
+                if (result) {
+                    System.out.println("좋아요 성공");
+                    feedbackImageView.setIcon(clickedFeedbackIcon);
+                } else {
+                    System.out.println("이미 눌렀던 피드네요...");
+                    feedbackImageView.setIcon(feedbackIcon);
+                    result = activityController.removeFeedback(currentUser, feedBean);
+                }
+                if (result) {
+                    lblFeedBack.setText(String.valueOf(feedController.getFeedbacks(feedBean).size()));
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                feedbackImageView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                feedbackImageView.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+
 
 
         this.add(mainPane);
