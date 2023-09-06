@@ -21,7 +21,7 @@ public class TrendPanel extends JPanel{
 
     public TrendPanel(Locale locale){
         localeBundle = ResourceBundle.getBundle("language", locale);
-
+        currentLocale = locale;
         controller = new HashtagController();
 
         initialize();
@@ -47,19 +47,12 @@ public class TrendPanel extends JPanel{
 
         /* 현재 해쉬태그 데이터가 없음, 피드를 올릴때 같이 포함하도록 수정 */
 
-        for(HashtagBean bean : controller.getTrendHashtags(1)){
+        for(HashtagBean bean : controller.getTrendHashtags(3)){
             String hash = bean.getContent();
             int hashCount = bean.getHashtagId();
-            contentPane = new ContentPane(hash, hashCount + "");
+            contentPane = new ContentPane(currentLocale, hash, hashCount + "");
             objectPane.add(contentPane);
         }
-
-//        contentPane = new ContentPane("엄청난 트렌드", "1,000");
-//        objectPane.add(contentPane);
-//        contentPane = new ContentPane("신기한 트렌드", "543,904");
-//        objectPane.add(contentPane);
-//        contentPane = new ContentPane("이상한 트렌드", "100,000");
-//        objectPane.add(contentPane);
 
         headPane.add(lblTitle, BorderLayout.WEST);
         headPane.add(Box.createGlue());
@@ -78,12 +71,16 @@ public class TrendPanel extends JPanel{
     }
 
     public class ContentPane extends JPanel{
+        private ResourceBundle localeBundle;
+        private Locale currentLocale;
         private JLabel lblHash;
         private JLabel lblHashCount;
         private JLabel lblIssue;
 
 
-        public ContentPane(String hashName, String hashCount){
+        public ContentPane(Locale locale, String hashName, String hashCount){
+            localeBundle = ResourceBundle.getBundle("language", locale);
+
             lblHash = new JLabel(hashName);
             lblHashCount = new JLabel(hashCount + " posts");
 

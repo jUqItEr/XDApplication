@@ -1,5 +1,8 @@
 package com.dita.xd.view.panel.main;
 
+import com.dita.xd.repository.UserRepository;
+import com.dita.xd.view.base.JImageView;
+import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.manager.MainLayoutMgr;
 
 import javax.swing.*;
@@ -15,14 +18,18 @@ public class MenuPanel extends JPanel{
     private ResourceBundle localeBundle;
     private Locale currentLocale;
 
-    private JLabel lblHome;
-    private JLabel lblProfile;
-    private JLabel lblSearch;
-    private JLabel lblChat;
+    private JLabel lblMenu;
+    private MenubarPanel menubarPanel;
+    private final MiniProfile miniProfile;
+    private final JPanel objectPane = new JPanel(new GridLayout(0, 1, 2, 0));
+
 
     public MenuPanel(Locale locale){
         //controller = new ?Controller();
+        currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
+
+        miniProfile = new MiniProfile(locale);
 
         mgr = MainLayoutMgr.getInstance();
 
@@ -34,92 +41,204 @@ public class MenuPanel extends JPanel{
         /* Set the default properties to parent panel. */
         setLayout(new BorderLayout());
 
+        JPanel headPane = new JPanel();
         JPanel mainPane = new JPanel();
-
-
-        /* Load to memory */
-        lblHome = new JLabel();
-        lblSearch = new JLabel();
-        lblProfile = new JLabel();
-        lblChat = new JLabel();
-
 
         /* Set the localized texts. */
         loadText();
 
         /* Set the properties of sub panels */
-        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.Y_AXIS));
-        mainPane.setPreferredSize(new Dimension(250,400));
+        mainPane.setLayout(new BorderLayout());
+        mainPane.setPreferredSize(new Dimension(250,100));
         /* Set the properties of components */
-        lblHome.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblHome.setPreferredSize(new Dimension(150, 30));
-        lblHome.setMaximumSize(new Dimension(150,30));
-        lblHome.setHorizontalAlignment(JLabel.LEFT);
-        lblHome.setFont(lblHome.getFont().deriveFont(20f));
+        createMenu("home");
+        createMenu("search");
+        createMenu("profile");
+        createMenu("chat");
 
-        lblSearch.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblSearch.setPreferredSize(new Dimension(150, 30));
-        lblSearch.setMaximumSize(new Dimension(150,30));
-        lblSearch.setHorizontalAlignment(JLabel.LEFT);
-        lblSearch.setFont(lblSearch.getFont().deriveFont(20f));
-
-        lblProfile.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblProfile.setPreferredSize(new Dimension(150, 30));
-        lblProfile.setMaximumSize(new Dimension(150,30));
-        lblProfile.setHorizontalAlignment(JLabel.LEFT);
-        lblProfile.setFont(lblProfile.getFont().deriveFont(20f));
-
-        lblChat.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblChat.setPreferredSize(new Dimension(150, 30));
-        lblChat.setMaximumSize(new Dimension(150,30));
-        lblChat.setHorizontalAlignment(JLabel.LEFT);
-        lblChat.setFont(lblChat.getFont().deriveFont(20f));
-
-        lblHome.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mgr.show("home");
-            }
-        });
-
-        lblSearch.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mgr.show("search");
-            }
-        });
-
-        lblProfile.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mgr.show("profile");
-            }
-        });
-
-        lblChat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mgr.show("chat");
-            }
-        });
-
-        mainPane.add(lblHome);
-        mainPane.add(Box.createVerticalStrut(20));
-        mainPane.add(lblSearch);
-        mainPane.add(Box.createVerticalStrut(20));
-        mainPane.add(lblProfile);
-        mainPane.add(Box.createVerticalStrut(20));
-        mainPane.add(lblChat);
-        mainPane.add(Box.createVerticalStrut(20));
-        mainPane.add(Box.createVerticalGlue());
+        mainPane.add(objectPane,BorderLayout.NORTH);
+        mainPane.add(Box.createGlue(),BorderLayout.CENTER);
+        mainPane.add(miniProfile, BorderLayout.SOUTH);
 
         this.add(mainPane);
     }
 
     private void loadText() {
-        lblHome.setText("홈");
-        lblChat.setText("채팅");
-        lblProfile.setText("프로필");
-        lblSearch.setText("검색");
+    }
+
+    private void createMenu(String menuBar) {
+        menubarPanel = new MenubarPanel(currentLocale, menuBar);
+        objectPane.add(menubarPanel);
+
+        menubarPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mgr.show(menuBar);
+            }
+        });
+    }
+
+    public static class MenubarPanel extends JPanel{
+        private ResourceBundle localeBundle;
+        private Locale currentLocale;
+        private JLabel lblMenu;
+        private String menuBar;
+
+        public MenubarPanel(Locale locale, String menuBar){
+            currentLocale = locale;
+            localeBundle = ResourceBundle.getBundle("language",locale);
+
+            this.menuBar = menuBar;
+
+            initialize();
+        }
+
+        private void initialize(){
+            setLayout(new BorderLayout());
+            setBorder(BorderFactory.createEmptyBorder(15,40,15,0));
+            JPanel mainPane = new JPanel();
+
+            lblMenu = new JLabel();
+
+
+
+            loadText();
+
+            JImageView imvImage = new JImageView();
+            ImageIcon Icon = new ImageIcon("resources/images/" + menuBar + ".png");
+            imvImage.setMaximumSize(new Dimension(30,30));
+            imvImage.setPreferredSize(new Dimension(30,30));
+            imvImage.setIcon(Icon);
+
+            mainPane.add(imvImage);
+            mainPane.add(Box.createRigidArea(new Dimension(10,0)));
+            mainPane.add(lblMenu);
+
+            this.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            });
+
+            add(mainPane, BorderLayout.WEST);
+        }
+
+        private void loadText(){
+            lblMenu.setText(menuBar);
+            lblMenu.setFont(lblMenu.getFont().deriveFont(20f)
+                    .deriveFont(Font.BOLD));
+        }
+    }
+
+    public class MiniProfile extends JPanel{
+        private ResourceBundle localeBundle;
+        private final UserRepository repository;
+
+        private Locale currentLocale;
+        private JLabel lblUserId;
+        private JLabel lblUserNickname;
+        public MiniProfile(Locale locale){
+            localeBundle = ResourceBundle.getBundle("language",locale);
+            currentLocale = locale;
+
+            repository = UserRepository.getInstance();
+
+            initialize();
+        }
+
+        private void initialize(){
+            setLayout(new BorderLayout());
+
+            JPanel mainPane = new JPanel();
+            JPanel profilePane = new JPanel();
+            JPanel userInfoPane = new JPanel();
+
+            lblMenu = new JLabel();
+            lblUserNickname = new JLabel();
+            lblUserId = new JLabel();
+
+            mainPane.setLayout(new BorderLayout());
+            profilePane.setLayout(new BorderLayout());
+            userInfoPane.setLayout(new BorderLayout());
+
+            profilePane.setOpaque(false);
+            userInfoPane.setOpaque(false);
+
+            loadText();
+
+            /* 패널 클릭 액션 */
+            mainPane.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    mainPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    mainPane.setBackground(Color.lightGray);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    mainPane.setCursor(Cursor.getDefaultCursor());
+                    mainPane.setBackground(Color.WHITE);
+                }
+            });
+
+            /* 메인패널에 들어갈 이미지 설정 */
+            JRoundedImageView rivProfile = new JRoundedImageView();
+            ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
+            rivProfile.setMaximumSize(new Dimension(40, 40));
+            rivProfile.setPreferredSize(new Dimension(40, 40));
+            rivProfile.setIcon(icon);
+
+            JImageView rivMore = new JImageView();
+            ImageIcon moreIcon = new ImageIcon("resources/images/more.png");
+            rivMore.setMaximumSize(new Dimension(20, 20));
+            rivMore.setPreferredSize(new Dimension(20, 20));
+            rivMore.setIcon(moreIcon);
+
+            /* 여백 설정 */
+            setBorder(BorderFactory.createEmptyBorder(10,40,20,15));
+
+            profilePane.setBorder(BorderFactory.createEmptyBorder(
+                    0,0,0,5));
+
+            /* 서브 패널 및 컴포넌트 추가 */
+
+            profilePane.add(rivProfile);
+
+            userInfoPane.add(lblUserNickname, BorderLayout.NORTH);
+            userInfoPane.add(lblUserId, BorderLayout.SOUTH);
+
+            mainPane.add(rivMore, BorderLayout.EAST);
+            mainPane.add(profilePane, BorderLayout.WEST);
+
+            mainPane.add(userInfoPane);
+
+            add(mainPane);
+        }
+
+        private void loadText(){
+            lblUserNickname.setText(repository.getUserNickname());
+            lblUserNickname.setFont(lblUserNickname.getFont().deriveFont(Font.BOLD));
+            lblUserNickname.setForeground(Color.darkGray);
+
+
+            lblUserId.setText("@" + repository.getUserId());
+            lblUserId.setForeground(Color.gray);
+        }
     }
 }
