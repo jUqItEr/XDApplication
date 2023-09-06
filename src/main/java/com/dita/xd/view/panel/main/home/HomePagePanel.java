@@ -214,12 +214,7 @@ public class HomePagePanel extends JPanel{
         btnUpload.setText("게시하기");
         btnUpload.setFont(btnUpload.getFont().deriveFont(12f).deriveFont(Font.BOLD));
 
-        txaFeedText.setText("");
-        try{
-            txaFeedText.getStyledDocument().insertString(0, "적고 싶은거", null);
-        } catch (BadLocationException e){
-            e.printStackTrace();
-        }
+        txaFeedText.setHint("적고 싶은거");
 
         messageEmptyError = "작성할 글이 비어있습니다.";
     }

@@ -7,9 +7,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JXdTextPane extends JTextPane {
+    private String hint;
+
     public JXdTextPane() {
         super();
+        hint = "";
         ((AbstractDocument) this.getDocument()).setDocumentFilter(new XdDocumentFilter(this));
+    }
+
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (hint.length() == 0 || getText().length() > 0) {
+            return;
+        }
+        final Graphics2D graphics = (Graphics2D) g;
+        final int offset = 4;
+
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setFont(getFont());
+        graphics.drawString(hint, getInsets().left, g.getFontMetrics().getMaxAscent() + offset);
     }
 
     static class XdDocumentFilter extends DocumentFilter {
