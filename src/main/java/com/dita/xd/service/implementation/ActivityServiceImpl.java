@@ -442,6 +442,56 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public int getFollowerCount(String userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select count(*) from follower_tbl where user_tbl_id = ?";
+        int result = -1;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return result;
+    }
+
+    @Override
+    public int getFollowingCount(String userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select count(*) from follower_tbl where user_tbl_follower_id = ?";
+        int result = -1;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return result;
+    }
+
+    @Override
     public ChatroomBean createChatroom(String name) {
         Connection conn = null;
         PreparedStatement pstmt = null;

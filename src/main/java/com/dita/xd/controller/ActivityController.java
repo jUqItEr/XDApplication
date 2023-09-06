@@ -6,6 +6,7 @@ import com.dita.xd.model.MediaBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.service.implementation.ActivityServiceImpl;
 
+import java.text.NumberFormat;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,14 @@ public class ActivityController {
 //    public boolean updateViewer(FeedBean feedBean);
 //    public ChatroomBean createChatroom(String name);
 //    public ChatroomBean getChatroom(int chatroomId);
+
+    public int getFollowerCount(String userId) {
+        return svc.getFollowerCount(userId);
+    }
+
+    public int getFollowingCount(String userId) {
+        return svc.getFollowingCount(userId);
+    }
 
     public Vector<Object> search(String searchContent) {
         Vector<Object> result = null;

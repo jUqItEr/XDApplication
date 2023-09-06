@@ -25,6 +25,10 @@ public interface ActivityService extends Service {
     boolean uploadHeaderImage(UserBean userBean, String address);
     boolean uploadProfileImage(UserBean userBean, String address);
     boolean updateViewer(FeedBean feedBean);
+    
+    int getFollowerCount(String userId);
+    int getFollowingCount(String userId);
+
     ChatroomBean createChatroom(String name);
     ChatroomBean getChatroom(int chatroomId);
 
