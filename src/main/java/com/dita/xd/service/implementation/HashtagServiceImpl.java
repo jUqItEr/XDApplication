@@ -183,7 +183,8 @@ public class HashtagServiceImpl implements HashtagService {
         ResultSet rs = null;
         String sql = "select ht.content as content, count(*) as total_count " +
                 "from hashtag_tbl ht join feed_hashtag_tbl fht on ht.id = fht.hashtag_tbl_id " +
-                "where date(uploaded_at) = curdate() group by content order by count(*) desc limit ?";
+                "where date(uploaded_at) between date_sub(now(), interval 3 day) and curdate() " +
+                "group by content order by count(*) desc limit ?";
         Vector<HashtagBean> beans = new Vector<>();
 
         try {
