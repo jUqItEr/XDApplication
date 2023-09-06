@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -199,10 +201,22 @@ public class MenuPanel extends JPanel{
 
             /* 메인패널에 들어갈 이미지 설정 */
             JRoundedImageView rivProfile = new JRoundedImageView();
-            ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
+            String profileUrl = repository.getUserAccount().getProfileImage();
+            ImageIcon icon = null;
+
+            try {
+                if (profileUrl != null) {
+                    icon = new ImageIcon(new URL(profileUrl));
+                }
+            } catch (MalformedURLException e) {
+                icon = new ImageIcon("resources/images/anonymous.jpg");
+
+            }
+
             rivProfile.setMaximumSize(new Dimension(40, 40));
             rivProfile.setPreferredSize(new Dimension(40, 40));
             rivProfile.setIcon(icon);
+
 
             JImageView rivMore = new JImageView();
             ImageIcon moreIcon = new ImageIcon("resources/images/more.png");

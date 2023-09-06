@@ -16,6 +16,8 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -90,7 +92,17 @@ public class HomePagePanel extends JPanel{
 
         /* 프로필 이미지 설정 */
         JRoundedImageView rivProfile = new JRoundedImageView();
-        ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
+        String profileUrl = repository.getUserAccount().getProfileImage();
+        ImageIcon icon = null;
+
+        try {
+            if (profileUrl != null) {
+                icon = new ImageIcon(new URL(profileUrl));
+            }
+        } catch (MalformedURLException e) {
+            icon = new ImageIcon("resources/images/anonymous.jpg");
+
+        }
         rivProfile.setMaximumSize(new Dimension(50, 50));
         rivProfile.setPreferredSize(new Dimension(50, 50));
         rivProfile.setIcon(icon);

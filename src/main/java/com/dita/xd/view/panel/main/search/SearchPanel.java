@@ -7,6 +7,7 @@ import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.util.filter.IDFilter;
 import com.dita.xd.view.base.JHintTextField;
+import com.dita.xd.view.base.JXdSearchPane;
 import com.dita.xd.view.base.JXdTextPane;
 import com.dita.xd.view.manager.SearchPanelLayoutMgr;
 
@@ -33,7 +34,7 @@ public class SearchPanel extends JPanel implements ActionListener {
     private final ContentSearchPanel contentSearchPanel;
     private final UserSearchPanel userSearchPanel;
 
-    private JXdTextPane txaSearch;
+    private JXdSearchPane txaSearch;
 
     public SearchPanel(Locale locale){
         controller = new ActivityController();
@@ -65,7 +66,7 @@ public class SearchPanel extends JPanel implements ActionListener {
 
 
 
-        txaSearch = new JXdTextPane();
+        txaSearch = new JXdSearchPane();
 
         headPane.setLayout(new BorderLayout());
         headPane.setBorder(BorderFactory.createEmptyBorder(15,30,0,70));
@@ -118,5 +119,7 @@ public class SearchPanel extends JPanel implements ActionListener {
             userSearchPanel.clear();
             contentSearchPanel.clear();
         }
+        revalidate();
+        repaint();
     }
 }
