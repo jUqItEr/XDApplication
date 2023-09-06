@@ -20,6 +20,7 @@ public interface ActivityService extends Service {
     boolean removeFeed(UserBean userBean, FeedBean feedBean);
     boolean removeComment(UserBean userBean, FeedBean fromBean, FeedBean toBean);
     boolean removeFeedback(UserBean userBean, FeedBean feedBean);
+    boolean removeLike(UserBean userBean, FeedBean feedBean);
     boolean removeUserBlock(UserBean fromUserBean, UserBean toUserBean);
     boolean removeUserFollow(UserBean fromUserBean, UserBean toUserBean);
     boolean uploadHeaderImage(UserBean userBean, String address);

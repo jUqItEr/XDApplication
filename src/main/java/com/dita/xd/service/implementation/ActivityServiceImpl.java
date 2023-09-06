@@ -328,6 +328,28 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public boolean removeLike(UserBean userBean, FeedBean feedBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "delete from like_tbl where user_tbl_id = ?, feed_tbl_id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userBean.getUserId());
+            pstmt.setInt(2, feedBean.getId());
+
+            flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
+    }
+
+    @Override
     public boolean removeUserBlock(UserBean fromUserBean, UserBean toUserBean) {
         Connection conn = null;
         PreparedStatement pstmt = null;
