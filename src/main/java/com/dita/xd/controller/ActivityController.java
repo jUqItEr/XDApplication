@@ -74,6 +74,10 @@ public class ActivityController {
         return svc.removeFeedback(userBean, feedBean);
     }
 
+    public boolean removeLike(UserBean userBean, FeedBean feedBean) {
+        return svc.removeLike(userBean, feedBean);
+    }
+
     public boolean removeUserBlock(UserBean fromUserBean, UserBean toUserBean) {
         return svc.removeUserBlock(fromUserBean, toUserBean);
     }
