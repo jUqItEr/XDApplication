@@ -602,7 +602,7 @@ public class ActivityServiceImpl implements ActivityService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select count(*) from follower_tbl where user_tbl_id = ?";
+        String sql = "select count(*) from follower_tbl where user_tbl_follower_id = ?";
         int result = -1;
 
         try {
@@ -627,7 +627,7 @@ public class ActivityServiceImpl implements ActivityService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select count(*) from follower_tbl where user_tbl_follower_id = ?";
+        String sql = "select count(*) from follower_tbl where user_tbl_id = ?";
         int result = -1;
 
         try {
