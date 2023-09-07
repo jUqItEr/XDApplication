@@ -78,6 +78,10 @@ public class ActivityController {
         return svc.isCheckedFeedback(userBean, feedBean);
     }
 
+    public boolean isCheckFollowed(UserBean fromBean, UserBean toBean) {
+        return svc.isFollowed(fromBean, toBean);
+    }
+
     public boolean isCheckedLike(UserBean userBean, FeedBean feedBean) {
         return svc.isCheckedLike(userBean, feedBean);
     }

@@ -3,6 +3,7 @@ package com.dita.xd.view.panel.main;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.MediaBean;
 import com.dita.xd.view.base.JImageView;
+import com.dita.xd.view.dialog.ImageDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,17 +80,8 @@ public class MediaPanel extends JPanel {
                         InnerMediaIndexPanel pane = (InnerMediaIndexPanel) e.getSource();
                         int index = pane.getIndex();
                         String mediaUrl = medium.get(index).getContentAddress();
-                        JDialog imgDialog = new JDialog();
-
-                        imgDialog.setLayout(new BorderLayout());
-                        try {
-                            imgDialog.add(new JImageView(new ImageIcon(new URL(mediaUrl))));
-                        } catch (MalformedURLException ex) {
-                            ex.printStackTrace();
-                        }
-                        imgDialog.setSize(new Dimension(400, 400));
-                        imgDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                        imgDialog.setVisible(true);
+                        ImageDialog imgDialog = new ImageDialog(mediaUrl);
+                        imgDialog.showDialog();
                     }
 
                     @Override

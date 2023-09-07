@@ -286,7 +286,7 @@ public class ActivityServiceImpl implements ActivityService {
                 Vector<UserBean> users = getChatroomUsers(chatroomBean.getChatroomId());
 
                 if (users.size() == 0) {
-                    sql = "delete from chatroom_tbl where id = ?";
+                    sql = "update chatroom_tbl set deleted_at = now() where id = ?";
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setInt(1, chatroomBean.getChatroomId());
 

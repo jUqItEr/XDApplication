@@ -123,9 +123,6 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
             }
         });
-
-        revalidate();
-        repaint();
     }
 
     public HashMap<Integer, ChatListPanel> getChatroom() {
@@ -137,6 +134,20 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
         pane.setPreferredSize(PANE_SIZE);
         chatroomPane.add(pane);
         chatroom.put(bean.getChatroomId(), pane);
+        revalidate();
+        repaint();
+    }
+
+    public void deleteChatListPane(Component chatList) {
+        if (chatList instanceof ChatListPanel) {
+            ChatListPanel pane = (ChatListPanel) chatList;
+            int chatroomId = pane.getBean().getChatroomId();
+
+            chatroom.remove(chatroomId);
+            chatroomPane.remove(chatList);
+            revalidate();
+            repaint();
+        }
     }
 
     private void loadText() {
