@@ -64,8 +64,6 @@ public class SearchPanel extends JPanel implements ActionListener {
         temp.setPreferredSize(new Dimension(30, 30));
         temp.setMaximumSize(new Dimension(30, 30));
 
-
-
         txaSearch = new JXdSearchPane();
 
         headPane.setLayout(new BorderLayout());

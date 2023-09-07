@@ -1,10 +1,8 @@
 package com.dita.xd.view.panel.main.search;
 
-import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.HashtagController;
-import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.HashtagBean;
-import com.dita.xd.view.manager.SearchPanelLayoutMgr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +14,8 @@ import java.util.ResourceBundle;
 public class TrendPanel extends JPanel{
     private ResourceBundle localeBundle;
     private Locale currentLocale;
-    private HashtagController controller;
+    private HashtagController hashtagController;
+    private ActivityController activityController;
     private final JPanel objectPane = new JPanel(new GridLayout(0,1,2,0));
     private JLabel lblTitle;
     private ContentPane contentPane;
@@ -25,7 +24,8 @@ public class TrendPanel extends JPanel{
     public TrendPanel(Locale locale){
         localeBundle = ResourceBundle.getBundle("language", locale);
         currentLocale = locale;
-        controller = new HashtagController();
+        hashtagController = new HashtagController();
+        activityController = new ActivityController();
 
         initialize();
     }
@@ -50,7 +50,7 @@ public class TrendPanel extends JPanel{
 
         /* 현재 해쉬태그 데이터가 없음, 피드를 올릴때 같이 포함하도록 수정 */
 
-        for(HashtagBean bean : controller.getTrendHashtags(3)){
+        for(HashtagBean bean : hashtagController.getTrendHashtags(3)){
             String hash = bean.getContent();
             int hashCount = bean.getHashtagId();
             contentPane = new ContentPane(currentLocale, hash, hashCount + "");
@@ -62,6 +62,7 @@ public class TrendPanel extends JPanel{
 
         mainPane.add(objectPane, BorderLayout.NORTH);
         mainPane.add(Box.createGlue(), BorderLayout.CENTER);
+
         add(headPane, BorderLayout.NORTH);
         add(mainPane);
 

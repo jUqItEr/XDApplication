@@ -6,7 +6,8 @@ import com.dita.xd.view.panel.main.search.SearchPanel;
 import javax.swing.*;
 import java.awt.*;
 
-public class SearchPanelLayoutMgr {
+public class
+SearchPanelLayoutMgr {
     public static volatile SearchPanelLayoutMgr instance = null;
 
     private CardLayout childLayout;
