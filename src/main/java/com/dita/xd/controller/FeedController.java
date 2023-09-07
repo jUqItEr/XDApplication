@@ -17,7 +17,7 @@ public class FeedController {
         repository = UserRepository.getInstance();
     }
 
-    public boolean create(String userId, String content){
+    public int create(String userId, String content){
         return feedSvc.create(userId, content);
     }
 

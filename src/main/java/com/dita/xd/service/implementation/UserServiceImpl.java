@@ -1,5 +1,6 @@
 package com.dita.xd.service.implementation;
 
+import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.service.UserService;
 import com.dita.xd.util.helper.ResultSetExtractHelper;
@@ -16,6 +17,29 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl() {
         pool = DBConnectionServiceImpl.getInstance();
+    }
+
+    @Override
+    public boolean addTaggingUser(FeedBean feedBean, UserBean userBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "insert into feed_user_tagging_tbl values (?, ?, ?, now())";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, feedBean.getId());
+            pstmt.setString(2, userBean.getUserId());
+            pstmt.setString(3, "N");
+
+            flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
     }
 
     @Override

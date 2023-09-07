@@ -5,18 +5,23 @@ import com.dita.xd.service.ActivityService;
 import com.dita.xd.service.UserService;
 
 import java.sql.*;
+import java.util.HashSet;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.dita.xd.util.helper.ResultSetExtractHelper.*;
 
 public class ActivityServiceImpl implements ActivityService {
     private final DBConnectionServiceImpl pool;
     private final FeedServiceImpl feedSvc;
+    private final HashtagServiceImpl hashSvc;
     private final UserServiceImpl userSvc;
 
     public ActivityServiceImpl() {
         pool = DBConnectionServiceImpl.getInstance();
         feedSvc = new FeedServiceImpl();
+        hashSvc = new HashtagServiceImpl();
         userSvc = new UserServiceImpl();
     }
 
@@ -48,7 +53,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public boolean addComment(UserBean userBean, FeedBean fromBean, FeedBean toBean,
                               String content, Vector<MediaBean> medium) {
-        if (medium == null || !medium.isEmpty()) {
+        if (medium != null && !medium.isEmpty()) {
 
         }
         return false;
@@ -56,10 +61,46 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium) {
-        if (medium == null || !medium.isEmpty()) {
+        final String hashtag_regex = "(#[a-zA-Zㄱ-ㅎ가-힣0-9(_)]+)";
+        final String user_regex = "(@[a-zA-Z0-9]{1,15})";
 
+        final Vector<Integer> mediaIds = new Vector<>();
+        final HashSet<String> hashtags = new HashSet<>();
+        final HashSet<String> userTags = new HashSet<>();
+
+        // 중복 검사
+        final Pattern ptnHashtag = Pattern.compile(hashtag_regex);
+        final Pattern ptnUserTag = Pattern.compile(user_regex);
+        final Matcher matcherHashtag = ptnHashtag.matcher(content);
+        final Matcher matcherUserTag = ptnUserTag.matcher(content);
+
+        while (matcherHashtag.find()) {
+            hashtags.add(matcherHashtag.group());
         }
-        return false;
+        while (matcherUserTag.find()) {
+            userTags.add(matcherUserTag.group().substring(1));
+        }
+        // 해시태그 테이블에 추가
+        hashtags.forEach(hashSvc::addHashtag);
+
+        // 미디어 등록
+        if (medium != null && !medium.isEmpty()) {
+            mediaIds.addAll(addMedium(userBean, medium));
+        }
+        // 피드 입력
+        FeedBean feedBean = new FeedBean();
+        int result = feedSvc.create(userBean.getUserId(), content);
+        feedBean.setId(result);
+
+        // 사용자가 어느 피드에서 호출되었는가?
+        userTags.forEach(tag -> {
+            UserBean taggedUser = new UserBean();
+            taggedUser.setUserId(tag);
+            userSvc.addTaggingUser(feedBean, taggedUser);
+        });
+        hashtags.forEach(tag -> hashSvc.addFeedHashtag(result, tag));
+
+        return (result != -1) || addFeedMedium(userBean, feedBean, mediaIds);
     }
 
     @Override
@@ -88,24 +129,73 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public boolean addMedium(Vector<MediaBean> mediaBeans) {
+    public boolean addFeedMedia(UserBean userBean, FeedBean feedBean, int mediaId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = null;
+        String sql = "insert into feed_media_tbl values (?, ?, now())";
         boolean flag = false;
 
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, mediaId);
+            pstmt.setInt(2, feedBean.getId());
 
-
-            int cnt = pstmt.executeUpdate();
+            flag = pstmt.executeUpdate() == 1;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             pool.freeConnection(conn, pstmt);
         }
         return flag;
+    }
+
+    @Override
+    public boolean addFeedMedium(UserBean userBean, FeedBean feedBean, Vector<Integer> mediaIds) {
+        boolean flag = true;
+
+        for (int mediaId : mediaIds) {
+            flag &= addFeedMedia(userBean, feedBean, mediaId);
+        }
+        return flag;
+    }
+
+    @Override
+    public int addMedia(UserBean userBean, MediaBean mediaBean) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "insert into media_tbl values (null, ?, ?, ?, ?, now())";
+        int id = -1;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            pstmt.setString(1, userBean.getUserId());
+            pstmt.setString(2, mediaBean.getContentType());
+            pstmt.setString(3, mediaBean.getContentAddress());
+            pstmt.setString(4, mediaBean.getContentCensoredType());
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    id = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return id;
+    }
+
+    @Override
+    public Vector<Integer>  addMedium(UserBean userBean, Vector<MediaBean> mediaBeans) {
+        Vector<Integer> vec = new Vector<>();
+
+        for (MediaBean bean : mediaBeans) {
+            vec.addElement(addMedia(userBean, bean));
+        }
+        return vec;
     }
 
     @Override

@@ -19,32 +19,38 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public boolean create(String userId, String content) {
+    public int create(String userId, String content) {
         return create(userId, content, Timestamp.valueOf(LocalDateTime.now()));
     }
 
     @Override
-    public boolean create(String userId, String content, Timestamp createdAt) {
+    public int create(String userId, String content, Timestamp createdAt) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "INSERT INTO feed_tbl VALUES (NULL, ?, ?, ?, 0)";
-        boolean flag = false;
+        String sql = "insert into feed_tbl values (null, ?, ?, ?, 0)";
+        int id = -1;
 
         try {
             Calendar cal = Calendar.getInstance(Locale.getDefault());
             conn = pool.getConnection();
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, userId);
             pstmt.setString(2, content);
             pstmt.setTimestamp(3, createdAt, cal);
 
-            flag = pstmt.executeUpdate() == 1;
+            pstmt.executeUpdate();
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    id = rs.getInt(1);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             pool.freeConnection(conn, pstmt);
         }
-        return flag;
+        return id;
     }
 
     @Override

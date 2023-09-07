@@ -34,6 +34,22 @@ public class ActivityController {
         return svc.addFeedback(userBean, feedBean);
     }
 
+    public boolean addFeedMedia(UserBean userBean, FeedBean feedBean, int mediaId) {
+        return svc.addFeedMedia(userBean, feedBean, mediaId);
+    }
+
+    public boolean addFeedMedium(UserBean userBean, FeedBean feedBean, Vector<Integer> mediaIds) {
+        return svc.addFeedMedium(userBean, feedBean, mediaIds);
+    }
+
+    public int addMedia(UserBean userBean, MediaBean mediaBean) {
+        return svc.addMedia(userBean, mediaBean);
+    }
+
+    public Vector<Integer> addMedium(UserBean userBean, Vector<MediaBean> mediaBeans) {
+        return svc.addMedium(userBean, mediaBeans);
+    }
+
     public boolean addLike(UserBean userBean, FeedBean feedBean) {
         return svc.addLike(userBean, feedBean);
     }

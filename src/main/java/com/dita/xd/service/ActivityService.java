@@ -9,7 +9,10 @@ public interface ActivityService extends Service {
     boolean addComment(UserBean userBean, FeedBean fromBean, FeedBean toBean, String content, Vector<MediaBean> medium);
     boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium);
     boolean addFeedback(UserBean userBean, FeedBean feedBean);
-    boolean addMedium(Vector<MediaBean> mediaBeans);
+    boolean addFeedMedia(UserBean userBean, FeedBean feedBean, int mediaId);
+    boolean addFeedMedium(UserBean userBean, FeedBean feedBean, Vector<Integer> mediaIds);
+    int addMedia(UserBean userBean, MediaBean mediaBean);
+    Vector<Integer> addMedium(UserBean userBean, Vector<MediaBean> mediaBeans);
     boolean addLike(UserBean userBean, FeedBean feedBean);
     boolean addUserBlock(UserBean fromUserBean, UserBean toUserBean);
     boolean addUserFollow(UserBean fromUserBean, UserBean toUserBean);
