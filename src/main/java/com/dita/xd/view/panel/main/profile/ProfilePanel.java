@@ -2,6 +2,7 @@ package com.dita.xd.view.panel.main.profile;
 
 import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
@@ -33,6 +34,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
     private final ActivityController activityController;
     private final FeedController feedController;
+    private final LoginController loginController;
     private final UserRepository repository;
 
     private UserBean currentUser;
@@ -73,6 +75,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
         activityController = new ActivityController();
         feedController = new FeedController();
+        loginController = new LoginController();
         repository = UserRepository.getInstance();
 
         // Set userBean as login user.
@@ -400,7 +403,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
     }
 
     public void setCurrentUser(UserBean currentUser) {
-        this.currentUser = currentUser;
+        this.currentUser = loginController.getUser(currentUser.getUserId());
         clear();
         initialize();
     }
