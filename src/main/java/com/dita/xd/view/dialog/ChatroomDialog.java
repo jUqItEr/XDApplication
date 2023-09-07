@@ -6,6 +6,7 @@ import com.dita.xd.controller.LoginController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.ChatroomBean;
 import com.dita.xd.model.UserBean;
+import com.dita.xd.repository.ChatroomRepository;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JVerticalScrollPane;
 import com.dita.xd.view.panel.main.chat.SelectableUserPanel;
@@ -22,6 +23,7 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
 
     private final Vector<UserBean> joinedMember;
     private final UserRepository repository;
+//    private final ChatroomRepository chatroomRepository;
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
