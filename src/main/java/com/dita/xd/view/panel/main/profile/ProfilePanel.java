@@ -318,12 +318,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
         mainPane.add(new JLabel(), paneGbc);
 
-        createThumb();
-        createThumb();
-        createThumb();
-        createThumb();
-        createThumb();
-        createThumb();
+
 
         add(scrollPane);
     }

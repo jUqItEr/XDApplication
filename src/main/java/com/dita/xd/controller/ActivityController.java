@@ -126,6 +126,14 @@ public class ActivityController {
         return svc.getFollowingCount(userId);
     }
 
+    public Vector<UserBean> getFollowingList(UserBean userBean) {
+        return svc.getFollowingList(userBean);
+    }
+
+    public Vector<UserBean> getFollowerList(UserBean userBean) {
+        return svc.getFollowerList(userBean);
+    }
+
     public Vector<Object> search(String searchContent) {
         Vector<Object> result = null;
 

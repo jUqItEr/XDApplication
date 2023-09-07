@@ -207,6 +207,8 @@ public class MenuPanel extends JPanel{
             try {
                 if (profileUrl != null) {
                     icon = new ImageIcon(new URL(profileUrl));
+                } else {
+                    throw new MalformedURLException("No valid URL");
                 }
             } catch (MalformedURLException e) {
                 icon = new ImageIcon("resources/images/anonymous.jpg");

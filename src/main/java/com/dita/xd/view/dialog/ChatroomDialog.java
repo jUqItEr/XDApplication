@@ -1,21 +1,29 @@
 package com.dita.xd.view.dialog;
 
 import com.dita.xd.controller.ActivityController;
+import com.dita.xd.controller.ChatroomController;
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.ChatroomBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
+import com.dita.xd.view.base.JVerticalScrollPane;
+import com.dita.xd.view.panel.main.chat.SelectableUserPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.util.*;
 
 public class ChatroomDialog extends JDialog implements LocaleChangeListener {
-    private final ActivityController controller;
+    private final ActivityController activityController;
+    private final ChatroomController chatroomController;
+    private final LoginController loginController;
+
     private final Vector<UserBean> joinedMember;
     private final UserRepository repository;
 
-    private Vector<ChatroomBean> beans;
+    private Locale currentLocale;
     private ResourceBundle localeBundle;
 
 
@@ -27,6 +35,9 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
 
     private JLabel lblComboBox;
     private JLabel lblName;
+    private JLabel lblFollowerTitle;
+
+    private JPanel mainPane;
 
     private String errorMessage;
     private String okMessage;
@@ -36,13 +47,18 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
     private boolean result;
 
     public ChatroomDialog(Locale locale) {
+        currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
 
-        controller = new ActivityController();
+        activityController = new ActivityController();
+        chatroomController = new ChatroomController();
+        loginController = new LoginController();
         repository = UserRepository.getInstance();
 
         btnCancel = new JButton();
         btnCreate = new JButton();
+
+        mainPane = new JPanel();
 
         cmbBox = new JComboBox<>();
         tfName = new JTextField();
@@ -51,6 +67,7 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
         result = false;
         mode = 1;
 
+        // 본인도 채팅에 참여하여야 함
         joinedMember.addElement(repository.getUserAccount());
 
         initialize();
@@ -65,11 +82,20 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
         setResizable(false);
         setSize(new Dimension(400, 500));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         JPanel buttonPane = new JPanel();
         JPanel hostPane = new JPanel();
+        JPanel wrapperPane = new JPanel();
+        JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
+        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
         
         lblComboBox = new JLabel();
         lblName = new JLabel();
+        lblFollowerTitle = new JLabel();
 
         buttonPane.add(btnCreate);
         buttonPane.add(btnCancel);
@@ -81,15 +107,39 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
 
         buttonPane.setLayout(new GridLayout(1, 2));
         hostPane.setLayout(new SpringLayout());
+        wrapperPane.setLayout(new BorderLayout());
+
+        mainPane.setLayout(new GridBagLayout());
+
+        lblFollowerTitle.setHorizontalAlignment(JLabel.CENTER);
+        lblFollowerTitle.setFont(lblFollowerTitle.getFont().deriveFont(Font.BOLD).deriveFont(18f));
+
+        scrollBar.setPreferredSize(new Dimension(0, 0));
+        scrollBar.setUnitIncrement(16);
+        scrollPane.setBackground(Color.WHITE);
+        scrollPane.setVerticalScrollBar(scrollBar);
+
+        wrapperPane.add(lblFollowerTitle, BorderLayout.NORTH);
+        wrapperPane.add(scrollPane);
 
         loadText();
 
         SpringUtilities.makeCompactGrid(hostPane, 2, 2, 6, 6, 6, 6);
 
+        if (mode == 1) {
+            activityController.getFollowingList(repository.getUserAccount())
+                    .forEach(bean -> createUserPane(loginController.getUser(bean.getUserId())));
+        }
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        mainPane.add(new JPanel(), gbc);
+
         btnCancel.addActionListener(e -> dispose());
 
         btnCreate.addActionListener(e -> {
             switch (mode) {
+                // 채팅창 생성
                 case 1 -> {
                     String name = tfName.getText().trim();
 
@@ -99,14 +149,15 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
                         tfName.requestFocus();
                         return;
                     }
-                    ChatroomBean bean = controller.createChatroom(name);
+                    ChatroomBean bean = activityController.createChatroom(name);
 
-                    joinedMember.forEach(b -> controller.inviteChatroom(bean, b));
+                    joinedMember.forEach(b -> activityController.inviteChatroom(bean, b));
                     result = true;
 
                     JOptionPane.showMessageDialog(this, okMessage);
                     dispose();
                 }
+                // 친구 추가
                 case 2 -> {
 
                 }
@@ -114,8 +165,42 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
 
         });
 
+        cmbBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String item = (String) e.getItem();
+                String[] token = item.split(": ");
+                int chatroomId = Integer.parseInt(token[0]);
+                GridBagConstraints cons = new GridBagConstraints();
+
+                Vector<UserBean> following = activityController.getFollowingList(repository.getUserAccount());
+                Vector<UserBean> chatJoined = chatroomController.getUsers(chatroomId);
+                following.removeAll(chatJoined);
+
+                mainPane.removeAll();
+                following.forEach(bean -> createUserPane(loginController.getUser(bean.getUserId())));
+
+                cons.fill = GridBagConstraints.BOTH;
+                cons.weighty = 1.0;
+                mainPane.add(new JPanel(), cons);
+            }
+        });
+
         add(buttonPane, BorderLayout.SOUTH);
+        add(wrapperPane);
         add(hostPane, BorderLayout.NORTH);
+    }
+
+    protected void createUserPane(UserBean bean) {
+        GridBagConstraints paneGbc = new GridBagConstraints();
+        paneGbc.weightx = 1.0;
+        paneGbc.gridwidth = GridBagConstraints.REMAINDER;
+        paneGbc.fill = GridBagConstraints.HORIZONTAL;
+
+        SelectableUserPanel pane = new SelectableUserPanel(currentLocale, bean);
+
+        mainPane.add(pane, paneGbc);
+        revalidate();
+        repaint();
     }
 
     private void loadText() {
@@ -129,10 +214,17 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
 
         lblComboBox.setText("채팅방 선택");
         lblName.setText("채팅방 이름");
+        lblFollowerTitle.setText("<< 팔로우한 사용자 >>");
     }
 
     public boolean showDialog() {
+        String id = repository.getUserId();
+        cmbBox.removeAllItems();
 
+        if (mode == 2) {
+            chatroomController.getChatroom(id)
+                    .forEach(bean -> cmbBox.addItem(bean.getChatroomId() + ": " + bean.getName()));
+        }
         setVisible(true);
         return result;
     }
@@ -149,12 +241,9 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
         loadText();
     }
 
-    public void loadChatroom(Vector<ChatroomBean> beans) {
-        this.beans = beans;
-    }
-
     @Override
     public void onLocaleChanged(Locale newLocale) {
+        currentLocale = newLocale;
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         localeBundle = ResourceBundle.getBundle("language", newLocale);
         loadText();

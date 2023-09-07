@@ -711,6 +711,7 @@ public class ActivityServiceImpl implements ActivityService {
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userBean.getUserId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -731,12 +732,13 @@ public class ActivityServiceImpl implements ActivityService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select user_follower_tbl_id from follower_tbl where user_tbl_id = ?";
+        String sql = "select user_tbl_follower_id from follower_tbl where user_tbl_id = ?";
         Vector<UserBean> beans = new Vector<>();
 
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userBean.getUserId());
             rs = pstmt.executeQuery();
 
             while (rs.next()) {

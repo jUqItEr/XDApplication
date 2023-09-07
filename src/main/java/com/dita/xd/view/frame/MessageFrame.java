@@ -85,6 +85,8 @@ public class MessageFrame extends JFrame implements ActionListener, LocaleChange
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        getContentPane().setBackground(Color.WHITE);
+
         holderPane = new JPanel();
         JPanel userPane = new JPanel();
         JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(holderPane));
