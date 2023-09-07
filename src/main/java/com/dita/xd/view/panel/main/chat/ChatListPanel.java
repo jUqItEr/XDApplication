@@ -1,5 +1,6 @@
 package com.dita.xd.view.panel.main.chat;
 
+import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.MessageController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.ChatMessageBean;
@@ -9,6 +10,7 @@ import com.dita.xd.repository.UserRepository;
 import com.dita.xd.util.server.ServerObject;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.frame.MessageFrame;
+import com.dita.xd.view.manager.MainLayoutMgr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,10 +30,13 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
     private Locale currentLocale;
     private ResourceBundle localeBundle;
 
-    private final MessageController controller;
+    private final ActivityController activityController;
+    private final MessageController messageController;
 
     private final ChatroomRepository chatroomRepository;
     private final UserRepository userRepository;
+
+    private final MainLayoutMgr mgr;
 
     private ChatroomBean bean;
 
@@ -45,9 +50,12 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
         currentLocale = locale;
         localeBundle = ResourceBundle.getBundle("language", locale);
 
-        controller = new MessageController();
+        activityController = new ActivityController();
+        messageController = new MessageController();
         chatroomRepository = ChatroomRepository.getInstance();
         userRepository = UserRepository.getInstance();
+
+        mgr = MainLayoutMgr.getInstance();
 
         this.bean = bean;
 
@@ -68,7 +76,7 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
 
         dummy.addElement(new ChatMessageBean(-1, dummyContent, -1, null,
                 null, null, null, null));
-        lblMessage.setText(Optional.ofNullable(controller.getMessages(bean.getChatroomId()))
+        lblMessage.setText(Optional.ofNullable(messageController.getMessages(bean.getChatroomId()))
                 .orElse(dummy).lastElement().getContent());
     }
 
@@ -148,7 +156,13 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
         });
         btnExit.addActionListener(e -> {
             if (chatroomRepository.getUser(bean) == null) {
+                int result = JOptionPane.showConfirmDialog(getParent(),
+                        "정말로 나가시겠습니까?", "", JOptionPane.YES_NO_OPTION);
 
+                if (result == JOptionPane.YES_OPTION) {
+                    activityController.exitChatroom(bean, userRepository.getUserAccount());
+                    mgr.disposeChatListPanel(this);
+                }
             } else {
                 JOptionPane.showMessageDialog(null,
                         "채팅방을 먼저 나가십시오.",
