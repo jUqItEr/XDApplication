@@ -21,6 +21,10 @@ public class FeedController {
         return feedSvc.create(userId, content);
     }
 
+    public FeedBean getFeed(int feedId) {
+        return feedSvc.getFeed(feedId);
+    }
+
     public Vector<FeedBean> getFeeds(String userId) {
         return feedSvc.getFeeds(userId);
     }

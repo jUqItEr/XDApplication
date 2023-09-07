@@ -58,19 +58,31 @@ public class FeedServiceImpl implements FeedService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT * FROM feed_tbl WHERE id = ?";
+        String sql = "select * from feed_user_view where id = ?";
+        FeedBean bean = null;
 
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, feedId);
             rs = pstmt.executeQuery();
 
+            if (rs.next()) {
+                bean = extractFeedBean(rs);
+
+                if (bean.getUserId() != null) {
+                    bean.setFeedbackBeans(getFeedbacks(bean));
+                    bean.setFeedCommentBeans(getComments(bean));
+                    bean.setLikeBeans(getLikes(bean));
+                    bean.setMediaBeans(getMedium(bean));
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             pool.freeConnection(conn, pstmt, rs);
         }
-        return null;
+        return bean;
     }
 
     @Override
