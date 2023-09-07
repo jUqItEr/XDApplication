@@ -1,16 +1,20 @@
 package com.dita.xd.view.panel.main;
 
 import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JXdTextPane;
+import com.dita.xd.view.manager.MainLayoutMgr;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Time;
@@ -25,8 +29,10 @@ import java.util.regex.Pattern;
 public class UserPanel extends JPanel implements LocaleChangeListener {
     private Locale currentLocale;
     private ResourceBundle localeBundle;
-    private final FeedController controller;
     private final UserRepository repository;
+    private final LoginController controller;
+
+    private final MainLayoutMgr mgr;
 
     private UserBean userBean;
 
@@ -44,7 +50,9 @@ public class UserPanel extends JPanel implements LocaleChangeListener {
         localeBundle = ResourceBundle.getBundle("language", locale);
         repository = UserRepository.getInstance();
 
-        controller = new FeedController();
+        controller = new LoginController();
+
+        mgr = MainLayoutMgr.getInstance();
 
         userBean = bean ;
 
@@ -135,6 +143,22 @@ public class UserPanel extends JPanel implements LocaleChangeListener {
         userInfoPane.add(lblUserId);
         userInfoPane.add(lblCreatedAt);
 
+        rivProfile.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mgr.changeProfileContext(controller.getUser(userBean.getUserId()));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                rivProfile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                rivProfile.setCursor(Cursor.getDefaultCursor());
+            }
+        });
 
         mainPane.add(profilePane, BorderLayout.WEST);
         mainPane.add(boxPane);

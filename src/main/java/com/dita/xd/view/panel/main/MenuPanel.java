@@ -1,5 +1,6 @@
 package com.dita.xd.view.panel.main;
 
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.base.JRoundedImageView;
@@ -17,6 +18,8 @@ import java.util.ResourceBundle;
 public class MenuPanel extends JPanel{
     //private final ?Controller controller;
     private final MainLayoutMgr mgr;
+    private final LoginController loginController;
+    private final UserRepository repository;
     private ResourceBundle localeBundle;
     private Locale currentLocale;
 
@@ -32,6 +35,10 @@ public class MenuPanel extends JPanel{
         localeBundle = ResourceBundle.getBundle("language", locale);
 
         miniProfile = new MiniProfile(locale);
+
+        loginController = new LoginController();
+
+        repository = UserRepository.getInstance();
 
         mgr = MainLayoutMgr.getInstance();
 
@@ -75,6 +82,9 @@ public class MenuPanel extends JPanel{
         menubarPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(menuBar.equals("profile")){
+                    mgr.changeProfileContext(loginController.getUser(repository.getUserId()));
+                }
                 mgr.show(menuBar);
             }
         });
@@ -85,10 +95,13 @@ public class MenuPanel extends JPanel{
         private Locale currentLocale;
         private JLabel lblMenu;
         private String menuBar;
+        private MainLayoutMgr mgr;
 
         public MenubarPanel(Locale locale, String menuBar){
             currentLocale = locale;
             localeBundle = ResourceBundle.getBundle("language",locale);
+
+            mgr = MainLayoutMgr.getInstance();
 
             this.menuBar = menuBar;
 
