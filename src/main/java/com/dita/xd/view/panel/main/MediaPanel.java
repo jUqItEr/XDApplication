@@ -6,6 +6,8 @@ import com.dita.xd.view.base.JImageView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
@@ -34,12 +36,12 @@ public class MediaPanel extends JPanel {
                         .collect(Collectors.toCollection(Vector::new));
 
         final int[][] widths = new int[][] {
-                { 302, -1, -1, -1 }, { 150, 150, -1, -1 },
+                { 312, -1, -1, -1 }, { 150, 150, -1, -1 },
                 { 150, 150, 150, -1 }, { 150, 150, 150, 150 }
         };
         final int[][] heights = new int[][] {
-                { 302, -1, -1, -1 }, { 302, 302, -1, -1 },
-                { 150, 150, 302, -1 }, { 150, 150, 150, 150 }
+                { 312, -1, -1, -1 }, { 312, 312, -1, -1 },
+                { 150, 150, 312, -1 }, { 150, 150, 150, 150 }
         };
 
         final int s = medium.size();
@@ -69,6 +71,37 @@ public class MediaPanel extends JPanel {
                     e.printStackTrace();
                 }
                 wrapperPane[i].add(views[i]);
+
+                int finalI = i;
+                wrapperPane[i].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        InnerMediaIndexPanel pane = (InnerMediaIndexPanel) e.getSource();
+                        int index = pane.getIndex();
+                        String mediaUrl = medium.get(index).getContentAddress();
+                        JDialog imgDialog = new JDialog();
+
+                        imgDialog.setLayout(new BorderLayout());
+                        try {
+                            imgDialog.add(new JImageView(new ImageIcon(new URL(mediaUrl))));
+                        } catch (MalformedURLException ex) {
+                            ex.printStackTrace();
+                        }
+                        imgDialog.setSize(new Dimension(400, 400));
+                        imgDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                        imgDialog.setVisible(true);
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        wrapperPane[finalI].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        wrapperPane[finalI].setCursor(Cursor.getDefaultCursor());
+                    }
+                });
             }
             switch (s) {
                 case 1 -> {
@@ -101,6 +134,7 @@ public class MediaPanel extends JPanel {
                 }
             }
         }
+
         add(mainPane);
     }
 
