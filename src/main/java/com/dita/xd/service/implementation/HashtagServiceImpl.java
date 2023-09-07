@@ -4,9 +4,7 @@ import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.HashtagBean;
 import com.dita.xd.service.HashtagService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.Vector;
 
 public class HashtagServiceImpl implements HashtagService {
@@ -17,17 +15,17 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
-    public boolean addFeedHashtag(FeedBean bean, String hashtag) {
+    public boolean addFeedHashtag(FeedBean bean, int hashtagId) {
         boolean result = false;
 
         if (bean != null) {
-            result = addFeedHashtag(bean.getId(), hashtag);
+            result = addFeedHashtag(bean.getId(), hashtagId);
         }
         return result;
     }
 
     @Override
-    public boolean addFeedHashtag(int feedId, String hashtag) {
+    public boolean addFeedHashtag(int feedId, int hashtagId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         String sql = "insert into feed_hashtag_tbl values (?, ?, now())";
@@ -36,8 +34,10 @@ public class HashtagServiceImpl implements HashtagService {
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, feedId);
+            pstmt.setInt(2, hashtagId);
 
-            int cnt = pstmt.executeUpdate();
+            flag = pstmt.executeUpdate() == 1;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -47,26 +47,64 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
-    public boolean addHashtag(String hashtag) {
+    public int addHashtag(String hashtag) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         String sql = "insert into hashtag_tbl select null, ? from dual where not exists(" +
                 "select * from hashtag_tbl where content = ?)";
-        boolean flag = false;
+        int result = -1;
 
         try {
             conn = pool.getConnection();
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, hashtag);
             pstmt.setString(2, hashtag);
 
-            flag = pstmt.executeUpdate() == 1;
+            pstmt.executeUpdate();
+
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    result = rs.getInt(1);
+                } else {
+                    System.err.println("Creating hashtag failed");
+                    result = getHashtagId(hashtag);
+
+                    if (result == -1) {
+                        throw new SQLException("Creating hashtag failed, no ID obtained.");
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             pool.freeConnection(conn, pstmt);
         }
-        return flag;
+        return result;
+    }
+
+    @Override
+    public int getHashtagId(String content) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select id from hashtag_tbl where content = ?";
+        int id = -1;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, content);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return id;
     }
 
     @Override

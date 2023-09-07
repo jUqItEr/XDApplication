@@ -348,7 +348,35 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public Vector<FeedBean> getRecentFeeds() {
-        return null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_user_view where date(created_at) " +
+                "between date_sub(now(), interval 5 day) and curdate()";
+        Vector<FeedBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FeedBean bean = extractFeedBean(rs);
+
+                if (bean.getUserId() != null) {
+                    bean.setFeedbackBeans(getFeedbacks(bean));
+                    bean.setFeedCommentBeans(getComments(bean));
+                    bean.setLikeBeans(getLikes(bean));
+                    bean.setMediaBeans(getMedium(bean));
+                    beans.addElement(bean);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
     }
 
     @Override

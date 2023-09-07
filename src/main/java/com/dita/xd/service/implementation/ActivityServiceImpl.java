@@ -65,6 +65,7 @@ public class ActivityServiceImpl implements ActivityService {
         final String user_regex = "(@[a-zA-Z0-9]{1,15})";
 
         final Vector<Integer> mediaIds = new Vector<>();
+        final Vector<Integer> hashtagIds = new Vector<>();
         final HashSet<String> hashtags = new HashSet<>();
         final HashSet<String> userTags = new HashSet<>();
 
@@ -81,7 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
             userTags.add(matcherUserTag.group().substring(1));
         }
         // 해시태그 테이블에 추가
-        hashtags.forEach(hashSvc::addHashtag);
+        hashtags.forEach(tag -> hashtagIds.add(hashSvc.addHashtag(tag)));
 
         // 미디어 등록
         if (medium != null && !medium.isEmpty()) {
@@ -98,7 +99,7 @@ public class ActivityServiceImpl implements ActivityService {
             taggedUser.setUserId(tag);
             userSvc.addTaggingUser(feedBean, taggedUser);
         });
-        hashtags.forEach(tag -> hashSvc.addFeedHashtag(result, tag));
+        hashtagIds.forEach(id -> hashSvc.addFeedHashtag(result, id));
         addFeedMedium(userBean, feedBean, mediaIds);
 
         return result;
@@ -175,6 +176,8 @@ public class ActivityServiceImpl implements ActivityService {
             pstmt.setString(2, mediaBean.getContentType());
             pstmt.setString(3, mediaBean.getContentAddress());
             pstmt.setString(4, mediaBean.getContentCensoredType());
+
+            pstmt.executeUpdate();
 
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {

@@ -30,7 +30,7 @@ import static com.dita.xd.util.helper.ImageTransferHelper.uploadImage;
 
 public class HomePagePanel extends JPanel{
     private static final String HOST = "http://hxlab.co.kr:9001/";
-    private static final String DOWNLOAD_LINK = HOST + "/photo";
+    private static final String DOWNLOAD_LINK = HOST + "photo/";
     private final FeedController feedController;
     private final LoginController loginController;
     private final ActivityController activityController;
@@ -260,7 +260,7 @@ public class HomePagePanel extends JPanel{
                 selectedFiles = Arrays.stream(Optional.ofNullable(filesBox).orElse(new File[0])).map(file -> {
                     String userId = repository.getUserId();
                     String contentType = "I";
-                    String contentAddress = DOWNLOAD_LINK + "/" + uploadImage(file.toPath());
+                    String contentAddress = DOWNLOAD_LINK + uploadImage(file.toPath());
                     String contentCensoredType = "N";
                     return new MediaBean(-1, userId, contentType, contentAddress, contentCensoredType, null);
                 }).collect(Collectors.toCollection(Vector::new));
@@ -278,7 +278,9 @@ public class HomePagePanel extends JPanel{
                 System.out.println(feedBean.getId());
                 revalidate();
                 repaint();
-
+                filesBox = null;
+                lblImgBox.setVisible(false);
+                lblImgCount.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(null, messageEmptyError);
             }
@@ -294,9 +296,7 @@ public class HomePagePanel extends JPanel{
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        for(FeedBean bean : feedController.getFeeds("123")) {
-            createFeed(bean, gbc);
-        }
+        feedController.getRecentFeeds().forEach(bean -> createFeed(bean, gbc));
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1.0;

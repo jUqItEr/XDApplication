@@ -157,6 +157,14 @@ public class SelectableUserPanel extends JPanel implements LocaleChangeListener 
         txaIntroduce.setText(userBean.getIntroduce());
     }
 
+    public boolean isChecked() {
+        return chbSelected.isSelected();
+    }
+
+    public UserBean getUserBean() {
+        return userBean;
+    }
+
     @Override
     public void onLocaleChanged(Locale newLocale) {
         currentLocale = newLocale;
@@ -164,7 +172,4 @@ public class SelectableUserPanel extends JPanel implements LocaleChangeListener 
         LocaleChangeListener.broadcastLocaleChanged(newLocale, this);
         loadText();
     }
-
-
 }
-

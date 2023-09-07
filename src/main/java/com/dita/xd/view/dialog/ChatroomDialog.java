@@ -23,11 +23,13 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
 
     private final Vector<UserBean> joinedMember;
     private final UserRepository repository;
-//    private final ChatroomRepository chatroomRepository;
 
     private Locale currentLocale;
     private ResourceBundle localeBundle;
 
+
+    private HashMap<String, SelectableUserPanel> panels;
+    private Vector<String> selectedMember;
 
     private JComboBox<String> cmbBox;
     private JTextField tfName;
@@ -66,11 +68,11 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
         tfName = new JTextField();
 
         joinedMember = new Vector<>();
+        selectedMember = new Vector<>();
+        panels = new LinkedHashMap<>();
+
         result = false;
         mode = 1;
-
-        // 본인도 채팅에 참여하여야 함
-        joinedMember.addElement(repository.getUserAccount());
 
         initialize();
         onLocaleChanged(locale);
@@ -153,6 +155,14 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
                     }
                     ChatroomBean bean = activityController.createChatroom(name);
 
+                    panels.forEach((k, v) -> {
+                        if (v.isChecked()) {
+                            joinedMember.add(v.getUserBean());
+                        }
+                    });
+                    // 본인도 채팅에 참여하여야 함
+                    joinedMember.addElement(repository.getUserAccount());
+
                     joinedMember.forEach(b -> activityController.inviteChatroom(bean, b));
                     result = true;
 
@@ -161,7 +171,22 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
                 }
                 // 친구 추가
                 case 2 -> {
+                    String selected = (String) cmbBox.getSelectedItem();
+                    String[] token = selected.split(": ");
+                    int id = Integer.parseInt(token[0]);
 
+                    ChatroomBean bean = activityController.getChatroom(id);
+
+                    panels.forEach((k, v) -> {
+                        if (v.isChecked()) {
+                            joinedMember.add(v.getUserBean());
+                        }
+                    });
+                    joinedMember.forEach(b -> activityController.inviteChatroom(bean, b));
+                    result = true;
+
+                    JOptionPane.showMessageDialog(this, okMessage);
+                    dispose();
                 }
             }
 
@@ -178,12 +203,15 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
                 Vector<UserBean> chatJoined = chatroomController.getUsers(chatroomId);
                 following.removeAll(chatJoined);
 
+                panels = new LinkedHashMap<>();
                 mainPane.removeAll();
                 following.forEach(bean -> createUserPane(loginController.getUser(bean.getUserId())));
 
                 cons.fill = GridBagConstraints.BOTH;
                 cons.weighty = 1.0;
                 mainPane.add(new JPanel(), cons);
+                revalidate();
+                repaint();
             }
         });
 
@@ -199,6 +227,8 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
         paneGbc.fill = GridBagConstraints.HORIZONTAL;
 
         SelectableUserPanel pane = new SelectableUserPanel(currentLocale, bean);
+
+        panels.put(bean.getUserId(), pane);
 
         mainPane.add(pane, paneGbc);
         revalidate();

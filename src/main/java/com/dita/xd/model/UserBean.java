@@ -153,4 +153,9 @@ public class UserBean {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.userId.equals(((UserBean) obj).userId);
+    }
 }

@@ -18,6 +18,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -165,10 +167,20 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         txaFeedContent.setFocusable(false);
 
         JRoundedImageView rivProfile = new JRoundedImageView();
-        ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
+
+        try {
+            String profileUrl = feedBean.getUserProfileImage();
+
+            if (profileUrl != null) {
+                rivProfile.setIcon(new ImageIcon(new URL(profileUrl)));
+            } else {
+                throw new MalformedURLException("No valid URL");
+            }
+        } catch (MalformedURLException e) {
+            rivProfile.setIcon(new ImageIcon("resources/images/anonymous.jpg"));
+        }
         rivProfile.setPreferredSize(new Dimension(50,50));
         rivProfile.setMaximumSize(new Dimension(50, 50));
-        rivProfile.setIcon(icon);
 
         JImageView commentImageView = new JImageView();
         ImageIcon commentIcon = new ImageIcon("resources/images/comment.png");

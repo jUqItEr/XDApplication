@@ -21,7 +21,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
     private final ChatroomController controller;
     private final UserRepository repository;
 
-    private final JPanel chatroomPane;
+    private JPanel chatroomPane;
 
     private JButton btnConnect;
 
@@ -129,8 +129,10 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
         btnRefresh.addActionListener(e -> {
             alarm.cancel();
 
+            remove(0);
             chatroom = new HashMap<>();
-            chatroomPane.removeAll();
+            chatroomPane = new JPanel();
+            chatroomPane.setLayout(new GridLayout(0, 1, 4, 4));
             initialize();
         });
     }
