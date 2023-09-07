@@ -20,13 +20,17 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.dita.xd.util.helper.ImageTransferHelper.uploadImage;
 
 public class HomePagePanel extends JPanel{
+    private static final String HOST = "http://hxlab.co.kr:9001/";
+    private static final String DOWNLOAD_LINK = HOST + "/photo";
     private final FeedController feedController;
     private final LoginController loginController;
     private final ActivityController activityController;
@@ -36,13 +40,16 @@ public class HomePagePanel extends JPanel{
     private Locale currentLocale;
     private FeedPanel feedPanel;
 
+    private JLabel lblImgCount;
+    private JLabel lblImgBox;
     private JButton btnUpload;
     private JButton btnImageUpload;
     private JXdTextPane txaFeedText;
 
     private JPanel mainPane;
     private String messageEmptyError;
-    private Vector<MediaBean> medium;
+    private Vector<MediaBean> selectedFiles;
+    private File[] filesBox;
 
     public HomePagePanel(Locale locale){
         currentLocale = locale;
@@ -72,14 +79,20 @@ public class HomePagePanel extends JPanel{
         JPanel profileSubPane = new JPanel();
         JPanel contentPane = new JPanel();
         JPanel activityPane = new JPanel();
+        JPanel activeImgPane = new JPanel();
 
         JFileChooser chooser = new JFileChooser();
 
         JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
 
+        selectedFiles = new Vector<>();
+
         btnUpload = new JButton();
         btnImageUpload = new JButton();
+
+        lblImgCount = new JLabel();
+        lblImgBox = new JLabel();
 
         txaFeedText = new JXdTextPane();
 
@@ -97,6 +110,7 @@ public class HomePagePanel extends JPanel{
         profileSubPane.setLayout(new FlowLayout(FlowLayout.LEFT));
         contentPane.setLayout(new BorderLayout());
         activityPane.setLayout(new BorderLayout());
+        activeImgPane.setLayout(new BorderLayout());
 
         boxParentPane.add(boxPane);
 
@@ -106,6 +120,8 @@ public class HomePagePanel extends JPanel{
 
         contentPane.add(activityPane, BorderLayout.SOUTH);
 
+        btnUpload.setFont(btnUpload.getFont().deriveFont(12f).deriveFont(Font.BOLD));
+        lblImgCount.setFont(lblImgCount.getFont().deriveFont(Font.BOLD));
         /* 프로필 이미지 설정 */
         JRoundedImageView rivProfile = new JRoundedImageView();
         String profileUrl = repository.getUserAccount().getProfileImage();
@@ -131,18 +147,29 @@ public class HomePagePanel extends JPanel{
         imvImageIcon.setPreferredSize(new Dimension(20,20));
         imvImageIcon.setIcon(subIcon);
 
+        ImageIcon deleteIcon = new ImageIcon("resources/images/delete.png");
+
         imvImageIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
                         "JPG & PNG Images",
                         "jpg","png");
+                chooser.setMultiSelectionEnabled(true);
                 chooser.setFileFilter(filter);
 
                 int result = chooser.showOpenDialog(getParent());
 
                 if (result == JFileChooser.APPROVE_OPTION) {
-
+                    File[] files = chooser.getSelectedFiles();
+                    filesBox = files;
+                    if (files.length > 4) {
+                        JOptionPane.showMessageDialog(getParent(), "파일은 총 4개까지 업로드할 수 있습니다.");
+                    } else {
+                        lblImgBox.setVisible(true);
+                        lblImgCount.setVisible(true);
+                        loadCountText();
+                    }
                 }
             }
 
@@ -174,6 +201,24 @@ public class HomePagePanel extends JPanel{
             }
         });
 
+        lblImgBox.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                lblImgBox.setVisible(false);
+                lblImgCount.setVisible(false);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                lblImgBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                lblImgBox.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+
         loadText();
 
         /* 패널 혹은 컴포넌트 속성 조정 */
@@ -184,6 +229,9 @@ public class HomePagePanel extends JPanel{
         btnImageUpload.setMaximumSize(new Dimension(20, 20));
         btnImageUpload.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        lblImgBox.setPreferredSize(new Dimension(20, 20));
+        lblImgBox.setMaximumSize(new Dimension(20, 20));
+
         /* 여백 공간 추가 */
         boxPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         boxParentPane.setBorder(BorderFactory.createMatteBorder(0,0, 2, 0, Color.LIGHT_GRAY));
@@ -193,27 +241,44 @@ public class HomePagePanel extends JPanel{
 
         activityPane.setBorder(BorderFactory.createEmptyBorder(10,0,0,10));
 
+        activeImgPane.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+
         activityPane.add(imvImageIcon, BorderLayout.WEST);
-        activityPane.add(Box.createGlue(), BorderLayout.CENTER);
+        activityPane.add(activeImgPane, BorderLayout.CENTER);
         activityPane.add(btnUpload, BorderLayout.EAST);
 
-        btnUpload.addActionListener(e-> {
-            if(!txaFeedText.getText().isEmpty()) {
-                boolean result = activityController.addFeed(repository.getUserAccount(), txaFeedText.getText(),null);
+        lblImgBox.setIcon(deleteIcon);
 
-                if (result) {
-                    FeedBean bean = feedController.getFeeds("123").firstElement();
-                    feedPanel = new FeedPanel(currentLocale, bean);
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.weightx = 1.0;
-                    gbc.gridwidth = GridBagConstraints.REMAINDER;
-                    gbc.fill = GridBagConstraints.HORIZONTAL;
-                    mainPane.add(feedPanel, gbc, 0);
-                    txaFeedText.setText("");
-                    System.out.println(bean.getId());
-                    revalidate();
-                    repaint();
-                }
+        activeImgPane.add(lblImgCount, BorderLayout.WEST);
+        activeImgPane.add(lblImgBox, BorderLayout.CENTER);
+        activeImgPane.add(Box.createGlue(), BorderLayout.EAST);
+
+        btnUpload.addActionListener(e -> {
+            String content = txaFeedText.getText();
+
+            if(!content.isEmpty()) {
+                selectedFiles = Arrays.stream(Optional.ofNullable(filesBox).orElse(new File[0])).map(file -> {
+                    String userId = repository.getUserId();
+                    String contentType = "I";
+                    String contentAddress = DOWNLOAD_LINK + "/" + uploadImage(file.toPath());
+                    String contentCensoredType = "N";
+                    return new MediaBean(-1, userId, contentType, contentAddress, contentCensoredType, null);
+                }).collect(Collectors.toCollection(Vector::new));
+
+                int result = activityController.addFeed(repository.getUserAccount(), content, selectedFiles);
+
+                FeedBean feedBean = feedController.getFeed(result);
+                feedPanel = new FeedPanel(currentLocale, feedBean);
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.weightx = 1.0;
+                gbc.gridwidth = GridBagConstraints.REMAINDER;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                mainPane.add(feedPanel, gbc, 0);
+                txaFeedText.setText("");
+                System.out.println(feedBean.getId());
+                revalidate();
+                repaint();
+
             } else {
                 JOptionPane.showMessageDialog(null, messageEmptyError);
             }
@@ -257,11 +322,15 @@ public class HomePagePanel extends JPanel{
 
     }
 
+    private void loadCountText() { lblImgCount.setText(filesBox.length + "개 선택됨 "); }
+
     private void loadText(){
         btnUpload.setText("게시하기");
-        btnUpload.setFont(btnUpload.getFont().deriveFont(12f).deriveFont(Font.BOLD));
 
         txaFeedText.setHint("적고 싶은거");
+
+        lblImgBox.setVisible(false);
+        lblImgCount.setVisible(false);
 
         messageEmptyError = "작성할 글이 비어있습니다.";
     }
