@@ -28,6 +28,7 @@ public class SelectableUserPanel extends JPanel implements LocaleChangeListener 
     private JLabel lblNickName;
     private JLabel lblCreatedAt;
     private JTextArea txaIntroduce;
+    private JCheckBox chbSelected;
 
     private int nameLength;
     private int idLength;
@@ -64,23 +65,18 @@ public class SelectableUserPanel extends JPanel implements LocaleChangeListener 
         lblNickName = new JLabel();
         lblCreatedAt = new JLabel();
 
-        btnProfileImg = new JButton();
-
         txaIntroduce = new JTextArea();
+
+        chbSelected = new JCheckBox();
 
         /* Set the properties of sub panels */
         mainPane.setLayout(new BorderLayout());
-        profilePane.setLayout(new BoxLayout(profilePane, BoxLayout.Y_AXIS));
-        profileSubPane.setLayout(new BoxLayout(profileSubPane, BoxLayout.X_AXIS));
+        profilePane.setLayout(new BorderLayout());
+        profileSubPane.setLayout(new BorderLayout());
 
         boxPane.setLayout(new BorderLayout());
 
-
-        profilePane.add(profileSubPane);
-
-        boxPane.add(userInfoPane, BorderLayout.NORTH);
-        boxPane.add(Box.createGlue());
-        boxPane.add(txaIntroduce, BorderLayout.SOUTH);
+        profilePane.add(profileSubPane, BorderLayout.NORTH);
 
         loadText();
 
@@ -94,16 +90,15 @@ public class SelectableUserPanel extends JPanel implements LocaleChangeListener 
                 nameLength + idLength + createdLength + 10, 20));
 
         /* Set the properties of components */
-        txaIntroduce.setPreferredSize( /* txaFeedContent의 높이는 줄바꿈의 개수만큼 기본 높이에 추가하여 설정 */
-                new Dimension(370, 20 * countEnter(txaIntroduce.getText())));
+        txaIntroduce.setPreferredSize(new Dimension(300, 20));
+        txaIntroduce.setMaximumSize(
+                new Dimension(300, 20 * countEnter(txaIntroduce.getText())));
         txaIntroduce.setEditable(false);
 
         JRoundedImageView rivProfile = new JRoundedImageView();
         ImageIcon icon;
-
         try {
             String profileUrl = userBean.getProfileImage();
-
             if (profileUrl != null) {
                 icon = new ImageIcon(new URL(profileUrl));
             } else {
@@ -112,34 +107,33 @@ public class SelectableUserPanel extends JPanel implements LocaleChangeListener 
         } catch (MalformedURLException e) {
             icon = new ImageIcon("resources/images/anonymous.jpg");
         }
-        rivProfile.setMaximumSize(new Dimension(70, 70));
+        rivProfile.setPreferredSize(new Dimension(50, 50));
+        rivProfile.setMaximumSize(new Dimension(50, 50));
         rivProfile.setIcon(icon);
-
-        btnProfileImg.add(rivProfile);
-
-        btnProfileImg.setPreferredSize(new Dimension(50, 50));
-        btnProfileImg.setMaximumSize(new Dimension(50, 50));
 
         lblNickName.setPreferredSize(new Dimension(nameLength,20));
         lblUserId.setPreferredSize(new Dimension(idLength, 20));
         lblCreatedAt.setPreferredSize(new Dimension(createdLength,20));
 
         // Box Vertical Glue
-        profileSubPane.add(Box.createRigidArea(new Dimension(20, 0)));
-        profileSubPane.add(btnProfileImg);
-        profileSubPane.add(Box.createRigidArea(new Dimension(10,0)));
+        profilePane.add(Box.createGlue(), BorderLayout.CENTER);
+        profileSubPane.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+        mainPane.setBorder(BorderFactory.createEmptyBorder(10,0,20,10));
+        boxPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,10));
 
-        mainPane.add(Box.createRigidArea(new Dimension(
-                0,15)),BorderLayout.NORTH);
+        boxPane.add(userInfoPane, BorderLayout.NORTH);
+        boxPane.add(Box.createRigidArea(new Dimension(0, 5)));
+        boxPane.add(txaIntroduce, BorderLayout.SOUTH);
+
+        profileSubPane.add(rivProfile, BorderLayout.NORTH);
 
         userInfoPane.add(lblNickName);
         userInfoPane.add(lblUserId);
         userInfoPane.add(lblCreatedAt);
 
-
+        mainPane.add(chbSelected, BorderLayout.EAST);
         mainPane.add(profilePane, BorderLayout.WEST);
         mainPane.add(boxPane);
-
         this.add(mainPane);
     }
 

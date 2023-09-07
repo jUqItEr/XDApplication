@@ -11,6 +11,8 @@ import com.dita.xd.view.base.JXdTextPane;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -28,7 +30,6 @@ public class UserPanel extends JPanel implements LocaleChangeListener {
 
     private UserBean userBean;
 
-    private JButton btnProfileImg;
     private JLabel lblUserId;
     private JLabel lblNickName;
     private JLabel lblCreatedAt;
@@ -69,23 +70,16 @@ public class UserPanel extends JPanel implements LocaleChangeListener {
         lblNickName = new JLabel();
         lblCreatedAt = new JLabel();
 
-        btnProfileImg = new JButton();
-
         txaIntroduce = new JTextArea();
 
         /* Set the properties of sub panels */
         mainPane.setLayout(new BorderLayout());
-        profilePane.setLayout(new BoxLayout(profilePane, BoxLayout.Y_AXIS));
-        profileSubPane.setLayout(new BoxLayout(profileSubPane, BoxLayout.X_AXIS));
+        profilePane.setLayout(new BorderLayout());
+        profileSubPane.setLayout(new BorderLayout());
 
         boxPane.setLayout(new BorderLayout());
 
-
-        profilePane.add(profileSubPane);
-
-        boxPane.add(userInfoPane, BorderLayout.NORTH);
-        boxPane.add(Box.createGlue());
-        boxPane.add(txaIntroduce, BorderLayout.SOUTH);
+        profilePane.add(profileSubPane, BorderLayout.NORTH);
 
         loadText();
 
@@ -103,27 +97,39 @@ public class UserPanel extends JPanel implements LocaleChangeListener {
                 new Dimension(370, 20 * countEnter(txaIntroduce.getText())));
         txaIntroduce.setEditable(false);
 
-        JRoundedImageView rivProfile = new JRoundedImageView();
-        ImageIcon icon = new ImageIcon("resources/images/anonymous.jpg");
-        rivProfile.setMaximumSize(new Dimension(70, 70));
-        rivProfile.setIcon(icon);
-
-        btnProfileImg.add(rivProfile);
-
-        btnProfileImg.setPreferredSize(new Dimension(50, 50));
-        btnProfileImg.setMaximumSize(new Dimension(50, 50));
-
         lblNickName.setPreferredSize(new Dimension(nameLength,20));
         lblUserId.setPreferredSize(new Dimension(idLength, 20));
         lblCreatedAt.setPreferredSize(new Dimension(createdLength,20));
 
-        // Box Vertical Glue
-        profileSubPane.add(Box.createRigidArea(new Dimension(20, 0)));
-        profileSubPane.add(btnProfileImg);
-        profileSubPane.add(Box.createRigidArea(new Dimension(10,0)));
+        /* 프로필 이미지 설정 */
+        JRoundedImageView rivProfile = new JRoundedImageView();
+        ImageIcon icon = null;
 
-        mainPane.add(Box.createRigidArea(new Dimension(
-                0,15)),BorderLayout.NORTH);
+        try {
+            String profileUrl = userBean.getProfileImage();
+            if (profileUrl != null) {
+                icon = new ImageIcon(new URL(profileUrl));
+            } else {
+                throw new MalformedURLException("No valid URL");
+            }
+        } catch (MalformedURLException e) {
+            icon = new ImageIcon("resources/images/anonymous.jpg");
+        }
+        rivProfile.setPreferredSize(new Dimension(50, 50));
+        rivProfile.setMaximumSize(new Dimension(50, 50));;
+        rivProfile.setIcon(icon);
+
+        // Box Vertical Glue
+        profilePane.add(Box.createGlue(), BorderLayout.CENTER);
+        profileSubPane.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+        mainPane.setBorder(BorderFactory.createEmptyBorder(10,0,10,20));
+
+        /* 컴포넌트 추가 */
+        boxPane.add(userInfoPane, BorderLayout.NORTH);
+        boxPane.add(Box.createGlue());
+        boxPane.add(txaIntroduce, BorderLayout.SOUTH);
+
+        profileSubPane.add(rivProfile);
 
         userInfoPane.add(lblNickName);
         userInfoPane.add(lblUserId);
