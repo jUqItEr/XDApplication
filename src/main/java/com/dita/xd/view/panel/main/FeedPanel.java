@@ -28,6 +28,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
     private final FeedController feedController;
     private final TranslationController translationController;
     private final UserRepository repository;
+    private MediaPanel mediaPanel;
 
     private FeedBean feedBean;
 
@@ -60,6 +61,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         feedController = new FeedController();
         translationController = new TranslationController();
 
+        mediaPanel = new MediaPanel(bean);
         feedBean = bean ;
 
         initialize();
@@ -107,6 +109,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         boxPane.setLayout(new BorderLayout());
         boxTopPane.setLayout(new BorderLayout());
         contentPane.setLayout(new BorderLayout());
+        mediaPane.setLayout(new FlowLayout(FlowLayout.LEFT));
         feedInfoPane.setLayout(new BorderLayout());
         feedInfoSubPane.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
         feedInfoCommentPane.setLayout(new BorderLayout());
@@ -216,6 +219,8 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         contentPane.add(Box.createGlue(), BorderLayout.CENTER);
 
+        mediaPane.setMaximumSize(new Dimension(200,200));
+
         feedInfoCommentPane.add(Box.createRigidArea(new Dimension(10,0)));
         feedInfoFeedBackPane.add(Box.createRigidArea(new Dimension(10, 0)));
         feedInfoLikePane.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -230,6 +235,9 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         boxTopPane.add(translationImageView, BorderLayout.EAST);
 
         contentPane.add(txaFeedContent, BorderLayout.WEST);
+        contentPane.add(mediaPane, BorderLayout.SOUTH);
+
+        mediaPane.add(mediaPanel);
 
         userInfoPane.add(lblNickName);
         userInfoPane.add(lblUserId);
@@ -268,6 +276,23 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         } else {
             bookmarkImageView.setIcon(bookmarkIcon);
         }
+
+        commentImageView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                commentImageView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                commentImageView.setCursor(Cursor.getDefaultCursor());
+            }
+        });
         likeImageView.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -371,7 +396,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
                 }catch (BadLocationException e2){
                     e2.printStackTrace();
                 }
-
                 revalidate();
                 repaint();
             }

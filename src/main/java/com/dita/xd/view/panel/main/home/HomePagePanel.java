@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 public class HomePagePanel extends JPanel{
     private final FeedController feedController;
@@ -33,9 +34,7 @@ public class HomePagePanel extends JPanel{
     private JButton btnImageUpload;
     private JXdTextPane txaFeedText;
 
-    //private final JPanel objectPane = new JPanel(new GridLayout(0, 1, 4, 4));
     private JPanel mainPane;
-
     private String messageEmptyError;
 
     public HomePagePanel(Locale locale){
@@ -161,7 +160,7 @@ public class HomePagePanel extends JPanel{
 
         btnUpload.addActionListener(e-> {
             if(!txaFeedText.getText().isEmpty()) {
-                boolean result = feedController.create(repository.getUserId(), txaFeedText.getText());
+                boolean result = activityController.addFeed(repository.getUserAccount(), txaFeedText.getText(),null);
 
                 if (result) {
                     FeedBean bean = feedController.getFeeds("123").firstElement();
@@ -172,6 +171,7 @@ public class HomePagePanel extends JPanel{
                     gbc.fill = GridBagConstraints.HORIZONTAL;
                     mainPane.add(feedPanel, gbc, 0);
                     txaFeedText.setText("");
+                    System.out.println(bean.getId());
                     revalidate();
                     repaint();
                 }
