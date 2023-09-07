@@ -1,6 +1,8 @@
 package com.dita.xd.view.manager;
 
+import com.dita.xd.model.UserBean;
 import com.dita.xd.view.panel.main.chat.ChatPanel;
+import com.dita.xd.view.panel.main.profile.ProfilePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +21,7 @@ public class MainLayoutMgr {
      * */
     private CardLayout mainLayout;
     private ChatPanel chatPane;
+    private ProfilePanel profilePane;
     private JFrame mainFrame;
     private JPanel mainPane;
 
@@ -51,6 +54,21 @@ public class MainLayoutMgr {
 
     public void setMainPane(JPanel mainPane) {
         this.mainPane = mainPane;
+    }
+
+    public void setProfilePane(ProfilePanel profilePane) {
+        this.profilePane = profilePane;
+    }
+
+    public void changeProfileContext(String userId) {
+        UserBean bean = new UserBean();
+        bean.setUserId(userId);
+        this.changeProfileContext(bean);
+    }
+
+    public void changeProfileContext(UserBean userBean) {
+        this.profilePane.setCurrentUser(userBean);
+        this.show("profile");
     }
 
     public void dispose() {

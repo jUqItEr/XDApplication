@@ -94,6 +94,9 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
         mgr.setMainFrame(this);
         mgr.setMainLayout(clMain);
         mgr.setMainPane(mainPane);
+        mgr.setChatPane(chatPanel);
+        mgr.setProfilePane(profilePanel);
+
 
         mainPane.add(homePagePanel, "home");
         mainPane.add(searchPanel, "search");
