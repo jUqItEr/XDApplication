@@ -105,7 +105,7 @@ public class ResultSetExtractHelper {
         String beanUserId = rs.getString("user_tbl_id");
         String beanContentType = rs.getString("content_type");
         String beanContentAddress = rs.getString("content_address");
-        String beanContentCensored = rs.getString("content_censored");
+        String beanContentCensored = rs.getString("content_censored_type");
         Timestamp beanCreatedAt = rs.getTimestamp("created_at");
         return new MediaBean(beanId, beanUserId, beanContentType, beanContentAddress, beanContentCensored, beanCreatedAt);
     }
