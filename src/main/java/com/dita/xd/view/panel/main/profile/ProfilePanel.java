@@ -4,11 +4,14 @@ import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.FeedController;
 import com.dita.xd.controller.LoginController;
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JVerticalScrollPane;
 import com.dita.xd.view.base.JXdTextPane;
+import com.dita.xd.view.dialog.ProfileDialog;
+import com.dita.xd.view.panel.main.FeedPanel;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -72,6 +75,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
     private JXdTextPane xtpIntroduce;
 
     protected JPanel mainPane;
+    protected JPanel feedPane;
 
 
     public ProfilePanel(Locale locale) {
@@ -151,6 +155,41 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         lblUserNickname = new JLabel();
 
         mainPane = new JPanel();
+        feedPane = new JPanel();
+
+
+        /* Inner */
+        JPanel feedInnerPane1 = new JPanel();
+        JPanel feedInnerPane2 = new JPanel();
+        JPanel feedInnerPane3 = new JPanel();
+
+        CardLayout feedLayout = new CardLayout();
+        feedPane.setLayout(feedLayout);
+        feedPane.add(feedInnerPane1, "feed");
+        feedPane.add(feedInnerPane2, "like");
+        feedPane.add(feedInnerPane3, "bookmark");
+
+        feedInnerPane1.setLayout(new GridBagLayout());
+        feedInnerPane2.setLayout(new GridBagLayout());
+        feedInnerPane3.setLayout(new GridBagLayout());
+
+
+        GridBagConstraints gbcInner = new GridBagConstraints();
+        gbcInner.weightx = 1.0;
+        gbcInner.gridwidth = GridBagConstraints.REMAINDER;
+        gbcInner.fill = GridBagConstraints.HORIZONTAL;
+
+
+        feedController.getUserFeeds(currentUser.getUserId())
+                .forEach(bean -> createFeed(feedInnerPane1, bean, gbcInner));
+        feedController.getLikes(currentUser.getUserId())
+                .forEach(bean -> createFeed(feedInnerPane2, bean, gbcInner));
+//        feedController.getBookmarks(currentUser.getUserId())
+//                .forEach(bean -> createFeed(feedInnerPane3, bean, gbcInner));
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
 
         xtpIntroduce = new JXdTextPane();
 
@@ -299,7 +338,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         }
         if (activityController.isCheckFollowed(repository.getUserAccount(), currentUser)) {
             JPanel t = new JPanel(new BorderLayout());
-            t.add(new JLabel("나 니 좋아한다"));
+            t.add(new JLabel("사용자가 당신을 팔로우합니다."));
             userStatePane.add(t);
         }
         JPanel t = new JPanel(new BorderLayout());
@@ -351,11 +390,38 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         wrapperPane.add(userStatePane, paneGbc);
         wrapperPane.add(buttonPane, paneGbc);
         mainPane.add(wrapperPane, paneGbc);
+        mainPane.add(feedPane, paneGbc);
 
         paneGbc.fill = GridBagConstraints.BOTH;
         paneGbc.weighty = 1.0;
 
         mainPane.add(new JLabel(), paneGbc);
+
+        btnEdit.addActionListener(e -> {
+            ProfileDialog dialog = new ProfileDialog(currentLocale);
+
+            if (dialog.showDialog()) {
+                System.out.println("프로필 변경 성공");
+            }
+        });
+
+
+        btnBookmark.addActionListener(e -> {
+            feedLayout.show(feedPane, "feed");
+            revalidate();
+            repaint();
+        });
+        btnFeed.addActionListener(e -> {
+            feedLayout.show(feedPane, "like");
+            revalidate();
+            repaint();
+        });
+        btnLike.addActionListener(e -> {
+            feedLayout.show(feedPane, "bookmark");
+            revalidate();
+            repaint();
+        });
+
 
         btnFollowed.addItemListener(e -> {
             final NumberFormat fmt = NumberFormat.getInstance();
@@ -374,6 +440,13 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         });
 
         add(scrollPane);
+    }
+
+    protected void createFeed(JPanel panel, FeedBean bean, GridBagConstraints gbc) {
+        FeedPanel subPane = new FeedPanel(currentLocale, bean);
+        panel.add(subPane, gbc);
+        revalidate();
+        repaint();
     }
 
     protected void createThumb() {
@@ -395,6 +468,10 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
     private void loadText() {
         final NumberFormat fmt = NumberFormat.getInstance();
         final LinkedHashMap<String, String> subInfo = createUserSubInfo(currentUser);
+
+        btnFeed.setText(localeBundle.getString("profile.panel.button.feed"));
+        btnLike.setText(localeBundle.getString("profile.panel.button.like"));
+        btnBookmark.setText(localeBundle.getString("profile.panel.button.bookmark"));
 
         lblFeedCount.setText(fmt.format(feedController.getFeeds(currentUser.getUserId()).size()));
         lblFeedCountTitle.setText("피드수");

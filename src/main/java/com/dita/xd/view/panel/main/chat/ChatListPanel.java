@@ -45,6 +45,9 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
     private JLabel lblMessage;
 
     private String dummyContent;
+    private String questionMessage;
+    private String errorMessage1;
+    private String errorMessage2;
 
     public ChatListPanel(Locale locale, ChatroomBean bean) {
         currentLocale = locale;
@@ -149,7 +152,7 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
                 dialog.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null,
-                        "이미 접속 중입니다.",
+                        errorMessage1,
                         localeBundle.getString("dialog.plain.title.warning"),
                         JOptionPane.WARNING_MESSAGE);
             }
@@ -157,7 +160,7 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
         btnExit.addActionListener(e -> {
             if (chatroomRepository.getUser(bean) == null) {
                 int result = JOptionPane.showConfirmDialog(getParent(),
-                        "정말로 나가시겠습니까?", "", JOptionPane.YES_NO_OPTION);
+                        questionMessage, "", JOptionPane.YES_NO_OPTION);
 
                 if (result == JOptionPane.YES_OPTION) {
                     activityController.exitChatroom(bean, userRepository.getUserAccount());
@@ -165,7 +168,7 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
                 }
             } else {
                 JOptionPane.showMessageDialog(null,
-                        "채팅방을 먼저 나가십시오.",
+                        errorMessage2,
                         localeBundle.getString("dialog.plain.title.error"),
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -173,10 +176,14 @@ public class ChatListPanel extends JPanel implements LocaleChangeListener {
     }
 
     private void loadText() {
-        dummyContent = "No message";
+        dummyContent = localeBundle.getString("chat.panel.dummy.text");
 
-        btnConnect.setText("접속");
-        btnExit.setText("나가기");
+        btnConnect.setText(localeBundle.getString("chat.panel.button.connect"));
+        btnExit.setText(localeBundle.getString("chat.panel.button.exit"));
+
+        errorMessage1 = localeBundle.getString("chat.message.error1");
+        errorMessage2 = localeBundle.getString("chat.message.error2");
+        questionMessage = localeBundle.getString("chat.message.question");
 
         loadRecentMessage();
     }

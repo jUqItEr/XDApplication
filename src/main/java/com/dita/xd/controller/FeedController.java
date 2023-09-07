@@ -36,6 +36,9 @@ public class FeedController {
     public Vector<UserBean> getBookmarks(FeedBean feedBean) {
         return feedSvc.getBookmarks(feedBean);
     }
+    public Vector<FeedBean> getBookmarks(String userId) {
+        return feedSvc.getBookmarks(userId);
+    }
 
     public Vector<UserBean> getFeedbacks(FeedBean feedBean) {
         return feedSvc.getFeedbacks(feedBean);
@@ -43,6 +46,13 @@ public class FeedController {
 
     public Vector<UserBean> getLikes(FeedBean feedBean) {
         return feedSvc.getLikes(feedBean);
+    }
+    public Vector<FeedBean> getLikes(String userId) {
+        return feedSvc.getLikes(userId);
+    }
+
+    public Vector<FeedBean> getUserFeeds(String userId) {
+        return feedSvc.getUserFeeds(userId);
     }
     public Vector<FeedBean> search() {
         return null;

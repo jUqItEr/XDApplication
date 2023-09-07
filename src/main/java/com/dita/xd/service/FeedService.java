@@ -17,7 +17,9 @@ public interface  FeedService {
     Vector<FeedBean> getBookmarks(String userId);
     Vector<FeedBean> getComments(FeedBean bean);
     Vector<UserBean> getFeedbacks(FeedBean bean);
+    Vector<FeedBean> getFeedbacks(String userId);
     Vector<UserBean> getLikes(FeedBean bean);
+    Vector<FeedBean> getLikes(String userId);
     Vector<MediaBean> getMedium(FeedBean bean);
 
     Vector<FeedBean> getFeeds(String userId);
@@ -25,6 +27,8 @@ public interface  FeedService {
     Vector<FeedBean> getFeeds(String userId, Timestamp startAt, Timestamp endAt);
 
     Vector<FeedBean> getRecentFeeds();
+
+    Vector<FeedBean> getUserFeeds(String userId);
 
     Vector<FeedBean> search(String includedContent);
 }

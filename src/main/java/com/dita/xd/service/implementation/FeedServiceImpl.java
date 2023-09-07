@@ -53,6 +53,7 @@ public class FeedServiceImpl implements FeedService {
         return id;
     }
 
+
     @Override
     public boolean create(String userId, String content, Vector<MediaBean> medium,
                           Vector<HashtagBean> hashtags, Vector<FeedUserTaggingBean> userTags, Timestamp createAt) {
@@ -206,6 +207,48 @@ public class FeedServiceImpl implements FeedService {
         }
         return beans;
     }
+    @Override
+    public Vector<FeedBean> getFeedbacks(String userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_feedback_view where feedback_user_id = ?";
+        Vector<FeedBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FeedBean bean = new FeedBean();
+                String feedUserId = rs.getString("feed_user_id");
+                String feedUserNickname = rs.getString("feed_user_id");
+                String feedUserProfileImage = rs.getString("feed_user_profile_image");
+                Timestamp createdAt = rs.getTimestamp("created_at");
+                int feedId = rs.getInt("feed_id");
+
+                bean.setUserId(feedUserId);
+                bean.setUserNickname(feedUserNickname);
+                bean.setUserProfileImage(feedUserProfileImage);
+                bean.setCreatedAt(createdAt);
+                bean.setId(feedId);
+
+                beans.addElement(bean);
+                bean.setFeedbackBeans(getFeedbacks(bean));
+                bean.setFeedCommentBeans(getComments(bean));
+                bean.setLikeBeans(getLikes(bean));
+                bean.setMediaBeans(getMedium(bean));
+                beans.addElement(bean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
 
     @Override
     public Vector<UserBean> getLikes(FeedBean bean) {
@@ -223,6 +266,49 @@ public class FeedServiceImpl implements FeedService {
 
             while (rs.next()) {
                 beans.add(extractLikeUserBean(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<FeedBean> getLikes(String userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_like_view where like_user_id = ?";
+        Vector<FeedBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FeedBean bean = new FeedBean();
+                String feedUserId = rs.getString("feed_user_id");
+                String feedUserNickname = rs.getString("feed_user_id");
+                String feedUserProfileImage = rs.getString("feed_user_profile_image");
+                Timestamp createdAt = rs.getTimestamp("created_at");
+                int feedId = rs.getInt("feed_id");
+
+                bean.setUserId(feedUserId);
+                bean.setUserNickname(feedUserNickname);
+                bean.setUserProfileImage(feedUserProfileImage);
+                bean.setCreatedAt(createdAt);
+                bean.setId(feedId);
+
+                beans.addElement(bean);
+                bean.setFeedbackBeans(getFeedbacks(bean));
+                bean.setFeedCommentBeans(getComments(bean));
+                bean.setLikeBeans(getLikes(bean));
+                bean.setMediaBeans(getMedium(bean));
+                beans.addElement(bean);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -358,6 +444,40 @@ public class FeedServiceImpl implements FeedService {
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                FeedBean bean = extractFeedBean(rs);
+
+                if (bean.getUserId() != null) {
+                    bean.setFeedbackBeans(getFeedbacks(bean));
+                    bean.setFeedCommentBeans(getComments(bean));
+                    bean.setLikeBeans(getLikes(bean));
+                    bean.setMediaBeans(getMedium(bean));
+                    beans.addElement(bean);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt, rs);
+        }
+        return beans;
+    }
+
+    @Override
+    public Vector<FeedBean> getUserFeeds(String userId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select * from feed_user_view where user_id = ? and date(created_at) " +
+                "between date_sub(now(), interval 5 day) and curdate()";
+        Vector<FeedBean> beans = new Vector<>();
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userId);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
