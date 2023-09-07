@@ -26,7 +26,7 @@ public class ActivityController {
         return svc.addComment(userBean, fromBean, toBean, content, medium);
     }
 
-    public boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium) {
+    public int addFeed(UserBean userBean, String content, Vector<MediaBean> medium) {
         return svc.addFeed(userBean, content, medium);
     }
 

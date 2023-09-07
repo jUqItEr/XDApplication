@@ -206,17 +206,21 @@ public class ChatroomDialog extends JDialog implements LocaleChangeListener {
     }
 
     private void loadText() {
-        setTitle(mode == 1 ? "채팅방 만들기" : "친구 초대");
+        setTitle(mode == 1 ? localeBundle.getString("dialog.chatroom.title1") :
+                localeBundle.getString("dialog.chatroom.title2"));
 
-        errorMessage = "채팅방 이름을 입력해주세요.";
-        okMessage = "채팅방이 생성되었습니다.";
+        errorMessage = mode == 1 ? localeBundle.getString("dialog.chatroom.message.error1") :
+                localeBundle.getString("dialog.chatroom.message.error2");
+        okMessage = mode == 1 ? localeBundle.getString("dialog.chatroom.message.ok1") :
+                localeBundle.getString("dialog.chatroom.message.ok2");
 
-        btnCancel.setText("취소");
-        btnCreate.setText(mode == 1 ? "생성" : "초대");
+        btnCancel.setText(localeBundle.getString("dialog.chatroom.button.cancel"));
+        btnCreate.setText(mode == 1 ? localeBundle.getString("dialog.chatroom.button.create") :
+                localeBundle.getString("dialog.chatroom.button.invite"));
 
-        lblComboBox.setText("채팅방 선택");
-        lblName.setText("채팅방 이름");
-        lblFollowerTitle.setText("<< 팔로우한 사용자 >>");
+        lblComboBox.setText(localeBundle.getString("dialog.chatroom.button.select"));
+        lblName.setText(localeBundle.getString("dialog.chatroom.label.name"));
+        lblFollowerTitle.setText(localeBundle.getString("dialog.chatroom.label.followed"));
     }
 
     public boolean showDialog() {

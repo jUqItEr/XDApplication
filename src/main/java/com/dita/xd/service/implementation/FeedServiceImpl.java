@@ -347,6 +347,11 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    public Vector<FeedBean> getRecentFeeds() {
+        return null;
+    }
+
+    @Override
     @Deprecated
     public Vector<FeedBean> search(String includedContent) {
         Connection conn = null;

@@ -29,6 +29,10 @@ public class FeedController {
         return feedSvc.getFeeds(userId);
     }
 
+    public Vector<FeedBean> getRecentFeeds() {
+        return feedSvc.getRecentFeeds();
+    }
+
     public Vector<UserBean> getBookmarks(FeedBean feedBean) {
         return feedSvc.getBookmarks(feedBean);
     }

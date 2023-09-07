@@ -17,7 +17,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
     private Locale currentLocale;
     private ResourceBundle localeBundle;
 
-    private final HashMap<Integer, ChatListPanel> chatroom;
+    private HashMap<Integer, ChatListPanel> chatroom;
     private final ChatroomController controller;
     private final UserRepository repository;
 
@@ -48,6 +48,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
 
         JButton btnAddChatroom = new JButton(new ImageIcon("resources/icons/chat.png"));
         JButton btnInviteFriends = new JButton(new ImageIcon("resources/icons/invite.png"));
+        JButton btnRefresh = new JButton(new ImageIcon("resources/icons/refresh.png"));
 
         JPanel buttonPane = new JPanel();
         JPanel buttonMainPane = new JPanel();
@@ -68,6 +69,7 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
         buttonMainPane.add(buttonPane);
         buttonMainPane.add(Box.createVerticalStrut(30));
 
+        buttonTopPane.add(btnRefresh);
         buttonTopPane.add(btnAddChatroom);
         buttonTopPane.add(btnInviteFriends);
 
@@ -122,6 +124,14 @@ public class ChatPanel extends JPanel implements LocaleChangeListener {
             if (dialog.showDialog()) {
 
             }
+        });
+
+        btnRefresh.addActionListener(e -> {
+            alarm.cancel();
+
+            chatroom = new HashMap<>();
+            chatroomPane.removeAll();
+            initialize();
         });
     }
 

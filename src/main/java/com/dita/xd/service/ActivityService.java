@@ -7,7 +7,7 @@ import java.util.Vector;
 public interface ActivityService extends Service {
     boolean addBookmark(UserBean userBean, FeedBean feedBean);
     boolean addComment(UserBean userBean, FeedBean fromBean, FeedBean toBean, String content, Vector<MediaBean> medium);
-    boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium);
+    int addFeed(UserBean userBean, String content, Vector<MediaBean> medium);
     boolean addFeedback(UserBean userBean, FeedBean feedBean);
     boolean addFeedMedia(UserBean userBean, FeedBean feedBean, int mediaId);
     boolean addFeedMedium(UserBean userBean, FeedBean feedBean, Vector<Integer> mediaIds);

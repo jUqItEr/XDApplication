@@ -24,5 +24,7 @@ public interface  FeedService {
     Vector<FeedBean> getFeeds(String userId, Timestamp targetAt);
     Vector<FeedBean> getFeeds(String userId, Timestamp startAt, Timestamp endAt);
 
+    Vector<FeedBean> getRecentFeeds();
+
     Vector<FeedBean> search(String includedContent);
 }

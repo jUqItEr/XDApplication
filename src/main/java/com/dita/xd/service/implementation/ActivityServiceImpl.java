@@ -60,7 +60,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public boolean addFeed(UserBean userBean, String content, Vector<MediaBean> medium) {
+    public int addFeed(UserBean userBean, String content, Vector<MediaBean> medium) {
         final String hashtag_regex = "(#[a-zA-Zㄱ-ㅎ가-힣0-9(_)]+)";
         final String user_regex = "(@[a-zA-Z0-9]{1,15})";
 
@@ -99,8 +99,9 @@ public class ActivityServiceImpl implements ActivityService {
             userSvc.addTaggingUser(feedBean, taggedUser);
         });
         hashtags.forEach(tag -> hashSvc.addFeedHashtag(result, tag));
+        addFeedMedium(userBean, feedBean, mediaIds);
 
-        return (result != -1) || addFeedMedium(userBean, feedBean, mediaIds);
+        return result;
     }
 
     @Override
@@ -600,6 +601,8 @@ public class ActivityServiceImpl implements ActivityService {
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, fromUserBean.getUserId());
+            pstmt.setString(2, toUserBean.getUserId());
 
             flag = pstmt.executeUpdate() == 1;
         } catch (Exception e) {
