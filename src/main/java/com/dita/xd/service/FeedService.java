@@ -7,8 +7,8 @@ import java.sql.Timestamp;
 import java.util.Vector;
 
 public interface  FeedService {
-    boolean create(String userId, String content);
-    boolean create(String userId, String content, Timestamp createdAt);
+    int create(String userId, String content);
+    int create(String userId, String content, Timestamp createdAt);
     boolean create(String userId, String content, Vector<MediaBean> medium, Vector<HashtagBean> hashtags,
                     Vector<FeedUserTaggingBean> userTags, Timestamp createAt);
     FeedBean getFeed(int feedId);
