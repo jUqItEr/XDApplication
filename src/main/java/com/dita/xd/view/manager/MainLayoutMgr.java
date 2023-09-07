@@ -77,7 +77,6 @@ public class MainLayoutMgr {
 
     public void disposeChatListPanel(Component chatList) {
         this.chatPane.deleteChatListPane(chatList);
-        changeProfileContext("123");
     }
 
     public void show(String name) {

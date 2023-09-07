@@ -439,8 +439,8 @@ public class ActivityServiceImpl implements ActivityService {
         try {
             conn = pool.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, fromBean.getUserId());
-            pstmt.setString(2, toBean.getUserId());
+            pstmt.setString(1, toBean.getUserId());
+            pstmt.setString(2, fromBean.getUserId());
 
             rs = pstmt.executeQuery();
 
