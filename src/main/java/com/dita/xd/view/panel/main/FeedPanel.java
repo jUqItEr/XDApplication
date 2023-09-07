@@ -2,6 +2,7 @@ package com.dita.xd.view.panel.main;
 
 import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.controller.TranslationController;
 import com.dita.xd.listener.LocaleChangeListener;
 import com.dita.xd.model.FeedBean;
@@ -10,6 +11,7 @@ import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JXdTextPane;
+import com.dita.xd.view.manager.MainLayoutMgr;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -27,7 +29,9 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
     private final ActivityController activityController;
     private final FeedController feedController;
     private final TranslationController translationController;
+    private final LoginController loginController;
     private final UserRepository repository;
+    private final MainLayoutMgr mgr;
     private MediaPanel mediaPanel;
 
     private FeedBean feedBean;
@@ -60,9 +64,12 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         activityController = new ActivityController();
         feedController = new FeedController();
         translationController = new TranslationController();
+        loginController = new LoginController();
 
         mediaPanel = new MediaPanel(bean);
         feedBean = bean ;
+
+        mgr = MainLayoutMgr.getInstance();
 
         initialize();
 
@@ -276,6 +283,23 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         } else {
             bookmarkImageView.setIcon(bookmarkIcon);
         }
+
+        rivProfile.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mgr.changeProfileContext(loginController.getUser(feedBean.getUserId()));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                rivProfile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                rivProfile.setCursor(Cursor.getDefaultCursor());
+            }
+        });
 
         commentImageView.addMouseListener(new MouseAdapter() {
             @Override

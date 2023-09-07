@@ -2,15 +2,19 @@ package com.dita.xd.view.panel.main.home;
 
 import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.FeedController;
+import com.dita.xd.controller.LoginController;
 import com.dita.xd.model.FeedBean;
+import com.dita.xd.model.MediaBean;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JVerticalScrollPane;
 import com.dita.xd.view.base.JXdTextPane;
+import com.dita.xd.view.manager.MainLayoutMgr;
 import com.dita.xd.view.panel.main.FeedPanel;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -24,8 +28,10 @@ import java.util.Vector;
 
 public class HomePagePanel extends JPanel{
     private final FeedController feedController;
+    private final LoginController loginController;
     private final ActivityController activityController;
     private final UserRepository repository;
+    private final MainLayoutMgr mgr;
     private ResourceBundle localeBundle;
     private Locale currentLocale;
     private FeedPanel feedPanel;
@@ -36,6 +42,7 @@ public class HomePagePanel extends JPanel{
 
     private JPanel mainPane;
     private String messageEmptyError;
+    private Vector<MediaBean> medium;
 
     public HomePagePanel(Locale locale){
         currentLocale = locale;
@@ -43,6 +50,9 @@ public class HomePagePanel extends JPanel{
 
         feedController = new FeedController();
         activityController = new ActivityController();
+        loginController = new LoginController();
+
+        mgr = MainLayoutMgr.getInstance();
 
         repository = UserRepository.getInstance();
 
@@ -62,6 +72,8 @@ public class HomePagePanel extends JPanel{
         JPanel profileSubPane = new JPanel();
         JPanel contentPane = new JPanel();
         JPanel activityPane = new JPanel();
+
+        JFileChooser chooser = new JFileChooser();
 
         JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
@@ -122,6 +134,16 @@ public class HomePagePanel extends JPanel{
         imvImageIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                        "JPG & PNG Images",
+                        "jpg","png");
+                chooser.setFileFilter(filter);
+
+                int result = chooser.showOpenDialog(getParent());
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+
+                }
             }
 
             @Override
@@ -132,6 +154,23 @@ public class HomePagePanel extends JPanel{
             @Override
             public void mouseExited(MouseEvent e) {
                 imvImageIcon.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+
+        rivProfile.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mgr.changeProfileContext(loginController.getUser(repository.getUserId()));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                rivProfile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                rivProfile.setCursor(Cursor.getDefaultCursor());
             }
         });
 
