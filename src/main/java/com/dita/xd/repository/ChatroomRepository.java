@@ -1,9 +1,11 @@
 package com.dita.xd.repository;
 
 import com.dita.xd.model.ChatroomBean;
+import com.dita.xd.model.UserBean;
 import com.dita.xd.util.server.ServerObject;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 public class ChatroomRepository {
@@ -12,9 +14,11 @@ public class ChatroomRepository {
     private final UserRepository repository;
 
     private final HashMap<String, ServerObject> chatroom;
+    private final HashSet<String> selectedUser;
 
     private ChatroomRepository() {
         chatroom = new HashMap<>();
+        selectedUser = new HashSet<>();
         repository = UserRepository.getInstance();
     }
 
@@ -42,6 +46,14 @@ public class ChatroomRepository {
         String key = makeKey(bean);
 
         chatroom.remove(key);
+    }
+
+    public void addUser(UserBean bean) {
+        selectedUser.add(bean.getUserId());
+    }
+
+    public void removeUser(UserBean bean) {
+        selectedUser.remove(bean.getUserId());
     }
 
     private String makeKey(ChatroomBean bean) {
