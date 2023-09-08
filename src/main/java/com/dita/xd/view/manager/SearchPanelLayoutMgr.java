@@ -55,4 +55,8 @@ SearchPanelLayoutMgr {
     public void show(String name) {
         childLayout.show(subPane, name);
     }
+
+    public void setTrendHash(String trendHash) {
+        mainPane.search(trendHash);
+    }
 }

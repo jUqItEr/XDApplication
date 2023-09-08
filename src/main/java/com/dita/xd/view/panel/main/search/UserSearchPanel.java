@@ -67,9 +67,9 @@ public class UserSearchPanel extends JPanel{
     }
 
     public void clear(){
-        for (Component c : objectPane.getComponents()) {
+        for (Component c : mainPane.getComponents()) {
             if (c instanceof UserPanel) {
-                objectPane.remove(c);
+                mainPane.remove(c);
             }
         }
         revalidate();

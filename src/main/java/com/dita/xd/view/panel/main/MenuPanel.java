@@ -4,6 +4,7 @@ import com.dita.xd.controller.LoginController;
 import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JImageView;
 import com.dita.xd.view.base.JRoundedImageView;
+import com.dita.xd.view.frame.LoginFrame;
 import com.dita.xd.view.manager.MainLayoutMgr;
 
 import javax.swing.*;
@@ -216,7 +217,15 @@ public class MenuPanel extends JPanel{
             mainPane.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    int result = JOptionPane.showConfirmDialog(null,
+                            "로그아웃 하시겠습니까?", "종료", JOptionPane.YES_NO_OPTION);
 
+                    if (result == JOptionPane.YES_OPTION) {
+                        LoginFrame frame = new LoginFrame(currentLocale);
+                        repository.setLogout();
+                        frame.setVisible(true);
+                        mgr.dispose();
+                    }
                 }
 
                 @Override
@@ -282,21 +291,25 @@ public class MenuPanel extends JPanel{
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    String profileUrl = repository.getUserAccount().getProfileImage();
-                    ImageIcon icon = null;
-
                     try {
-                        if (profileUrl != null) {
-                            icon = new ImageIcon(new URL(profileUrl));
-                        } else {
-                            throw new MalformedURLException("No valid URL");
-                        }
-                    } catch (MalformedURLException e) {
-                        icon = new ImageIcon("resources/images/anonymous.jpg");
+                        String profileUrl = repository.getUserAccount().getProfileImage();
+                        ImageIcon icon = null;
 
+                        try {
+                            if (profileUrl != null) {
+                                icon = new ImageIcon(new URL(profileUrl));
+                            } else {
+                                throw new MalformedURLException("No valid URL");
+                            }
+                        } catch (MalformedURLException e) {
+                            icon = new ImageIcon("resources/images/anonymous.jpg");
+
+                        }
+                        rivProfile.setIcon(icon);
+                        loadText();
+                    } catch (Exception e) {
+                        alarm.cancel();
                     }
-                    rivProfile.setIcon(icon);
-                    loadText();
                 }
             };
             alarm.schedule(task, 0, 5000);
