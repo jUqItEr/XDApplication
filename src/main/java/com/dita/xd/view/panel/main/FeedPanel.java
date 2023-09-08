@@ -452,14 +452,14 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblTranslation.setText("번역");
 
         if(createdTime < 60) {
-            lblCreatedAt.setText(createdTime + "초 전");
+            lblCreatedAt.setText(String.format(localeBundle.getString("home.panel.label.seconds"), createdTime));
         } else if (createdTime < 60 * 60){
-            lblCreatedAt.setText(createdTime / 60 + "분 전");
+            lblCreatedAt.setText(String.format(localeBundle.getString("home.panel.label.minutes"), createdTime / 60));
         } else if (createdTime < 24 * 60 * 60){
-            lblCreatedAt.setText(createdTime / 3600 + "시간 전");
+            lblCreatedAt.setText(String.format(localeBundle.getString("home.panel.label.hours"), createdTime / 3600));
 
         } else if (createdTime < 7 * 24 * 60 * 60){
-            lblCreatedAt.setText(createdTime / 86400 + "일 전");
+            lblCreatedAt.setText(String.format(localeBundle.getString("home.panel.label.days"), createdTime / 86400));
         } else {
             LocalDate localDate = feedBean.getCreatedAt().toLocalDateTime().toLocalDate();
             lblCreatedAt.setText(localDate.toString());
