@@ -20,6 +20,8 @@ public class ContentSearchPanel extends JPanel{
     private final FeedController controller;
     private final JPanel objectPane = new JPanel(new GridLayout(0,1,2,0));
     private FeedPanel feedPanel;
+    private JPanel mainPane;
+    private GridBagConstraints gbc;
 
     public ContentSearchPanel(Locale locale){
         localeBundle = ResourceBundle.getBundle("language", locale);
@@ -32,7 +34,7 @@ public class ContentSearchPanel extends JPanel{
     private void initialize() {
         setLayout(new BorderLayout());
 
-        JPanel mainPane = new JPanel();
+        mainPane = new JPanel();
 
         JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
@@ -41,16 +43,20 @@ public class ContentSearchPanel extends JPanel{
         scrollBar.setUnitIncrement(16);
         scrollPane.setVerticalScrollBar(scrollBar);
 
-        mainPane.setLayout(new BorderLayout());
+        mainPane.setLayout(new GridBagLayout());
         mainPane.setBorder(BorderFactory.createEmptyBorder(10,10,0,0));
-
-        objectPane.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
 
         loadText();
 
-        mainPane.add(objectPane, BorderLayout.NORTH);
-        mainPane.add(Box.createGlue(), BorderLayout.CENTER);
-        add(mainPane);
+        gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+
+        add(scrollPane);
     }
 
     public void clear() {
@@ -69,7 +75,7 @@ public class ContentSearchPanel extends JPanel{
     public void setFeed(Vector<FeedBean> beans) {
         for(FeedBean bean : beans) {
             feedPanel = new FeedPanel(currentLocale, bean);
-            objectPane.add(feedPanel);
+            mainPane.add(feedPanel, gbc);
         }
         revalidate();
         repaint();

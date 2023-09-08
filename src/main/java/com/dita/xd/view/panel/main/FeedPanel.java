@@ -46,7 +46,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
     private JLabel lblFeedComment;
     private JLabel lblFeedBack;
     private JLabel lblFeedLike;
-    private JLabel lblViewer;
     private JLabel lblTranslation;
 
     private JXdTextPane txaFeedContent;
@@ -90,6 +89,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         JPanel boxPane = new JPanel(); /* profilePane을 제외한 Panel 묶기 위해 선언 */
         JPanel boxTopPane = new JPanel();
         JPanel userInfoPane = new JPanel();
+        JPanel userIfnoSubPane = new JPanel();
         JPanel contentPane = new JPanel();
         JPanel mediaPane = new JPanel();
 
@@ -98,7 +98,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         JPanel feedInfoCommentPane = new JPanel();
         JPanel feedInfoFeedBackPane = new JPanel();
         JPanel feedInfoLikePane = new JPanel();
-        JPanel feedInfoViewerPane = new JPanel();
 
         lblUserId = new JLabel();
         lblNickName = new JLabel();
@@ -106,7 +105,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblFeedComment = new JLabel();
         lblFeedBack = new JLabel();
         lblFeedLike = new JLabel();
-        lblViewer = new JLabel();
         lblTranslation = new JLabel();
 
         txaFeedContent = new JXdTextPane();
@@ -117,6 +115,7 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         boxPane.setLayout(new BorderLayout());
         boxTopPane.setLayout(new BorderLayout());
+        userIfnoSubPane.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
         contentPane.setLayout(new BorderLayout());
         mediaPane.setLayout(new FlowLayout(FlowLayout.LEFT));
         feedInfoPane.setLayout(new BorderLayout());
@@ -124,7 +123,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         feedInfoCommentPane.setLayout(new BorderLayout());
         feedInfoFeedBackPane.setLayout(new BorderLayout());
         feedInfoLikePane.setLayout(new BorderLayout());
-        feedInfoViewerPane.setLayout(new BorderLayout());
 
         boxTopPane.add(userInfoPane, BorderLayout.WEST);
 
@@ -137,7 +135,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         feedInfoSubPane.add(feedInfoCommentPane);
         feedInfoSubPane.add(feedInfoFeedBackPane);
         feedInfoSubPane.add(feedInfoLikePane);
-        feedInfoSubPane.add(feedInfoViewerPane);
 
 
         /* 현재 시각과 피드의 작성시각의 차이를 구하기 위해 선언 */
@@ -150,15 +147,8 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         loadText();
 
-        nameLength = 12 * lblNickName.getText().length();
-        idLength = 12 * lblUserId.getText().length();
-        createdLength = 12 * lblCreatedAt.getText().length();
-
         /* Set the properties of sub panels */
-        userInfoPane.setLayout(new FlowLayout(FlowLayout.LEFT,2,0));
-        feedInfoPane.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 0));
-        userInfoPane.setPreferredSize(new Dimension(
-                nameLength + idLength + createdLength + 10, 20));
+        userInfoPane.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 
         /* Set the properties of components */
         txaFeedContent.setPreferredSize( /* txaFeedContent의 높이는 줄바꿈의 개수만큼 기본 높이에 추가하여 설정 */
@@ -200,12 +190,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         likeImageView.setMaximumSize(new Dimension(20,20));
         likeImageView.setPreferredSize(new Dimension(20,20));
 
-        JImageView viewImageView = new JImageView();
-        ImageIcon viewIcon = new ImageIcon("resources/images/line-chart.png");
-        viewImageView.setMaximumSize(new Dimension(20,20));
-        viewImageView.setPreferredSize(new Dimension(20,20));
-        viewImageView.setIcon(viewIcon);
-
         JImageView bookmarkImageView = new JImageView();
         ImageIcon bookmarkIcon = new ImageIcon("resources/images/bookmark.png");
         ImageIcon clickedBookmarkIcon = new ImageIcon("resources/images/clicked-bookmark.png");
@@ -219,13 +203,9 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         translationImageView.setPreferredSize(new Dimension(20,20));
         translationImageView.setIcon(translationIcon);
 
-        lblNickName.setPreferredSize(new Dimension(nameLength,20));
-        lblUserId.setPreferredSize(new Dimension(idLength, 20));
-        lblCreatedAt.setPreferredSize(new Dimension(createdLength,20));
         lblFeedComment.setPreferredSize(new Dimension( 50,20));
         lblFeedBack.setPreferredSize(new Dimension( 50, 20));
         lblFeedLike.setPreferredSize(new Dimension(50,20));
-        lblViewer.setPreferredSize(new Dimension(50,20));
 
         // Box Vertical Glue
         mainPane.setBorder(BorderFactory.createEmptyBorder(15,0,10,0));
@@ -243,10 +223,9 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         feedInfoCommentPane.add(Box.createRigidArea(new Dimension(10,0)));
         feedInfoFeedBackPane.add(Box.createRigidArea(new Dimension(10, 0)));
         feedInfoLikePane.add(Box.createRigidArea(new Dimension(10, 0)));
-        feedInfoViewerPane.add(Box.createRigidArea(new Dimension(10, 0)));
 
         feedInfoPane.add(Box.createGlue(), BorderLayout.CENTER);
-        feedInfoPane.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+        feedInfoPane.setBorder(BorderFactory.createEmptyBorder(10,0,10,50));
 
         /* Add components to panel */
         profilePane.add(rivProfile, BorderLayout.NORTH);
@@ -258,9 +237,11 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
 
         mediaPane.add(mediaPanel);
 
+
         userInfoPane.add(lblNickName);
-        userInfoPane.add(lblUserId);
-        userInfoPane.add(lblCreatedAt);
+        userInfoPane.add(userIfnoSubPane);
+        userIfnoSubPane.add(lblUserId);
+        userIfnoSubPane.add(lblCreatedAt);
 
         feedInfoPane.add(bookmarkImageView, BorderLayout.EAST);
 
@@ -270,8 +251,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         feedInfoFeedBackPane.add(lblFeedBack, BorderLayout.EAST);
         feedInfoLikePane.add(likeImageView, BorderLayout.WEST);
         feedInfoLikePane.add(lblFeedLike, BorderLayout.EAST);
-        feedInfoViewerPane.add(viewImageView, BorderLayout.WEST);
-        feedInfoViewerPane.add(lblViewer, BorderLayout.EAST);
 
         mainPane.add(profilePane, BorderLayout.WEST);
         mainPane.add(boxPane);
@@ -470,7 +449,6 @@ public class FeedPanel extends JPanel implements LocaleChangeListener {
         lblFeedComment.setText(String.valueOf(feedBean.getFeedCommentBeans().size()));
         lblFeedBack.setText(String.valueOf(feedBean.getFeedbackBeans().size()));
         lblFeedLike.setText(String.valueOf(feedBean.getLikeBeans().size()));
-        lblViewer.setText(String.valueOf(feedBean.getViewer()));
         lblTranslation.setText("번역");
 
         if(createdTime < 60) {

@@ -11,6 +11,8 @@ import com.dita.xd.view.panel.main.UserPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -21,6 +23,7 @@ public class UserSearchPanel extends JPanel{
     private final FeedController controller;
     private final JPanel objectPane = new JPanel(new GridLayout(0,1,2,0));
     private UserPanel userPanel;
+    private JPanel mainPane;
 
     public UserSearchPanel(Locale locale){
         localeBundle = ResourceBundle.getBundle("language", locale);
@@ -33,7 +36,7 @@ public class UserSearchPanel extends JPanel{
     private void initialize() {
         setLayout(new BorderLayout());
 
-        JPanel mainPane = new JPanel();
+        mainPane = new JPanel();
 
         JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
@@ -49,11 +52,18 @@ public class UserSearchPanel extends JPanel{
 
         loadText();
 
+        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                Adjustable adjustable = adjustmentEvent.getAdjustable();
+                adjustable.setValue(adjustable.getMinimum());
+                scrollBar.removeAdjustmentListener(this);
+            }
+        });
+
         mainPane.add(objectPane, BorderLayout.NORTH);
         mainPane.add(Box.createGlue(), BorderLayout.CENTER);
-        add(mainPane);
-
-
+        add(scrollPane);
     }
 
     public void clear(){

@@ -7,6 +7,7 @@ import com.dita.xd.model.FeedBean;
 import com.dita.xd.model.UserBean;
 import com.dita.xd.util.filter.IDFilter;
 import com.dita.xd.view.base.JHintTextField;
+import com.dita.xd.view.base.JVerticalScrollPane;
 import com.dita.xd.view.base.JXdSearchPane;
 import com.dita.xd.view.base.JXdTextPane;
 import com.dita.xd.view.manager.SearchPanelLayoutMgr;
@@ -59,6 +60,8 @@ public class SearchPanel extends JPanel implements ActionListener {
 
         JPanel headPane = new JPanel();
         JPanel mainPane = new JPanel();
+
+        JScrollPane scrollPane = new JScrollPane(new JVerticalScrollPane(mainPane));
 
         JButton temp = new JButton("버튼");
         temp.setPreferredSize(new Dimension(30, 30));
