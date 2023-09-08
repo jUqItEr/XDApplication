@@ -60,9 +60,9 @@ public class ContentSearchPanel extends JPanel{
     }
 
     public void clear() {
-        for (Component c : objectPane.getComponents()) {
+        for (Component c : mainPane.getComponents()) {
             if (c instanceof FeedPanel) {
-                objectPane.remove(c);
+                mainPane.remove(c);
             }
         }
         revalidate();

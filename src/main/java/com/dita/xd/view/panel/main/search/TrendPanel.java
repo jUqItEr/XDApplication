@@ -3,6 +3,8 @@ package com.dita.xd.view.panel.main.search;
 import com.dita.xd.controller.ActivityController;
 import com.dita.xd.controller.HashtagController;
 import com.dita.xd.model.HashtagBean;
+import com.dita.xd.view.manager.MainLayoutMgr;
+import com.dita.xd.view.manager.SearchPanelLayoutMgr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +18,7 @@ public class TrendPanel extends JPanel{
     private Locale currentLocale;
     private HashtagController hashtagController;
     private ActivityController activityController;
+    private SearchPanelLayoutMgr mgr;
     private final JPanel objectPane = new JPanel(new GridLayout(0,1,2,0));
     private JLabel lblTitle;
     private ContentPane contentPane;
@@ -26,6 +29,8 @@ public class TrendPanel extends JPanel{
         currentLocale = locale;
         hashtagController = new HashtagController();
         activityController = new ActivityController();
+
+        mgr = SearchPanelLayoutMgr.getInstance();
 
         initialize();
     }
@@ -46,7 +51,6 @@ public class TrendPanel extends JPanel{
         objectPane.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
 
         loadText();
-
 
         /* 현재 해쉬태그 데이터가 없음, 피드를 올릴때 같이 포함하도록 수정 */
 
@@ -110,7 +114,7 @@ public class TrendPanel extends JPanel{
             lblHash.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-
+                    mgr.setTrendHash(lblHash.getText());
                 }
 
                 @Override
@@ -137,6 +141,10 @@ public class TrendPanel extends JPanel{
 
             lblHashCount.setFont(lblHash.getFont().deriveFont(11f));
             lblHashCount.setForeground(Color.lightGray);
+        }
+
+        public String setText() {
+            return lblHash.getText();
         }
     }
 }
