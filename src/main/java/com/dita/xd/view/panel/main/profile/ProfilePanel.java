@@ -180,10 +180,10 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         gbcInner.fill = GridBagConstraints.HORIZONTAL;
 
 
-        feedController.getUserFeeds(currentUser.getUserId())
-                .forEach(bean -> createFeed(feedInnerPane1, bean, gbcInner));
-        feedController.getLikes(currentUser.getUserId())
-                .forEach(bean -> createFeed(feedInnerPane2, bean, gbcInner));
+//        feedController.getUserFeeds(currentUser.getUserId())
+//                .forEach(bean -> createFeed(feedInnerPane1, bean, gbcInner));
+//        feedController.getLikes(currentUser.getUserId())
+//                .forEach(bean -> createFeed(feedInnerPane2, bean, gbcInner));
 //        feedController.getBookmarks(currentUser.getUserId())
 //                .forEach(bean -> createFeed(feedInnerPane3, bean, gbcInner));
 
