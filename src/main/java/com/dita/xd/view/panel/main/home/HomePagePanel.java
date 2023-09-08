@@ -325,9 +325,9 @@ public class HomePagePanel extends JPanel{
     private void loadCountText() { lblImgCount.setText(filesBox.length + "개 선택됨 "); }
 
     private void loadText(){
-        btnUpload.setText("게시하기");
+        btnUpload.setText(localeBundle.getString("home.panel.button.post"));
 
-        txaFeedText.setHint("지금 무엇을 하고 있나요?");
+        txaFeedText.setHint(localeBundle.getString("home.panel.textarea.hint"));
 
         lblImgBox.setVisible(false);
         lblImgCount.setVisible(false);
