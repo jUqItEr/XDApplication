@@ -10,6 +10,7 @@ import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JRoundedImageView;
 import com.dita.xd.view.base.JVerticalScrollPane;
 import com.dita.xd.view.base.JXdTextPane;
+import com.dita.xd.view.dialog.FeedDialog;
 import com.dita.xd.view.dialog.ProfileDialog;
 import com.dita.xd.view.panel.main.FeedPanel;
 
@@ -219,7 +220,7 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
             if (headerUrl != null) {
                 ImageIcon icon = new ImageIcon(new URL(headerUrl));
                 icon = new ImageIcon(icon.getImage()
-                        .getScaledInstance(495, 190, Image.SCALE_SMOOTH));
+                        .getScaledInstance(500, 190, Image.SCALE_SMOOTH));
                 lblHeaderImage.setIcon(icon);
             } else {
                 throw new MalformedURLException("No valid URL");
@@ -338,7 +339,9 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         }
         if (activityController.isCheckFollowed(repository.getUserAccount(), currentUser)) {
             JPanel t = new JPanel(new BorderLayout());
-            t.add(new JLabel("사용자가 당신을 팔로우합니다."));
+            JLabel l = new JLabel("사용자가 당신을 팔로우합니다.");
+            l.setBorder(BorderFactory.createEmptyBorder(0,  30, 10, 0));
+            t.add(l);
             userStatePane.add(t);
         }
         JPanel t = new JPanel(new BorderLayout());
@@ -452,18 +455,18 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
         btnBookmark.addActionListener(e -> {
 //            feedLayout.show(feedPane, "feed");
-            revalidate();
-            repaint();
+            FeedDialog dialog = new FeedDialog(currentLocale, currentUser, "bookmark");
+            dialog.setVisible(true);
         });
         btnFeed.addActionListener(e -> {
 //            feedLayout.show(feedPane, "like");
-            revalidate();
-            repaint();
+            FeedDialog dialog = new FeedDialog(currentLocale, currentUser, "feed");
+            dialog.setVisible(true);
         });
         btnLike.addActionListener(e -> {
 //            feedLayout.show(feedPane, "bookmark");
-            revalidate();
-            repaint();
+            FeedDialog dialog = new FeedDialog(currentLocale, currentUser, "like");
+            dialog.setVisible(true);
         });
 
 
