@@ -226,6 +226,7 @@ public class FeedServiceImpl implements FeedService {
                 String feedUserId = rs.getString("feed_user_id");
                 String feedUserNickname = rs.getString("feed_user_id");
                 String feedUserProfileImage = rs.getString("feed_user_profile_image");
+                String content = rs.getString("content");
                 Timestamp createdAt = rs.getTimestamp("created_at");
                 int feedId = rs.getInt("feed_id");
 
@@ -234,6 +235,7 @@ public class FeedServiceImpl implements FeedService {
                 bean.setUserProfileImage(feedUserProfileImage);
                 bean.setCreatedAt(createdAt);
                 bean.setId(feedId);
+                bean.setContent(content);
                 bean.setFeedbackBeans(getFeedbacks(bean));
                 bean.setFeedCommentBeans(getComments(bean));
                 bean.setLikeBeans(getLikes(bean));
@@ -292,6 +294,7 @@ public class FeedServiceImpl implements FeedService {
                 String feedUserId = rs.getString("feed_user_id");
                 String feedUserNickname = rs.getString("feed_user_id");
                 String feedUserProfileImage = rs.getString("feed_user_profile_image");
+                String content = rs.getString("content");
                 Timestamp createdAt = rs.getTimestamp("created_at");
                 int feedId = rs.getInt("feed_id");
 
@@ -300,6 +303,7 @@ public class FeedServiceImpl implements FeedService {
                 bean.setUserProfileImage(feedUserProfileImage);
                 bean.setCreatedAt(createdAt);
                 bean.setId(feedId);
+                bean.setContent(content);
                 bean.setFeedbackBeans(getFeedbacks(bean));
                 bean.setFeedCommentBeans(getComments(bean));
                 bean.setLikeBeans(getLikes(bean));
