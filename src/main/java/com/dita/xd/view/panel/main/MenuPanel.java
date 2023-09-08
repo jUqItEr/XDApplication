@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.TimerTask;
 
 public class MenuPanel extends JPanel{
     //private final ?Controller controller;
@@ -163,6 +164,9 @@ public class MenuPanel extends JPanel{
         private Locale currentLocale;
         private JLabel lblUserId;
         private JLabel lblUserNickname;
+
+        protected java.util.Timer alarm;
+
         public MiniProfile(Locale locale){
             localeBundle = ResourceBundle.getBundle("language",locale);
             currentLocale = locale;
@@ -256,6 +260,30 @@ public class MenuPanel extends JPanel{
             mainPane.add(profilePane, BorderLayout.WEST);
 
             mainPane.add(userInfoPane);
+
+
+            alarm = new java.util.Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    String profileUrl = repository.getUserAccount().getProfileImage();
+                    ImageIcon icon = null;
+
+                    try {
+                        if (profileUrl != null) {
+                            icon = new ImageIcon(new URL(profileUrl));
+                        } else {
+                            throw new MalformedURLException("No valid URL");
+                        }
+                    } catch (MalformedURLException e) {
+                        icon = new ImageIcon("resources/images/anonymous.jpg");
+
+                    }
+                    rivProfile.setIcon(icon);
+                    loadText();
+                }
+            };
+            alarm.schedule(task, 0, 5000);
 
             add(mainPane);
         }
