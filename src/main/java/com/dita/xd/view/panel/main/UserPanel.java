@@ -64,6 +64,7 @@ public class UserPanel extends JPanel implements LocaleChangeListener {
     private void initialize(){
         /* Set the default properties to parent panel. */
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
 
         /* Variables declaration */
         JPanel mainPane = new JPanel();
