@@ -36,6 +36,10 @@ public class ProfileLayoutMgr {
         this.mainPane = mainPane;
     }
 
+    public void callAlertDialog(String message) {
+        JOptionPane.showMessageDialog(mainDialog, message);
+    }
+
     public void dispose() {
         mainDialog.dispose();
     }

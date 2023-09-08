@@ -66,7 +66,11 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
         if (repository.getUserNickname() == null) {
             ProfileDialog dialog = new ProfileDialog(currentLocale);
-            System.out.println(dialog.showDialog());
+
+            if (!dialog.showDialog()) {
+                JOptionPane.showMessageDialog(this, "별명은 반드시 설정해야 합니다.");
+                dispose();
+            }
         }
 
         CardLayout clMain = new CardLayout();
@@ -97,6 +101,8 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
         mgr.setChatPane(chatPanel);
         mgr.setProfilePane(profilePanel);
 
+        loadText();
+
 
         mainPane.add(homePagePanel, "home");
         mainPane.add(searchPanel, "search");
@@ -108,7 +114,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
     }
 
     private void loadText() {
-
+        setTitle("XD");
     }
 
     @Override

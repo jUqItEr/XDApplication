@@ -1,16 +1,20 @@
 package com.dita.xd.view.panel.profile;
 
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.UserBean;
+import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JXdTextPane;
 import com.dita.xd.view.manager.ProfileLayoutMgr;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class IntroducePanel extends JPanel implements LocaleChangeListener {
     private final ProfileLayoutMgr mgr;
+    private final UserRepository repository;
 
     private ResourceBundle localeBundle;
     private JLabel lblTitle;
@@ -19,6 +23,7 @@ public class IntroducePanel extends JPanel implements LocaleChangeListener {
     public IntroducePanel(Locale locale) {
         localeBundle = ResourceBundle.getBundle("language", locale);
         mgr = ProfileLayoutMgr.getInstance();
+        repository = UserRepository.getInstance();
 
         initialize();
         onLocaleChanged(locale);
@@ -33,6 +38,15 @@ public class IntroducePanel extends JPanel implements LocaleChangeListener {
 
         lblTitle = new JLabel();
         txaIntroduce = new JXdTextPane();
+
+        if (repository.getUserAccount().getIntroduce() != null) {
+            try{
+                txaIntroduce.getStyledDocument().insertString(
+                        0, repository.getUserAccount().getIntroduce(),null);
+            } catch (BadLocationException e){
+                e.printStackTrace();
+            }
+        }
 
         /* Set the localized texts. */
         loadText();
@@ -58,8 +72,16 @@ public class IntroducePanel extends JPanel implements LocaleChangeListener {
         add(mainPane);
     }
 
+    public UserBean getBean() {
+        UserBean bean = new UserBean();
+
+        bean.setIntroduce(txaIntroduce.getText());
+
+        return bean;
+    }
+
     private void loadText() {
-        lblTitle.setText("나를 소개해 보아요");
+        lblTitle.setText("자신을 소개해 보아요");
     }
 
     @Override

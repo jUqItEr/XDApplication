@@ -1,6 +1,8 @@
 package com.dita.xd.view.dialog;
 
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.UserBean;
+import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.manager.ProfileLayoutMgr;
 import com.dita.xd.view.panel.profile.HeaderPanel;
 import com.dita.xd.view.panel.profile.BirthdayPanel;
@@ -17,6 +19,8 @@ public class ProfileDialog extends JDialog implements LocaleChangeListener {
     private final String[] pages = new String[] {
             "nickname", "header", "birthday", "introduce", "other"
     };
+
+    private final UserRepository repository;
     private final ProfileLayoutMgr mgr;
 
     private Locale currentLocale;
@@ -46,6 +50,8 @@ public class ProfileDialog extends JDialog implements LocaleChangeListener {
                 otherInfoPane = new OtherInfoPanel(locale)
         };
         mgr = ProfileLayoutMgr.getInstance();
+
+        repository = UserRepository.getInstance();
 
         this.result = false;
 
@@ -104,15 +110,30 @@ public class ProfileDialog extends JDialog implements LocaleChangeListener {
             switch (currentIndex) {
                 case 0, 1, 2 -> {
                     btnPrev.setEnabled(true);
+
+                    if (currentIndex == 0) {
+                        UserBean bean = nickNamePane.getBean();
+                        repository.updateProfile(bean);
+                    } else if (currentIndex == 1) {
+                        UserBean bean = headerPane.getBean();
+                        repository.updateProfile(bean);
+                    } else {
+                        UserBean bean = birthdayPane.getBean();
+                        repository.updateProfile(bean);
+                    }
                     mgr.show(pages[++currentIndex]);
                 }
                 case 3 -> {
                     btnNext.setText(localeBundle.getString("profile.button.finish"));
+
+                    UserBean bean = introducePane.getBean();
+                    repository.updateProfile(bean);
                     mgr.show(pages[++currentIndex]);
                 }
                 case 4 -> {
+
+                    result = repository.verifyProfile();
                     dispose();
-                    result = true;
                 }
             }
         });

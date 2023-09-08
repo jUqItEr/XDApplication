@@ -461,7 +461,31 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public boolean setProfile(UserBean userBean) {
-        return false;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = "update user_tbl set nickname = ?, profile_image = ?, header_image = ?, address = ?, " +
+                "website = ?, birthday = ?, introduce = ? where id = ?";
+        boolean flag = false;
+
+        try {
+            conn = pool.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, userBean.getNickname());
+            pstmt.setString(2, userBean.getProfileImage());
+            pstmt.setString(3, userBean.getHeaderImage());
+            pstmt.setString(4, userBean.getAddress());
+            pstmt.setString(5, userBean.getWebsite());
+            pstmt.setDate(6, userBean.getBirthday());
+            pstmt.setString(7, userBean.getIntroduce());
+            pstmt.setString(8, userBean.getUserId());
+
+            flag = pstmt.executeUpdate() == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            pool.freeConnection(conn, pstmt);
+        }
+        return flag;
     }
 
     @Override
