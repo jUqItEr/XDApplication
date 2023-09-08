@@ -454,17 +454,14 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
 
         btnBookmark.addActionListener(e -> {
-//            feedLayout.show(feedPane, "feed");
             FeedDialog dialog = new FeedDialog(currentLocale, currentUser, "bookmark");
             dialog.setVisible(true);
         });
         btnFeed.addActionListener(e -> {
-//            feedLayout.show(feedPane, "like");
             FeedDialog dialog = new FeedDialog(currentLocale, currentUser, "feed");
             dialog.setVisible(true);
         });
         btnLike.addActionListener(e -> {
-//            feedLayout.show(feedPane, "bookmark");
             FeedDialog dialog = new FeedDialog(currentLocale, currentUser, "like");
             dialog.setVisible(true);
         });

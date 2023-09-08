@@ -234,8 +234,6 @@ public class FeedServiceImpl implements FeedService {
                 bean.setUserProfileImage(feedUserProfileImage);
                 bean.setCreatedAt(createdAt);
                 bean.setId(feedId);
-
-                beans.addElement(bean);
                 bean.setFeedbackBeans(getFeedbacks(bean));
                 bean.setFeedCommentBeans(getComments(bean));
                 bean.setLikeBeans(getLikes(bean));
@@ -280,7 +278,7 @@ public class FeedServiceImpl implements FeedService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from feed_like_view where like_user_id = ?";
+        String sql = "select distinct * from feed_like_view where like_user_id = ?";
         Vector<FeedBean> beans = new Vector<>();
 
         try {
@@ -302,8 +300,6 @@ public class FeedServiceImpl implements FeedService {
                 bean.setUserProfileImage(feedUserProfileImage);
                 bean.setCreatedAt(createdAt);
                 bean.setId(feedId);
-
-                beans.addElement(bean);
                 bean.setFeedbackBeans(getFeedbacks(bean));
                 bean.setFeedCommentBeans(getComments(bean));
                 bean.setLikeBeans(getLikes(bean));
