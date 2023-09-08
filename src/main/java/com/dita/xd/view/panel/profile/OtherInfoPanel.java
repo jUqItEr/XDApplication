@@ -84,10 +84,14 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
 
         String gender = repository.getUserAccount().getGender();
 
-        if (gender.equals("M")) {
-            rb1.setSelected(true);
-        } else if (gender.equals("F")) {
-            rb2.setSelected(true);
+        if (gender != null) {
+            if (gender.equals("M")) {
+                rb1.setSelected(true);
+            } else if (gender.equals("F")) {
+                rb2.setSelected(true);
+            } else {
+                rb3.setSelected(true);
+            }
         } else {
             rb3.setSelected(true);
         }
