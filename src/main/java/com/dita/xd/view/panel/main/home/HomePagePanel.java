@@ -327,7 +327,7 @@ public class HomePagePanel extends JPanel{
     private void loadText(){
         btnUpload.setText("게시하기");
 
-        txaFeedText.setHint("적고 싶은거");
+        txaFeedText.setHint("지금 무엇을 하고 있나요?");
 
         lblImgBox.setVisible(false);
         lblImgCount.setVisible(false);

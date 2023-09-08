@@ -151,7 +151,23 @@ public class MenuPanel extends JPanel{
         }
 
         private void loadText(){
-            lblMenu.setText(menuBar);
+            String title = "";
+
+            switch (menuBar) {
+                case "home" -> {
+                    title = localeBundle.getString("menu.panel.label.home");
+                }
+                case "search" -> {
+                    title = localeBundle.getString("menu.panel.label.search");
+                }
+                case "profile" -> {
+                    title = localeBundle.getString("menu.panel.label.profile");
+                }
+                case "chat" -> {
+                    title = localeBundle.getString("menu.panel.label.chat");
+                }
+            }
+            lblMenu.setText(title);
             lblMenu.setFont(lblMenu.getFont().deriveFont(20f)
                     .deriveFont(Font.BOLD));
         }
