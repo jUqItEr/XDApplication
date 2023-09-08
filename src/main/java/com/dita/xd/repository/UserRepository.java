@@ -130,6 +130,7 @@ public class UserRepository {
         if (result) {
             controller.setProfile(userAccount);
         }
+        buildProfile = null;
         return result;
     }
 }

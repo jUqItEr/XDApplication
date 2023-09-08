@@ -1,6 +1,8 @@
 package com.dita.xd.view.panel.profile;
 
 import com.dita.xd.listener.LocaleChangeListener;
+import com.dita.xd.model.UserBean;
+import com.dita.xd.repository.UserRepository;
 import com.dita.xd.view.base.JHintTextField;
 import com.dita.xd.view.manager.ProfileLayoutMgr;
 
@@ -10,10 +12,15 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
+    private final UserRepository repository;
     private final ProfileLayoutMgr mgr;
 
     private ResourceBundle localeBundle;
 
+
+    JRadioButton rb1 = new JRadioButton("남");
+    JRadioButton rb2 = new JRadioButton("여");
+    JRadioButton rb3 = new JRadioButton("밝히지 않음");
     private JLabel lblGender;
     private JLabel lblAddrees;
     private JLabel lblLink;
@@ -22,6 +29,7 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
     public OtherInfoPanel(Locale locale) {
         localeBundle = ResourceBundle.getBundle("language", locale);
         mgr = ProfileLayoutMgr.getInstance();
+        repository = UserRepository.getInstance();
 
         initialize();
         onLocaleChanged(locale);
@@ -33,9 +41,6 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
         /* Variables declaration */
         JPanel mainPane = new JPanel();
         JPanel radioPane = new JPanel();
-        JRadioButton rb1 = new JRadioButton("남");
-        JRadioButton rb2 = new JRadioButton("여");
-        JRadioButton rb3 = new JRadioButton("밝히지 않음");
 
         ButtonGroup group = new ButtonGroup();
 
@@ -77,6 +82,15 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
         group.add(rb2);
         group.add(rb3);
 
+        String gender = repository.getUserAccount().getGender();
+
+        if (gender.equals("M")) {
+            rb1.setSelected(true);
+        } else if (gender.equals("F")) {
+            rb2.setSelected(true);
+        } else {
+            rb3.setSelected(true);
+        }
         radioPane.add(Box.createGlue());
         radioPane.add(rb1);
         radioPane.add(rb2);
@@ -98,10 +112,30 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
         add(mainPane);
     }
 
+    public UserBean getBean() {
+        UserBean bean = new UserBean();
+        String gender = "N";
+
+        if (rb1.isSelected()) {
+            gender = "M";
+        } else if (rb2.isSelected()) {
+            gender = "F";
+        }
+        bean.setGender(gender);
+
+        if (!htfAddress.getText().isEmpty()) {
+            bean.setAddress(htfAddress.getText());
+        }
+        if (!htfLink.getText().isEmpty()) {
+            bean.setWebsite(htfLink.getText());
+        }
+        return bean;
+    }
+
     private void loadText() {
-        lblGender.setText("성별 골라");
-        lblAddrees.setText("주소 적어");
-        lblLink.setText("링크 적어");
+        lblGender.setText("성별");
+        lblAddrees.setText("주소");
+        lblLink.setText("개임 홈페이지");
     }
 
     @Override

@@ -131,7 +131,8 @@ public class ProfileDialog extends JDialog implements LocaleChangeListener {
                     mgr.show(pages[++currentIndex]);
                 }
                 case 4 -> {
-
+                    UserBean bean = otherInfoPane.getBean();
+                    repository.updateProfile(bean);
                     result = repository.verifyProfile();
                     dispose();
                 }

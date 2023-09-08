@@ -158,26 +158,26 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
         feedPane = new JPanel();
 
 
-        /* Inner */
-        JPanel feedInnerPane1 = new JPanel();
-        JPanel feedInnerPane2 = new JPanel();
-        JPanel feedInnerPane3 = new JPanel();
-
-        CardLayout feedLayout = new CardLayout();
-        feedPane.setLayout(feedLayout);
-        feedPane.add(feedInnerPane1, "feed");
-        feedPane.add(feedInnerPane2, "like");
-        feedPane.add(feedInnerPane3, "bookmark");
-
-        feedInnerPane1.setLayout(new GridBagLayout());
-        feedInnerPane2.setLayout(new GridBagLayout());
-        feedInnerPane3.setLayout(new GridBagLayout());
-
-
-        GridBagConstraints gbcInner = new GridBagConstraints();
-        gbcInner.weightx = 1.0;
-        gbcInner.gridwidth = GridBagConstraints.REMAINDER;
-        gbcInner.fill = GridBagConstraints.HORIZONTAL;
+//        /* Inner */
+//        JPanel feedInnerPane1 = new JPanel();
+//        JPanel feedInnerPane2 = new JPanel();
+//        JPanel feedInnerPane3 = new JPanel();
+//
+//        CardLayout feedLayout = new CardLayout();
+//        feedPane.setLayout(feedLayout);
+//        feedPane.add(feedInnerPane1, "feed");
+//        feedPane.add(feedInnerPane2, "like");
+//        feedPane.add(feedInnerPane3, "bookmark");
+//
+//        feedInnerPane1.setLayout(new GridBagLayout());
+//        feedInnerPane2.setLayout(new GridBagLayout());
+//        feedInnerPane3.setLayout(new GridBagLayout());
+//
+//
+//        GridBagConstraints gbcInner = new GridBagConstraints();
+//        gbcInner.weightx = 1.0;
+//        gbcInner.gridwidth = GridBagConstraints.REMAINDER;
+//        gbcInner.fill = GridBagConstraints.HORIZONTAL;
 
 
 //        feedController.getUserFeeds(currentUser.getUserId())
@@ -407,17 +407,17 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
 
         btnBookmark.addActionListener(e -> {
-            feedLayout.show(feedPane, "feed");
+//            feedLayout.show(feedPane, "feed");
             revalidate();
             repaint();
         });
         btnFeed.addActionListener(e -> {
-            feedLayout.show(feedPane, "like");
+//            feedLayout.show(feedPane, "like");
             revalidate();
             repaint();
         });
         btnLike.addActionListener(e -> {
-            feedLayout.show(feedPane, "bookmark");
+//            feedLayout.show(feedPane, "bookmark");
             revalidate();
             repaint();
         });
