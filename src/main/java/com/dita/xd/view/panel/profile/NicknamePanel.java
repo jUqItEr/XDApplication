@@ -72,7 +72,8 @@ public class NicknamePanel extends JPanel implements LocaleChangeListener {
         ImageIcon icon;
 
         try {
-            icon = new ImageIcon(new URL(repository.getUserAccount().getProfileImage()));
+            imagePath = repository.getUserAccount().getProfileImage();
+            icon = new ImageIcon(new URL(imagePath));
         } catch (MalformedURLException ex) {
             icon = new ImageIcon("resources/images/anonymous.jpg");
         }

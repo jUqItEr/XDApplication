@@ -61,7 +61,8 @@ public class HeaderPanel extends JPanel implements LocaleChangeListener {
 
         if (repository.getUserAccount().getHeaderImage() != null) {
             try {
-                ImageIcon icon = new ImageIcon(new URL(repository.getUserAccount().getHeaderImage()));
+                imagePath = repository.getUserAccount().getHeaderImage();
+                ImageIcon icon = new ImageIcon(new URL(imagePath));
                 icon = new ImageIcon(icon.getImage().getScaledInstance(483, 190, Image.SCALE_SMOOTH));
                 imvHeader.setIcon(icon);
             } catch (MalformedURLException e) {

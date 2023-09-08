@@ -464,7 +464,7 @@ public class ActivityServiceImpl implements ActivityService {
         Connection conn = null;
         PreparedStatement pstmt = null;
         String sql = "update user_tbl set nickname = ?, profile_image = ?, header_image = ?, address = ?, " +
-                "website = ?, birthday = ?, introduce = ? where id = ?";
+                "gender = ?, website = ?, birthday = ?, introduce = ? where id = ?";
         boolean flag = false;
 
         try {
@@ -474,10 +474,11 @@ public class ActivityServiceImpl implements ActivityService {
             pstmt.setString(2, userBean.getProfileImage());
             pstmt.setString(3, userBean.getHeaderImage());
             pstmt.setString(4, userBean.getAddress());
-            pstmt.setString(5, userBean.getWebsite());
-            pstmt.setDate(6, userBean.getBirthday());
-            pstmt.setString(7, userBean.getIntroduce());
-            pstmt.setString(8, userBean.getUserId());
+            pstmt.setString(5, userBean.getGender());
+            pstmt.setString(6, userBean.getWebsite());
+            pstmt.setDate(7, userBean.getBirthday());
+            pstmt.setString(8, userBean.getIntroduce());
+            pstmt.setString(9, userBean.getUserId());
 
             flag = pstmt.executeUpdate() == 1;
         } catch (Exception e) {

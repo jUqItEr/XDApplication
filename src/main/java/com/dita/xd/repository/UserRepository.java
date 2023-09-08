@@ -122,6 +122,7 @@ public class UserRepository {
             userAccount.setNickname(buildProfile.getNickname());
             userAccount.setProfileImage(buildProfile.getProfileImage());
             userAccount.setAddress(buildProfile.getAddress());
+            userAccount.setBirthday(buildProfile.getBirthday());
             userAccount.setIntroduce(buildProfile.getIntroduce());
             userAccount.setHeaderImage(buildProfile.getHeaderImage());
             userAccount.setGender(buildProfile.getGender());

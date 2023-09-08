@@ -85,7 +85,7 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
         String gender = repository.getUserAccount().getGender();
 
         if (gender != null) {
-            if (gender.equals("M")) {
+            if (gender.equals("T")) {
                 rb1.setSelected(true);
             } else if (gender.equals("F")) {
                 rb2.setSelected(true);
@@ -94,6 +94,12 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
             }
         } else {
             rb3.setSelected(true);
+        }
+        if (repository.getUserAccount().getAddress() != null) {
+            htfAddress.setText(repository.getUserAccount().getAddress());
+        }
+        if (repository.getUserAccount().getWebsite() != null) {
+            htfLink.setText(repository.getUserAccount().getWebsite());
         }
         radioPane.add(Box.createGlue());
         radioPane.add(rb1);
@@ -139,7 +145,7 @@ public class OtherInfoPanel extends JPanel implements LocaleChangeListener {
     private void loadText() {
         lblGender.setText("성별");
         lblAddrees.setText("주소");
-        lblLink.setText("개임 홈페이지");
+        lblLink.setText("개인 홈페이지");
     }
 
     @Override

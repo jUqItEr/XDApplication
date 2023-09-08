@@ -402,6 +402,50 @@ public class ProfilePanel extends JPanel implements LocaleChangeListener {
 
             if (dialog.showDialog()) {
                 System.out.println("프로필 변경 성공");
+
+                currentUser = loginController.getUser(currentUser.getUserId());
+                loadText();
+                try {
+                    String headerUrl = currentUser.getHeaderImage();
+
+                    if (headerUrl != null) {
+                        ImageIcon icon = new ImageIcon(new URL(headerUrl));
+                        icon = new ImageIcon(icon.getImage()
+                                .getScaledInstance(495, 190, Image.SCALE_SMOOTH));
+                        lblHeaderImage.setIcon(icon);
+                    } else {
+                        throw new MalformedURLException("No valid URL");
+                    }
+                } catch (MalformedURLException ex) {
+                    lblHeaderImage.setBackground(Color.DARK_GRAY);
+                    lblHeaderImage.setOpaque(true);
+                }
+                try {
+                    String profileUrl = currentUser.getProfileImage();
+
+                    if (profileUrl != null) {
+                        rivProfileImage.setIcon(new ImageIcon(new URL(profileUrl)));
+                    } else {
+                        throw new MalformedURLException("No valid URL");
+                    }
+                } catch (MalformedURLException ex) {
+                    rivProfileImage.setIcon(new ImageIcon("resources/images/anonymous.jpg"));
+                }
+                userInfoSubPane.removeAll();
+                for (int i = 0; i < labels.length; ++i) {
+                    if (!labels[i].getText().isEmpty()) {
+                        JPanel boxTmpPane = new JPanel();
+                        boxTmpPane.setLayout(new BoxLayout(boxTmpPane, BoxLayout.X_AXIS));
+
+                        boxTmpPane.add(labelTitles[i]);
+                        boxTmpPane.add(labels[i]);
+                        labels[i].setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 22));
+
+                        userInfoSubPane.add(boxTmpPane);
+                    }
+                }
+                revalidate();
+                repaint();
             }
         });
 
