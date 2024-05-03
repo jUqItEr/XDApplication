@@ -8,15 +8,32 @@ import java.util.Properties;
 import java.util.Vector;
 
 public class DBConnectionServiceImpl implements Service {
-    private Vector connections = new Vector(10);
-    private String _driver = "com.mysql.cj.jdbc.Driver",
-            _url = "jdbc:mysql://hxlab.co.kr:13307/xd_chat?characterEncoding=UTF-8&serverTimezone=Asia/Seoul",
-            _user = "root",
-            _password = "dita2414";
+    private final String REMOTE_HOST = "hxlab.co.kr";
+    private final String REMOTE_USER = "dita";
+    private final String PASSPHRASE  = "sksmsahffdy";
+    private final String SERVER_KEY  = "resources/server-key.pem";
+    private final int    REMOTE_PORT = 2999;
 
-    private boolean _traceOn = false;
-    private boolean initialized = false;
-    private int _openConnections = 50;
+    private final String DB_HOST     = "localhost";
+    private final String DB_NAME     = "xd_chat";
+    private final int    DB_PORT     = 3306;
+    private final String DB_QUERY    = "characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=false";
+    private final String DB_DRIVER   = "com.mysql.cj.jdbc.Driver";
+    private final String DB_URL      = String.format("jdbc:mysql://%s:%d/%s?%s", DB_HOST, DB_PORT, DB_NAME, DB_QUERY);
+
+    private final String SSHJ_URL    = String.format("jdbc:sshj://%s:%d?username=%s&private.key.file=%s&" +
+                                                     "private.key.password=%s&remote=%s:%d;;;%s",
+                                                     REMOTE_HOST, REMOTE_PORT, REMOTE_USER, SERVER_KEY, PASSPHRASE,
+                                                     DB_HOST, DB_PORT, DB_URL);
+
+    private Vector connections = new Vector(10);
+
+    private String  _dbPwd           = "dita2414";
+    private String  _dbUser          = "dita";
+    private boolean _traceOn         = false;
+    private boolean initialized      = false;
+    private int     _openConnections = 50;
+
     private static DBConnectionServiceImpl instance = null;
 
     private DBConnectionServiceImpl() {
@@ -89,7 +106,7 @@ public class DBConnectionServiceImpl implements Service {
     public synchronized Connection getConnection()
             throws Exception {
         if (!initialized) {
-            Class c = Class.forName(_driver);
+            Class c = Class.forName(DB_DRIVER);
             DriverManager.registerDriver((Driver) c.newInstance());
 
             initialized = true;
@@ -235,16 +252,16 @@ public class DBConnectionServiceImpl implements Service {
         Connection con = null;
 
         try {
-            if (_user == null)
-                _user = "";
-            if (_password == null)
-                _password = "";
+            if (_dbUser == null)
+                _dbUser = "";
+            if (_dbPwd == null)
+                _dbPwd = "";
 
             Properties props = new Properties();
-            props.put("user", _user);
-            props.put("password", _password);
+            props.put("user", _dbUser);
+            props.put("password", _dbPwd);
 
-            con = DriverManager.getConnection(_url, props);
+            con = DriverManager.getConnection(SSHJ_URL, props);
         } catch (Throwable t) {
             throw new SQLException(t.getMessage());
         }
