@@ -2,29 +2,21 @@ package com.dita.xd.service.implementation;
 
 import com.dita.xd.service.Service;
 import com.dita.xd.util.database.ConnectionObject;
+import com.dita.xd.util.security.SSHUtil;
 
 import java.sql.*;
 import java.util.Properties;
 import java.util.Vector;
 
 public class DBConnectionServiceImpl implements Service {
-    private final String REMOTE_HOST = "hxlab.co.kr";
-    private final String REMOTE_USER = "dita";
-    private final String PASSPHRASE  = "sksmsahffdy";
-    private final String SERVER_KEY  = "resources/server-key.pem";
-    private final int    REMOTE_PORT = 2999;
-
+    int forwardedPort = SSHUtil.connect();
     private final String DB_HOST     = "localhost";
     private final String DB_NAME     = "xd_chat";
     private final int    DB_PORT     = 3306;
-    private final String DB_QUERY    = "characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=false";
+    private final String DB_QUERY    = "characterEncoding=UTF-8&serverTimezone=Asia/Seoul" +
+            "&allowPublicKeyRetrieval=true&useSSL=false";
     private final String DB_DRIVER   = "com.mysql.cj.jdbc.Driver";
-    private final String DB_URL      = String.format("jdbc:mysql://%s:%d/%s?%s", DB_HOST, DB_PORT, DB_NAME, DB_QUERY);
-
-    private final String SSHJ_URL    = String.format("jdbc:sshj://%s:%d?username=%s&private.key.file=%s&" +
-                                                     "private.key.password=%s&remote=%s:%d;;;%s",
-                                                     REMOTE_HOST, REMOTE_PORT, REMOTE_USER, SERVER_KEY, PASSPHRASE,
-                                                     DB_HOST, DB_PORT, DB_URL);
+    private final String DB_URL      = String.format("jdbc:mysql://%s:%d/%s?%s", DB_HOST, forwardedPort, DB_NAME, DB_QUERY);
 
     private Vector connections = new Vector(10);
 
@@ -261,7 +253,7 @@ public class DBConnectionServiceImpl implements Service {
             props.put("user", _dbUser);
             props.put("password", _dbPwd);
 
-            con = DriverManager.getConnection(SSHJ_URL, props);
+            con = DriverManager.getConnection(DB_URL, props);
         } catch (Throwable t) {
             throw new SQLException(t.getMessage());
         }
